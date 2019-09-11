@@ -2,10 +2,15 @@ Package: pensionfinanceLi
 Type: Package
 Title: Package for functions that are necessary to optimize for taking optimal decisions in Liechtenstein's pension system.
 Version: 0.1.0
-Author: Author: c(person("Sebastian", "Stoeckl", email = "sebastian.stoeckl@uni.li", role = c("aut"), comment = c(ORCID = "0000-0002-4196-6093")))
+Author: Author: c(person("Sebastian", "Stoeckl", email = "sebastian.stoeckl@uni.li", role = c("aut","cre"), comment = c(ORCID = "0000-0002-4196-6093")))
 Description: Will be done later
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/sstoeckl/pensionfinanceLi
 BugReports: https://github.com/sstoeckl/pensionfinanceLi/issues
+Suggests: 
+    covr,
+    testthat,
+    spelling
+Language: en-US

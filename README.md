@@ -7,6 +7,10 @@
 
 [![Travis build
 status](https://travis-ci.org/sstoeckl/pensionfinanceLi.svg?branch=master)](https://travis-ci.org/sstoeckl/pensionfinanceLi)
+[![AppVeyor build
+status](https://ci.appveyor.com/api/projects/status/github/sstoeckl/pensionfinanceLi?branch=master&svg=true)](https://ci.appveyor.com/project/sstoeckl/pensionfinanceLi)
+[![Codecov test
+coverage](https://codecov.io/gh/sstoeckl/pensionfinanceLi/branch/master/graph/badge.svg)](https://codecov.io/gh/sstoeckl/pensionfinanceLi?branch=master)
 <!-- badges: end -->
 
 The goal of pensionfinanceLi is to …
