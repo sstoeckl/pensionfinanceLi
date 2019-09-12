@@ -3,6 +3,7 @@ Type: Package
 Title: Package for functions that are necessary to optimize for taking optimal decisions in Liechtenstein's pension system.
 Version: 0.1.0
 Author: Author: c(person("Sebastian", "Stoeckl", email = "sebastian.stoeckl@uni.li", role = c("aut","cre"), comment = c(ORCID = "0000-0002-4196-6093")))
+Maintainer: Sebastian Stöckl <sebastian.stoeckl@uni.li>
 Description: Will be done later
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -11,6 +12,18 @@ URL: https://github.com/sstoeckl/pensionfinanceLi
 BugReports: https://github.com/sstoeckl/pensionfinanceLi/issues
 Suggests: 
     covr,
-    testthat,
-    spelling
+    testthat (>= 2.1.0),
+    spelling,
+    knitr,
+    rmarkdown
 Language: en-US
+Imports: 
+    xts,
+    MortalityTables,
+    PerformanceAnalytics,
+    dplyr,
+    tibble,
+    tidyquant,
+    tsDyn
+VignetteBuilder: knitr
+RoxygenNote: 6.1.1
