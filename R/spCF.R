@@ -16,7 +16,8 @@
 #' @param s2 savings in second pillar as of t=0
 #' @param rho2 conversion factor in second pillar for regular retirement age
 #'
-#' @return
+#' @return List with two elements: a vector of lumpsum spendings (length = number of scenarions) and a matrix with
+#' annuity payments starting at ret_age until 122 (rows) with number of columns eqqual to the number of scenarios
 #'
 #' @examples
 #' data(ret); data(retr)
@@ -57,7 +58,7 @@ spCF<-function(ret_age=65,nu2,c_age,c2,li,lg,w2,ret,retr,s2,rho2){
   sav_years <- ret_age - c_age
   #########################################
   ## 2. Returns
-  # portfolio returns during saving years
+  # portfolio returns (real) during saving years
   ma <- retr[(c_age+1):ret_age,names(w2),,drop=FALSE]
   pf_ret <- apply(ma,3,function(x) (exp(x)-1)%*%w2) # discrete returns times portfolio weights
     # necessary to keep matrix dimensions
