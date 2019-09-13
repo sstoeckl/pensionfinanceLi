@@ -9,13 +9,13 @@
 #' @param li gross labor income at time 0 (in the last year before birthday)
 #' @param lg labor growth rate (in real terms, constant)
 #' @param s1 vector consisting of two components: c(number of contribution years at age=c_age,historical average yearly income until c_age)
-#' @param ret investment return scenarios
+#' @param ret investment return scenarios (nominal)
 #'
 #' @return Vector of Cashflows as of pension starting age (ret_age) until age=122 (dim=c(122-retage,# scenarios))
 #'
 #' @examples
 #' data(ret)
-#' fpCF(ret_age=65,c_age=42,li=100000,lg=0.01,s1=c(15,80000),ret[,,1:10])
+#' fp_ex <- fpCF(ret_age=65,c_age=42,li=100000,lg=0.01,s1=c(15,80000),ret[,,1:10])
 #'
 #' @export
 fpCF<-function(ret_age = 65, c_age, li, lg, s1, ret){

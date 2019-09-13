@@ -17,7 +17,7 @@ fpCF(ret_age = 65, c_age, li, lg, s1, ret)
 
 \item{s1}{vector consisting of two components: c(number of contribution years at age=c_age,historical average yearly income until c_age)}
 
-\item{ret}{investment return scenarios}
+\item{ret}{investment return scenarios (nominal)}
 }
 \value{
 Vector of Cashflows as of pension starting age (ret_age) until age=122 (dim=c(122-retage,# scenarios))
