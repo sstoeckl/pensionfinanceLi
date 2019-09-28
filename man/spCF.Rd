@@ -30,17 +30,21 @@ spCF(ret_age = 65, nu2, c_age, c2, li, lg, w2, ret, retr, s2, rho2)
 \item{rho2}{conversion factor in second pillar for regular retirement age}
 }
 \value{
-
+List with elements:
+- a vector of lumpsum spendings (length = number of scenarions) and
+- a matrix with annuity payments starting at ret_age until 122 (rows) with number of columns eqqual to the number of scenarios
+- vector of wealth levels at retirement
 }
 \description{
-Cash Flows are generated for the payment phase of the second pillar, starting  until 122 because that is when all our
-ficticious persons have died.
+Cash Flows are generated for the payment phase of the second pillar, starting at ret_age until 122 because that is when all our
+ficticious persons have died. Contributions to the second pillar are doubled by the employer.
 }
 \examples{
 data(ret); data(retr)
-spCF(ret_age=65,nu2=.5,c_age=42,c2=.12,,
-       li=100000,lg=0.01,
-       w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-       ret[,,1:10],retr[,,1:10],s2=300000,rho2=0.05)
-
+sp_ex <- spCF(ret_age=65,nu2=.5,c_age=42,c2=.12,
+           li=100000,lg=0.01,
+           w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+           ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
+sp_ex2 <- spCF(ret_age=65,nu2=0.01,c_age=64,c2=0.01,li=0,lg=0.01,w2=setNames(c(1,0,0,0,0),c("msci","b10","recom","libor","infl")),
+           ret=ret[,,1:10],retr=retr[,,1:10],s2=0,rho2=0.0000001)
 }

@@ -1,7 +1,7 @@
 #' Second Pillar Cash Flows
 #'
-#' Cash Flows are generated for the payment phase of the second pillar, starting  until 122 because that is when all our
-#' ficticious persons have died.
+#' Cash Flows are generated for the payment phase of the second pillar, starting at ret_age until 122 because that is when all our
+#' ficticious persons have died. Contributions to the second pillar are doubled by the employer.
 #'
 #'
 #' @param ret_age optional, retirement age, can be set anywhere between 60 and 70 (default: 65)
@@ -16,8 +16,10 @@
 #' @param s2 savings in second pillar as of t=0
 #' @param rho2 conversion factor in second pillar for regular retirement age
 #'
-#' @return List with two elements: a vector of lumpsum spendings (length = number of scenarions) and a matrix with
-#' annuity payments starting at ret_age until 122 (rows) with number of columns eqqual to the number of scenarios
+#' @return List with elements:
+#' - a vector of lumpsum spendings (length = number of scenarions) and
+#' - a matrix with annuity payments starting at ret_age until 122 (rows) with number of columns eqqual to the number of scenarios
+#' - vector of wealth levels at retirement
 #'
 #' @examples
 #' data(ret); data(retr)
@@ -27,9 +29,9 @@
 #'            ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
 #' sp_ex2 <- spCF(ret_age=65,nu2=0.01,c_age=64,c2=0.01,li=0,lg=0.01,w2=setNames(c(1,0,0,0,0),c("msci","b10","recom","libor","infl")),
 #'            ret=ret[,,1:10],retr=retr[,,1:10],s2=0,rho2=0.0000001)
-#'
+#' @importFrom pracma ones
 #' @export
-spCF<-function(ret_age=65,nu2,c_age,c2,li,lg,w2,ret,retr,s2,rho2){
+spCF <- function(ret_age=65,nu2,c_age,c2,li,lg,w2,ret,retr,s2,rho2){
   # control parameters ret_age = retirement_age (as first pillar), annfrac = annuity fraction in [0,1]
   # s2 = savings2, rho2 = conversion factor
   # w2 = weights given
@@ -38,6 +40,7 @@ spCF<-function(ret_age=65,nu2,c_age,c2,li,lg,w2,ret,retr,s2,rho2){
   # assumption: adjustments for early/late retirement as currently in SPL
   # assumption: no inflation adjustment of pensions in second pillar (!)
   # assumption: 50/50 contribution split employer/employee
+  # interest is payed until the end of (ret_age-1), first pension at the end of ret_age, which is already inflation adjusted
   #########################################
   ## 0. checks
   if ((ret_age < 60)|ret_age>70) stop("'ret_age' must be between 60 and 70")
@@ -48,10 +51,11 @@ spCF<-function(ret_age=65,nu2,c_age,c2,li,lg,w2,ret,retr,s2,rho2){
   if (dim(ret)[1]!=122) stop("Somethings wrong with dimension of return vector")
   if (dim(retr)[1]!=122) stop("Somethings wrong with dimension of return vector")
   if (s2 < 0) stop("'s2' savings in second pillar must be larger than 0")
-  if ((rho2 <= 0)|(rho2 > 0.2)) warning ("'rho2' comnversion rate should be larger than zero and smaller than 0.2 (which is already an extreme case)")
+  if ((rho2 <= 0)|(rho2 > 0.2)) warning ("'rho2' conversion rate should be larger than zero and smaller than 0.2 (which is already an extreme case)")
   if ((nu2 < 0)|(nu2 > 1)) stop ("'nu2' lumpsum vs annuity decision must be between 0 and 1")
   if (dim(ret)[2]!=length(w2)) stop("Somethings wrong with dimension of return vector vs the portfolio weights")
   if (!setequal(names(w2),colnames(ret[,,1]))) stop("The given portfolo weights do not match the given return names")
+  if (sum(w2)!=1) warning("'w2' Portfolio weights do not sum up to 1")
   #########################################
   ## 1. Pre-Calculations
   # years left for saving
@@ -59,10 +63,10 @@ spCF<-function(ret_age=65,nu2,c_age,c2,li,lg,w2,ret,retr,s2,rho2){
   #########################################
   ## 2. Returns
   # portfolio returns (real) during saving years
-  ma <- retr[(c_age+1):ret_age,names(w2),,drop=FALSE]
-  pf_ret <- apply(ma,3,function(x) (exp(x)-1)%*%w2) # discrete returns times portfolio weights
+  ma <- retr[c_age:(ret_age-1),names(w2),,drop=FALSE]
+  pf_ret <- apply(ma,3,function(x) (exp(x)-1)%*%w2) # discrete real returns times portfolio weights
     # necessary to keep matrix dimensions
-    dim(pf_ret) <- c(length((c_age+1):ret_age),dim(ret)[3])
+    dim(pf_ret) <- c(length(c_age:(ret_age-1)),dim(ret)[3])
   # now limit max and min performance (equivalent to smoothed performance)
   # for all future periods and scenarios we limit
   ind25 <- which(pf_ret<quantile(pf_ret,.25))
@@ -72,26 +76,30 @@ spCF<-function(ret_age=65,nu2,c_age,c2,li,lg,w2,ret,retr,s2,rho2){
   # the best/worst years get 2% more (less) than the overall mean
   payed_ret[ind25] <- mean(pf_ret)-.02
   payed_ret[ind75] <- mean(pf_ret)+.02
+  rownames(payed_ret) <- as.character(c_age:(ret_age-1))
   #########################################
   ## 3. Cashflow
   # savings in second pillar (starting with savings until now, going one with fraction of (growing) labor income * 2)
   lcf <- c(s2,2*c2*li*(1+lg)^(seq(sav_years)-1))  # 2*c2 because of 50/50 contribution split
   # what is the wealth of each elemt of lcf at the end of savings phase?
-  wealth_at_ret_age <- apply(payed_ret,2,function(x){lcf%*%c(rev(cumprod(1+rev(x))),1)}) # rev to give s0 the aggregate returns
-  # Now calculate cahsflows after ret_age
+  sp_wealth_at_ret_age <- apply(payed_ret,2,function(x){lcf%*%c(rev(cumprod(1+rev(x))),1)}) # rev to give s0 the aggregate returns
+  dim(sp_wealth_at_ret_age)<-c(1,ncol(payed_ret)); rownames(sp_wealth_at_ret_age) <- (ret_age-1)
+  # Now calculate cashflows after ret_age
   cf2 <- matrix(NA,2,dim(ret)[3])
   # lumpsum payment from wealth_at ret_age
-  sp_lumpsum <- wealth_at_ret_age*(1-nu2)
+  sp_lumpsum <- sp_wealth_at_ret_age*(1-nu2)
   # annuitization of rest including adjustment for early7late retirement
-  sp_pensionstart <- wealth_at_ret_age*nu2*rho2*(1+0.126*(ret_age-65)) #last term is early/late retirement adjustment of SPL
+  sp_pensionstart <- sp_wealth_at_ret_age*nu2*rho2*(1+0.126*(ret_age-65)) #last term is early/late retirement adjustment of SPL
   # adjustment for inflation: simplifying assumption of "no inflation adjustment"
   # no inflation adjustment leads to deflation in real terms
   infl <- ret[ret_age:122,"infl",]
   h2 <- apply(infl,2,function(x) exp(-cumsum(x/2)))
   rownames(h2) <- as.character(ret_age:122)
-  sp_pension <- sp_pensionstart*h2
-  spw<-list()
+  sp_pension <- c(sp_pensionstart)*h2
+  # create output
+  spw <- list()
   spw$lumpsum <- sp_lumpsum
   spw$pension <- sp_pension
+  spw$wealth <- sp_wealth_at_ret_age
   return(spw)
 }

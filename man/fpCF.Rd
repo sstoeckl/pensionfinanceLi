@@ -11,7 +11,7 @@ fpCF(ret_age = 65, c_age, li, lg, s1, ret)
 
 \item{c_age}{the investor's current age (assuming birthday is calculation-day)}
 
-\item{li}{gross labor income at time 0 (in the last year before birthday)}
+\item{li}{gross labor income at time 0 (so at the end of year t=0/age=c_age it increases to li*(1+lg))}
 
 \item{lg}{labor growth rate (in real terms, constant)}
 
@@ -20,7 +20,7 @@ fpCF(ret_age = 65, c_age, li, lg, s1, ret)
 \item{ret}{investment return scenarios (nominal)}
 }
 \value{
-Vector of Cashflows as of pension starting age (ret_age) until age=122 (dim=c(122-retage,# scenarios))
+Vector of Cashflows as of pension starting age (ret_age) until age=122 (dim=c(122-retage,# inflation scenarios))
 }
 \description{
 Cash Flows are generated for the payment phase of the first pillar, starting in retirement (ret_age) until 122 because that is when all our
@@ -29,6 +29,7 @@ real future income, brackets in pension table are not adjusted ==> running pensi
 }
 \examples{
 data(ret)
-fpCF(ret_age=65,c_age=42,li=100000,lg=0.01,s1=c(15,80000),ret[,,1:10])
+fp_ex <- fpCF(ret_age=65,c_age=42,li=100000,lg=0.01,s1=c(15,80000),ret=ret[,,1:10])
+fp_ex2 <- fpCF(ret_age=65,c_age=42,li=0,lg=0.01,s1=c(0,0),ret=ret[,,1:10])
 
 }

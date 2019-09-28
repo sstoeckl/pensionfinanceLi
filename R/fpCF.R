@@ -6,19 +6,20 @@
 #'
 #' @param ret_age optional, retirement age, can be set anywhere between 60 and 70 (default: 65)
 #' @param c_age the investor's current age (assuming birthday is calculation-day)
-#' @param li gross labor income at time 0 (in the last year before birthday)
+#' @param li gross labor income at time 0 (so at the end of year t=0/age=c_age it increases to li*(1+lg))
 #' @param lg labor growth rate (in real terms, constant)
 #' @param s1 vector consisting of two components: c(number of contribution years at age=c_age,historical average yearly income until c_age)
 #' @param ret investment return scenarios (nominal)
 #'
-#' @return Vector of Cashflows as of pension starting age (ret_age) until age=122 (dim=c(122-retage,# scenarios))
+#' @return Vector of Cashflows as of pension starting age (ret_age) until age=122 (dim=c(122-retage,# inflation scenarios))
 #'
 #' @examples
 #' data(ret)
-#' fp_ex <- fpCF(ret_age=65,c_age=42,li=100000,lg=0.01,s1=c(15,80000),ret[,,1:10])
+#' fp_ex <- fpCF(ret_age=65,c_age=42,li=100000,lg=0.01,s1=c(15,80000),ret=ret[,,1:10])
+#' fp_ex2 <- fpCF(ret_age=65,c_age=42,li=0,lg=0.01,s1=c(0,0),ret=ret[,,1:10])
 #'
 #' @export
-fpCF<-function(ret_age = 65, c_age, li, lg, s1, ret){
+fpCF <- function(ret_age = 65, c_age, li, lg, s1, ret){
   #########################################
   ## 0. checks
   if ((ret_age < 60)|ret_age>70) stop("'ret_age' must be between 60 and 70")
@@ -45,7 +46,7 @@ fpCF<-function(ret_age = 65, c_age, li, lg, s1, ret){
   pension_adj <- c(-0.218,-0.18,-0.14,-0.097,-0.05,0,0.045,0.093,0.144,0.201,0.261); names(pension_adj) <- 60:70
   #########################################
   ## 2. First-Pillar specifics
-  # Adjust income that will be evalued by 1stP to lie with these brackets:
+  # Adjust income that will be evalued by 1stP to lie within these brackets:
   avg_laborincome[avg_laborincome<13920] <- 13920
   avg_laborincome[avg_laborincome>83520] <- 83520
   # The following calculates the theoretical pension to be received given 44 (max) contribution years, it is an approximation based on an (?) Excel regression
