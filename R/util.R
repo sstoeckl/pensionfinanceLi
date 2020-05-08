@@ -76,12 +76,17 @@ util <- function(ret_age,tw3,c,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,gende
   sur <- cumprod(1-gender_mortalityTable[(c_age-1):(length(gender_mortalityTable)-1)])
   #########################################
   ## 3. Calculate utilities
+  # find those that have negative cons or wealth
+  wealth <- rbind(tcf$wealth_before_ret,tcf$wealth_after_ret)
+  uncondmort <- c(1,sur)*gender_mortalityTable[(c_age-1):length(gender_mortalityTable)]
+  uncondmort <- uncondmort[-length(uncondmort)]
+  del_index <- union(which(apply(tcf$cons,2,function(x) max(x<0))==1),which(apply(wealth,2,function(x) max(x<0))==1))
+  #### adapt cons and wealth to have -Inf wherever <0 in cons or wealth (therefore it does count for the utility function but scales it down)
+  tcf$cons[,del_index] <- -Inf
+  wealth[,del_index] <- -Inf
     ### 3a. utility of entire life consumption (scaled for numerical reasons)
     UC <- apply(tcf$cons,2,function(x){sum(((x+10000)/10000)^(1-ra)/(1-ra)%*%delta_vec*sur)})
     ### 3b. utility of bequest
-    wealth <- rbind(tcf$wealth_before_ret,tcf$wealth_after_ret)
-    uncondmort <- c(1,sur)*gender_mortalityTable[(c_age-1):length(gender_mortalityTable)]
-    uncondmort <- uncondmort[-length(uncondmort)]
     UB <- apply(wealth,2,function(x){sum(((x+10000)/10000)^(1-ra)/(1-ra)%*%delta_vec*uncondmort)})
     ### 3c. Expected utility
     EU <- mean(UC+beta*UB)
