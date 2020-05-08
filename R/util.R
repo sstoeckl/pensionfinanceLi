@@ -62,6 +62,10 @@ util <- function(ret_age,tw3,c,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,gende
   w3["libor"] <- if (!abs(sum(tw3))==Inf) {1 - sum(tw3)}
   #w3["infl"] <- 0
   if (verbose) print(w3)
+  # warnings
+  if (warnings){
+    if (ra==1) warning ("Using log utility rather than power utility")
+  }
   #########################################
   ## 1. Calculate total cash-flow
   tcf <- totalCF(ret_age = ret_age, w3 = w3, c = c, c2 = c2,
@@ -80,16 +84,26 @@ util <- function(ret_age,tw3,c,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,gende
   wealth <- rbind(tcf$wealth_before_ret,tcf$wealth_after_ret)
   uncondmort <- c(1,sur)*gender_mortalityTable[(c_age-1):length(gender_mortalityTable)]
   uncondmort <- uncondmort[-length(uncondmort)]
-  del_index <- union(which(apply(tcf$cons,2,function(x) max(x<0))==1),which(apply(wealth,2,function(x) max(x<0))==1))
   #### adapt cons and wealth to have -Inf wherever <0 in cons or wealth (therefore it does count for the utility function but scales it down)
-  tcf$cons[,del_index] <- -Inf
-  wealth[,del_index] <- -Inf
-    ### 3a. utility of entire life consumption (scaled for numerical reasons)
-    UC <- apply(tcf$cons,2,function(x){sum(((x+10000)/10000)^(1-ra)/(1-ra)%*%delta_vec*sur)})
+  if (ra==1){
+    del_index <- union(which(apply(tcf$cons,2,function(x) max(x<=0))==1),which(apply(wealth,2,function(x) max(x<=0))==1))
+    tcf$cons[,del_index] <- 0.5
+    wealth[,del_index] <- 0.5
+    ### 3a. utility of entire lifetime consumption (scaled for numerical reasons)
+    UC <- apply(tcf$cons,2,function(x){sum(log(x)*delta_vec*sur)})
     ### 3b. utility of bequest
-    UB <- apply(wealth,2,function(x){sum(((x+10000)/10000)^(1-ra)/(1-ra)%*%delta_vec*uncondmort)})
+    UB <- apply(wealth,2,function(x){sum(log(x)*delta_vec*uncondmort)})
+  } else{
+    tcf$cons[,del_index] <- -Inf
+    wealth[,del_index] <- -Inf
+    ### 3a. utility of entire lifetime consumption (scaled for numerical reasons)
+    UC <- apply(tcf$cons,2,function(x){sum((((x+10000)/10000)^(1-ra))/(1-ra)%*%delta_vec*sur)})
+    ### 3b. utility of bequest
+    UB <- apply(wealth,2,function(x){sum((((x+10000)/10000)^(1-ra))/(1-ra)%*%delta_vec*uncondmort)})
+  }
+
     ### 3c. Expected utility
-    EU <- mean(UC+beta*UB)
+    EU <- max(UC+bbeta*UB)
   return(EU)
 }
 #' Helper functions
