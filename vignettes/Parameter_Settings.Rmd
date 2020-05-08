@@ -1,0 +1,308 @@
+---
+title: "Parameters settings"
+output: 
+  pdf_document: default
+  rmarkdown::html_vignette: default
+  html_document: default
+vignette: >
+  %\VignetteIndexEntry{Parameter Settings}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+In the following we will describe all parameters that are necessary as input to the program. We will give details on the parameter, specify where it is used, give a possible/feasible range and determine the steps for their simulation for the final output grid.
+
+# Given Variables
+
+## Given by the user
+
+### Current Age `c_age`
+
+This variable specifies the current age of the user in full years (the algorithm assumes that calculation day = birthday)
+
+* __Possible Range__: 18-70
+* __Feasible Range__: 20-60
+* __Optimization grid__: Optimally: 18, Steps of 5: 20-50, Steps of 2: 51-60, steps of 1: 61-70. Feasibly: 20:10:60
+* __Functions__: Utility `util`, Total CF `TotalCF`, First Pillar CF `fpCF`, Second Pillar CF `spCF`, Third Pillar CF Work `tpCFwork` and Retirement `tpCFret`
+* __Checks__: Must be below `ret_age` and between 18 and 70 (checked in `fpCF`, `spCF`, `tpCFwork`)
+* __Open Questions__: What happens in case of `c_age`>60?
+
+### Gender `gender`
+
+The gender of the user.
+
+* __Possible Range__: 0=male and 1=female
+* __Optimization grid__: 0 and 1
+* __Functions__: Utility `util`, Total CF `TotalCF` (through: `taxCFlumpsum`)
+* __Checks__: none
+* __Open Questions__: none
+
+### Gross Labor Income `li`
+
+This variable specifies the gross labor income in the past year (that ends on calculation day/birthday). If the users labor income changed /is expected to change significantly within the next year, use the new number discounted by `lg` to create an artificial "last year income".
+
+* __Possible Range__: 0-2m
+* __Feasible Range__: 50.000-200.000
+* __Optimization grid__: Optimally: 1, 30.000, 50.000, 75.000, 100k, 125k, 150k, 175k, 200k, 250k, 300k, 350k, 400k, 500k, 750k, 1m, 1.5m , 2m, Feasibly: 50.000, 125.000, 200.000
+* __Functions__: Utility `util`, Total CF `TotalCF`, First Pillar CF `fpCF`, Second Pillar CF `spCF`
+* __Checks__: `li`>0 in `fpCF`, `spCF`
+* __Open Questions__: --
+
+### Labor Growth Rate `lg`
+
+This variables specifies how much more the users expects to earn (on average) every year, after accounting for inflation. So given the users expects his labor income to 
+grow by 2% on average, and the average inflation is expected to be 1%, then `lg=0.01`.
+
+* __Possible Range__: 0-0.2
+* __Feasible Range__: 0.01-0.05
+* __Optimization grid__: Optimally: 0:0.01:0.1, 0.12, 0.15, 0.2, 0.3, 0.5, 1, Feasibly: 0.01, 0.03, 0.05
+* __Functions__: Utility `util`, Total CF `TotalCF`, First Pillar CF `fpCF`, Second Pillar CF `spCF`
+* __Checks__: Warnings if li<0 or li>1
+* __Open Questions__: What happens if lg=0 or lg=1?
+
+### First Pillar Saving Rate `c1`
+
+This variable determines the fraction of his gross labor income the users saves in the first pillar.
+
+* __Possible Range__: 0-0.2 (maybe fixed at 0.07?)
+* __Feasible Range__: 0.07 ?
+* __Optimization grid__: Optimally: 0:0.01:0.1, 0.12, 0.14, 0.16, 0.18, 0.2, 0.3, 0.5, 1, Feasibly: 0.07 (& 0.1)
+* __Functions__: Utility `util`, Total CF `TotalCF`
+* __Checks__: none
+* __Open Questions__: Is this a fixed parameter?
+
+### Average savings in first Pillar `s1`
+
+This variable fixes how much the user has already paid into the first pillar. It is a vector consisting of two components: (1) the number of contribution years at `c_age` and (2) the historical average yearly income until `c_age`
+
+* __Possible Range__: (0-(c_age-18),0-2m)
+* __Feasible Range__: (0-(c_age-18),20.000-100.000)
+* __Optimization grid__: Optimally: c(c(18,20:5:50,52),c(1, 30.000, 50.000, 75.000, 100k, 125k, 150k, 175k, 200k, 250k, 300k, 350k, 400k, 500k, 750k, 1m, 1.5m , 2m)), Feasibly: ([c_age-20],[30.000,75.000])
+* __Functions__: Utility `util`, Total CF `TotalCF`, First Pillar CF `fpCF`
+* __Checks__:  stop if length(s1)!=2, s1[1]>c_age, s1[2] < 0
+* __Open Questions__: Tie reasonable values of `s1` and `s2` to `li` (avoid discontinuities)
+
+### Savings in second pillar `s2`
+
+This number fixes the amount of the user's savings in the second pillar at `c_age`.
+
+* __Possible Range__: 0-2m
+* __Feasible Range__: 20.000-100.000
+* __Optimization grid__: Optimally: 0, 30.000, 50.000, 75.000, 100k, 125k, 150k, 175k, 200k, 250k, 300k, 350k, 400k, 500k, 750k, 1m, 1.5m , 2m, Feasibly: 30.000, 75.000
+* __Functions__: Utility `util`, Total CF `TotalCF`, Second Pillar CF `spCF`
+* __Checks__: stop if s2<0
+* __Open Questions__: none
+
+### Investments in third Pillar `s3`
+
+The amount of "liquid wealth", the user has disposable at `c_age` - assumed to be invested in the third pillar. As we currently do not assume any tax advantage (aka Pillar 3a in Switzerland) - the entire sum can be treated as any investments/free savings that are not dedicated to anything else and therefore saved for retirement (aka Pillar 3b in Switzerland).
+
+* __Possible Range__: -2m-5m (needs to be larger than s12/s2?)
+* __Feasible Range__: -200.000-200.000
+* __Optimization grid__: Optimally: 0, 30.000, 50.000, 75.000, 100k, 125k, 150k, 175k, 200k, 250k, 300k, 350k, 400k, 500k, 750k, 1m, 1.5m , 2m, 3m, 4m, 5m, Feasibly:  -200.000 -100.000 100.000, 200.000
+* __Functions__: Utility `util`, Total CF `TotalCF`, Third Pillar CF Work `tpCFwork`
+* __Checks__: warning if s3<0 in `tpCFwork`
+* __Open Questions__: Attention: Portfolio weights `w3` must fit to this case __CHECK__!! Attention: `s3 <0` is possible - relate it to `w0`?
+
+### Non-disposable wealth `w0`
+
+The amount of "non-liquid wealth", the user has available (e.g. invested in real estate). The assumption is, that this wealth is still available at retirement and stays the same over time (no interest). One does however pay wealth taxes for it.
+
+* __Possible Range__: 0-10m
+* __Feasible Range__: 200.000-2m
+* __Optimization grid__: Optimally: 0, 30.000, 50.000, 75.000, 100k, 125k, 150k, 175k, 200k, 250k, 300k, 350k, 400k, 500k, 750k, 1m, 1.5m , 2m, 3m, 4m, 5m, 7m, 10m, Feasibly: 250k, 1m
+* __Functions__: Utility `util`, Total CF `TotalCF`, Third Pillar CF Work `tpCFwork`
+* __Checks__: none
+* __Open Questions__: none
+
+### Conversion factor in the second pillar `rho2`
+
+The conversion factor in second pillar given regular retirement age. Can be taken from the second pillar documents provided to the user. Depends on the age/insurance policy/wealth/gender (aka Mortality Table) of the user.
+
+* __Possible Range__: 0.01-0.1 (regularly between 0.04 and 0.05)
+* __Feasible Range__: 0.04-0.05
+* __Optimization grid__: Optimally: 0.01, 0.015, 0.02, 0.025, 0.03, 0.035, 0.04:0.001:0.05, 0.06, 0.08, 0.1, feasibly: 0.04, 0.05
+* __Functions__: Utility `util`, Total CF `TotalCF`, Second Pillar CF `spCF`
+* __Checks__: warning if rho2<=0 and rho2>0.2 in `TotalCF` and `spCF`
+* __Open Questions__: Do we go to 0.2 or 0.1? Adapt grid or warning? Gender-specificity?
+
+### Conversion factor in the third pillar `rho3`
+
+The conversion factor for the piece of the wealth in the third pillar that the user decides to put into a pension insurance (given by `nu3`) at retirement. Depends on the age/insurance policy/wealth/gender (aka Mortality Table) of the user.
+
+* __Possible Range__: 0.01-0.1 (regularly between 0.04 and 0.05)
+* __Feasible Range__: 0.04-0.05
+* __Optimization grid__: Optimally: 0.01, 0.015, 0.02, 0.025, 0.03, 0.035, 0.04:0.001:0.05, 0.06, 0.08, 0.1, feasibly: 0.03, 0.04
+* __Functions__: Utility `util`, Total CF `TotalCF`
+* __Checks__: warning if rho3<=0 and rho3>0.2 in `TotalCF`
+* __Open Questions__: Do we go to 0.2 or 0.1? Adapt grid or warning? Gender-specificity?
+
+### Spread for negative libor investments in the third pillar `psi`
+
+This variable determines, by how much the interest rate (LIBOR) will be increased if savings in the third pillar are negative. Depends on the credit rating of the user.
+
+* __Possible Range__: 0-0.1
+* __Feasible Range__: 0.01-0.03
+* __Optimization grid__: Optimally: 0:0.01:0.05, 0.075, 0.1, Feasibly: 0.15
+* __Functions__: Utility `util`
+* __Checks__: none
+* __Open Questions__: none
+
+### Bequest utility weight `beta`
+
+How important is it for the user to leave something to his heirs (bequest)? 
+
+* __Possible Range__: 0-1
+* __Feasible Range__: 0.25-0.75
+* __Optimization grid__: Optimally: 0:0.1:1, Feasibly: 0.5, 0.75
+* __Functions__: Utility `util`
+* __Checks__: none
+* __Open Questions__: none
+
+### Risk Aversion `ra`
+
+The parameter of risk aversion of the user.
+
+* __Possible Range__: 0-50 (0 risk neutral - 50 very risk averse)
+* __Feasible Range__: 2-20 (?)
+* __Optimization grid__: Optimally: 0:0.5:10, 15, 20:10:50, Feasibly: 2, 5, 10, 20
+* __Functions__: Utility `util`
+* __Checks__: none
+* __Open Questions__: none
+
+### Time preference `delta`
+
+This variable gives the time preference of the user to determine whether it is more important to consume now or later.
+
+* __Possible Range__: 0-1 (0 no preference - 1 consume everything now)
+* __Feasible Range__: 0-0.1
+* __Optimization grid__: 0Optimally: :0.01:0.2, 0.3:0.1:1, feasibly: 0.01-0.03
+* __Functions__: Utility `util`
+* __Checks__: none
+* __Open Questions__: __check__
+
+## Given by the system
+
+These variables are given by the system and therefore do not need any optimization grid.
+
+### Portfolio Allocation in second Pillar `w2`
+
+The portfolio allocation in the second pillar. Assumed to be fixed for all second pillar investments (roughly equal across pension funds, calculated within project). __This variable is fixed in the background and not to be changed by the program!__
+
+* __Possible Range__: Fixed at `setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl"))`
+* __Optimization grid__: none
+* __Functions__: Utility `util`, Total CF `TotalCF`, Second Pillar CF `spCF`
+* __Checks__: stop if names do not match with simulated processes (!setequal(names(w2),colnames(ret[,,1]))) and when the portfolio does not sum to one.
+* __Open Questions__: none
+
+### Nominal and real investment return `ret` and `retr`
+
+These variables hold the (pre-specified) 10'000 nominal and real scenarios created for investments in broad indices. The processes are analysed and specified in `vignette("INPUT_returns")`.
+
+* __Possible Range__: Fixed in 10'000 scenarios for investments c("msci","b10","recom","libor","infl"), created according to `vignette("INPUT_returns")`
+* __Optimization grid__: none
+* __Functions__: Utility `util`, Total CF `TotalCF`, First Pillar CF `fpCF`, Second Pillar CF `spCF`, Third Pillar CF Work `tpCFwork` and Retirement `tpCFret`
+* __Checks__: none
+* __Open Questions__: none
+
+### Gender Mortality Tables `gender_mortalityTable`
+
+The mortality Tables are given by the system, but maybe adapted to cohort and gender.
+
+* __Possible Range__: Given by the Mortality Tables of the specific country/cohort/gender
+* __Optimization grid__: gender/cohort-specific?
+* __Feasible Range__: none
+* __Functions__: Utility `util`
+* __Checks__: none
+* __Open Questions__: none
+
+# Decision Variables
+
+## Retirement Age `ret_age`
+
+The first and most important output variable is the age of retirement.
+
+* __Possible Range__: 60-70
+* __Feasible Range__: 60-70
+* __Optimization__: Requires bounded optimization between 60 and 70
+* __Optimization grid__: Optimally: 60:70, Feasibly: 62, 65, 68
+* __Functions__: Utility `util`, Total CF `TotalCF`, First Pillar CF `fpCF`, Second Pillar CF `spCF`, Third Pillar CF Work `tpCFwork` and Retirement `tpCFret`
+* __Checks__: stop if ret_age<60|ret_age>70 in `fpCF`, `spCF` and `tpCFwork`
+* __Open Questions__: none
+
+## Consumption `c`
+
+This tells the user how much to optimally consume during his work life (and therefore also how much to save for his pension in the different pillars).
+
+* __Possible Range__: 0-1
+* __Feasible Range__: 0.2-0.8 (?)
+* __Optimization__: Requires bounded optimization between 0 and 1
+* __Optimization grid__: Optimally: 0:0.01:0.2 0.3:0.1:1, Feasibly: 0.2:0.2:0.8
+* __Functions__: Utility `util`, Total CF `TotalCF`
+* __Checks__: none
+* __Open Questions__: none
+
+## Second Pillar saving rate `c2`
+
+Output telling the user how much of his gross income to contribute to the second pillar. Is doubled by the employer up to 12% (?).
+
+* __Possible Range__: 0-0.12
+* __Feasible Range__: 0.08-0.12 (?)
+* __Optimization__: Requires bounded optimization between 0 and 0.12
+* __Optimization grid__: Optimally: 0:0.01:0.2 0.3:0.1:1, Feasibly: 0.08, 0.12
+* __Functions__: Utility `util`, Total CF `TotalCF`, Second Pillar CF `spCF`
+* __Checks__: none
+* __Open Questions__: 12% max employer contribution!
+
+## Lumpsum payout of second pillar `nu2`
+
+This output tells the user how much of his second pillar savings to convert to a life-long pension (annuity) at retirement and conversely, how much to pay out as a lumpsum to himself.
+
+* __Possible Range__: 0-1
+* __Feasible Range__: 0.2-0.8
+* __Optimization__: Requires bounded optimization between 0 and 1
+* __Optimization grid__: Optimally: 0:0.1:1, Feasibly: 0.25, 0.5, 0.75
+* __Functions__: Utility `util`, Total CF `TotalCF`, Second Pillar CF `spCF`
+* __Checks__: stop if <0 or >1 in `spCF`
+* __Open Questions__: Tax treatment different in both cases? We still have to cover health and and a-fonds-perdu payments!
+
+## Lumpsum payout of third pillar `nu3`
+
+This output tells the user how much of his third pillar savings to convert to a life-long pension (annuity) at retirement and conversely, how much to pay out as a lumpsum to himself.
+
+* __Possible Range__: 0-1
+* __Feasible Range__: 0.2-0.8
+* __Optimization__: Requires bounded optimization between 0 and 1
+* __Optimization grid__: Optimally: 0:0.1:1, Feasibly: 0.25, 0.5, 0.75
+* __Functions__: Utility `util`, Total CF `TotalCF`, 
+* __Checks__: `TotalCF`
+* __Open Questions__: none
+
+## Fraction of Wealth not to be consumed in retirement `alpha`
+
+This output tells the user how much of his savings to keep invested (not consume) during his retirement.
+
+* __Possible Range__: 0-1
+* __Feasible Range__: 0.9-1
+* __Optimization__: Requires bounded optimization between 0 and 1
+* __Optimization grid__: Optimally: 0:0.1:1, Feasibly: 0.9, 0.93, 0.96
+* __Functions__: Utility `util`, Total CF `TotalCF`, `tpCFret`
+* __Checks__: none
+* __Open Questions__: 12% max employer contribution? 
+
+## Optimal investment in third pillar `w3`
+
+This output tells the user how to invest his third pillar savings (currently only constant over time) optimally during saving and retirement phase.
+
+* __Possible Range__: Between -1 and 1 for MSCI/b10/real estate
+* __Optimization grid__: Requires bounded optimization between -1 and 1. Libor is determined as 1-sum(...)
+* __Functions__: Utility `util`, Total CF `TotalCF`, `tpCFret`, `tpCFwork`
+* __Checks__: stop if not sum(w3)=1 (guaranteed by modelling of optimization function)
+* __Open Questions__: What are the outputs given very extreme values? Shall the weights really be cut at +-100%? 
+* __Recommendation for the future__: Allow changing weights modelled by a linearly decreasing allocation to stocks.
+* __NOTE__: We allow for leverage. Also, interpret constant weights as average weights over lifetime.
+
+
+<!-- # Open Question -->
+
+<!-- * Should checks be done only on the highest level (util/totalCF)? ==> Speed/performance issues -->

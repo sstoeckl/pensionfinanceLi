@@ -141,7 +141,7 @@ For second pillar pension calculations, we need:
 Payments are doubled by the employer and - together with initial savings in second pillar `s2` invested using `w2` until retirement `ret_age`. Then the pension savings in the second pillar can be consumed as a lumpsum and in form of a pension annuity with given conversion rate `rho2` (adjusted for early/late retirement). We assume that pension payments are not adjusted for inflation and - therefore - decrease in real terms (depending on the inflation scenario)
 
 ```{r second_pillar, eval=FALSE}
-tp <- tpCFret(ret_age = ret_age,c_age = c_age,w3 = w3,alpha = alpha,
+tp <- spCF(ret_age = ret_age,c_age = c_age,w3 = w3,alpha = alpha,
               wealth_at_ret_age = wealth_at_ret_age,retr = retr,rho3 = rho3,psi = psi)
 
 wealth <- cbind(wealth,"sp_wealth"=sp$wealth)

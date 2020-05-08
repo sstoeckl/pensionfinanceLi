@@ -106,18 +106,25 @@ We go on by simulating data using functions from the package `tsDyn`.
 
 ```{r, eval=FALSE}
 data(V)
-retPA <- VARsim(V,simN=1,age.max = 10000)
+retPA <- VARsim(V,simN=2,age.max = 10000)
 ```
 
 and again analyse the output:
 
 ```{r, eval=FALSE}
 D3 <- plyr::adply(retPA,.margins = 3,.fun = function(x){x}) %>% rownames_to_column() %>%
-  rename(msci="1",b10="2",recom="3",libor="4",infl="5",sim="X1",period=rowname) %>% as_tibble() %>% 
-  filter(sim==2) %>% select(-sim) %>% mutate(period = make_date(as.numeric(period)+2000, 1, 1)) %>% timetk::tk_xts()
+  rename(sim="X1",period=rowname) %>% as_tibble() %>% 
+  filter(sim==2) %>% select(-sim) %>% mutate(period = make_date(as.numeric(period)-8001, 1, 1)) %>% timetk::tk_xts()
 D3 %>% table.AnnualizedReturns()
 ```
 
 
+```{r}
+data(ret)
+# average over all slices [,,i]
+retM <- apply(ret,c(1,2),mean)
+# and now give statistics
+retM %>% as_tibble() %>% mutate(period = make_date(as.numeric(row_number())+2000, 1, 1)) %>% timetk::tk_xts() %>% table.AnnualizedReturns()
+```
 
 

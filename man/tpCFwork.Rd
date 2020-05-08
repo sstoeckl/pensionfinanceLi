@@ -4,8 +4,18 @@
 \alias{tpCFwork}
 \title{Third Pillar Cash Flows during savings phase}
 \usage{
-tpCFwork(ret_age = 65, c_age, w3, free_cf_before_tax, retr, s3, w0,
-  psi = 0.015, c)
+tpCFwork(
+  ret_age = 65,
+  c_age,
+  w3,
+  free_cf_before_tax,
+  retr,
+  s3,
+  w0,
+  psi = 0.015,
+  c,
+  warnings = TRUE
+)
 }
 \arguments{
 \item{ret_age}{optional, retirement age, can be set anywhere between 60 and 70 (default: 65)}
@@ -26,6 +36,8 @@ entries) for all remaining years}
 \item{psi}{optional, spread to take a loan/leverage for third pillar savings}
 
 \item{c}{fraction of income that is consumed while still working (current assumption: constant)}
+
+\item{warnings}{optional: should warnings be given? (default=TRUE)}
 }
 \value{
 list with two elemnts:

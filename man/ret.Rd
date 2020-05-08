@@ -4,7 +4,9 @@
 \name{ret}
 \alias{ret}
 \title{Asset returns (nominal) created internally}
-\format{An 121x5x10000 array}
+\format{
+An 121x5x10000 array
+}
 \source{
 own calculation
 }

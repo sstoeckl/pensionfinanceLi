@@ -4,7 +4,9 @@
 \name{V}
 \alias{V}
 \title{VAR object for FINDATA}
-\format{An object (list) with many elements}
+\format{
+An object (list) with many elements
+}
 \source{
 own calculation
 }

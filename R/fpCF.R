@@ -10,6 +10,7 @@
 #' @param lg labor growth rate (in real terms, constant)
 #' @param s1 vector consisting of two components: c(number of contribution years at age=c_age,historical average yearly income until c_age)
 #' @param ret investment return scenarios (nominal)
+#' @param warnings optional: should warnings be given? (default=TRUE)
 #'
 #' @return Vector of Cashflows as of pension starting age (ret_age) until age=122 (dim=c(122-retage,# inflation scenarios))
 #'
@@ -19,11 +20,12 @@
 #' fp_ex2 <- fpCF(ret_age=65,c_age=42,li=0,lg=0.01,s1=c(0,0),ret=ret[,,1:10])
 #'
 #' @export
-fpCF <- function(ret_age = 65, c_age, li, lg, s1, ret){
+fpCF <- function(ret_age = 65, c_age, li, lg, s1, ret, warnings=TRUE){
   #########################################
   ## 0. checks
+  if (warnings){
   if ((ret_age < 60)|ret_age>70) stop("'ret_age' must be between 60 and 70")
-  if (c_age > ret_age) stop("'c_age' must be below 'ret_age'")
+  if (c_age >= ret_age) stop("'c_age' must be below 'ret_age'")
   if ((c_age < 18)|c_age>70) stop("'c_age' must be between 18 and 7")
   if (li < 0) stop("'li' labor income must be larger than 0")
   if ((lg < 0)|(lg>1)) warning ("'lg' labor income growth values above 1 or below 0 can have unintended consequences")
@@ -31,6 +33,7 @@ fpCF <- function(ret_age = 65, c_age, li, lg, s1, ret){
   if (s1[1]>c_age) stop("it is impossible to have more contribution years than 'c_age'")
   if (s1[2] < 0) stop("'s1[2]' average historical yearly labor income must be larger than 0")
   if (dim(ret)[1]!=122) stop("Somethings wrong with dimension of return vector")
+  }
   #########################################
   ## 1. Pre-Calculations
   # years left for saving
@@ -64,5 +67,40 @@ fpCF <- function(ret_age = 65, c_age, li, lg, s1, ret){
   h2 <- apply(infl,2,function(x) exp(-cumsum(x/2)))
   rownames(h2) <- as.character(ret_age:122)
   # Now create final vector of 1st pillar pension cashflows
-  return(fp_pensionstart*h2)
+  return(drop(fp_pensionstart)*h2)
 }
+# # Test cases
+# # 1) fp should be decreasing in rising age
+# out1 <- NULL
+# for (c_age in 42:65){
+#    out1[c_age-41] <- mean(fpCF(ret_age=65,c_age=c_age,li=100000,lg=0.01,s1=c(15,80000),ret=ret[,,1:10])[1,])
+# }
+# plot(42:65,out1)
+# # 2) fp should be increasing in lg (if below bracket)
+# out2 <- NULL; i<-1
+# for (lg in seq(from = 0,to = 0.1,by = 0.01)){
+#   out2[i] <- mean(fpCF(ret_age=65,c_age=42,li=20000,lg=lg,s1=c(15,10000),ret=ret[,,1:10])[1,])
+#   i <- i+1
+# }
+# plot(seq(0,0.1,0.01),out2)
+# # 3) fp should be increasing in retirement age
+# out3 <- NULL
+# for (ret_age in 60:70){
+#   out3[ret_age-59] <- mean(fpCF(ret_age=ret_age,c_age=42,li=100000,lg=0.01,s1=c(15,80000),ret=ret[,,1:1000])[1,])
+# }
+# plot(60:70,out3)
+# # 4) fp should be increasing in s11 until yearsum>44 then we have a downward adjustment
+# out4 <- NULL; i<-1
+# for (s11 in seq(1:25)){
+#   out4[i] <- mean(fpCF(ret_age=65,c_age=42,li=10000,lg=0.01,s1=c(s11,10000),ret=ret[,,1:10])[1,])
+#   i <- i+1
+# }
+# plot(1:25,out4)
+# # 5) fp should be increasing in s12 until the bracket coems into play
+# out5 <- NULL; i<-1
+# for (s12 in seq(10000,100000,10000)){
+#   out5[i] <- mean(fpCF(ret_age=65,c_age=42,li=10000,lg=0.01,s1=c(15,s12),ret=ret[,,1:10])[1,])
+#   i <- i+1
+# }
+# plot(seq(10000,100000,10000),out5)
+

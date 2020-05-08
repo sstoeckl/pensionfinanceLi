@@ -4,7 +4,7 @@
 \alias{fpCF}
 \title{First Pillar Cash Flows}
 \usage{
-fpCF(ret_age = 65, c_age, li, lg, s1, ret)
+fpCF(ret_age = 65, c_age, li, lg, s1, ret, warnings = TRUE)
 }
 \arguments{
 \item{ret_age}{optional, retirement age, can be set anywhere between 60 and 70 (default: 65)}
@@ -18,6 +18,8 @@ fpCF(ret_age = 65, c_age, li, lg, s1, ret)
 \item{s1}{vector consisting of two components: c(number of contribution years at age=c_age,historical average yearly income until c_age)}
 
 \item{ret}{investment return scenarios (nominal)}
+
+\item{warnings}{optional: should warnings be given? (default=TRUE)}
 }
 \value{
 Vector of Cashflows as of pension starting age (ret_age) until age=122 (dim=c(122-retage,# inflation scenarios))

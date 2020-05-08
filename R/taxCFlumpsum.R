@@ -5,6 +5,7 @@
 #' @param lumpsum capital taken out at retirement from second pillar (vector?)
 #' @param ret_age optional, retirement age, can be set anywhere between 60 and 70 (default: 65)
 #' @param gender gender, 0=male and 1=female
+#' @param warnings optional: should warnings be given? (default=TRUE)
 #'
 #' @return
 #'
@@ -14,12 +15,14 @@
 #' taxCFlumpsum(lumpsum=c(0,210,300),ret_age = 64,gender=0)
 #'
 #' @export
-taxCFlumpsum <- function(lumpsum,ret_age = 65,gender){
+taxCFlumpsum <- function(lumpsum,ret_age = 65,gender,warnings=TRUE){
   #########################################
   ## 0. checks
   # ret_age and c_age checked before
+  if (warnings){
   if (any((ret_age < 60)|ret_age>70)) stop("'ret_age' must be between 60 and 70")
   if (!all(unique(as.character(gender)) %in% c("0","1"))) stop("'gender' must be 0 or 1 (numeric or character)")
+  }
   #########################################
   ## 1. Calculations
   #########################################

@@ -2,10 +2,34 @@
 % Please edit documentation in R/totalCF.R
 \name{totalCF}
 \alias{totalCF}
-\title{Title}
+\title{Total Cash Flow Calculation}
 \usage{
-totalCF(ret_age, w3, c, c2, nu2, nu3, c_age, gender, w0, CF = NULL, li,
-  lg, c1, s1, s2, s3, w2, rho2, rho3, ret, retr, psi, alpha)
+totalCF(
+  ret_age,
+  w3,
+  c,
+  c2,
+  nu2,
+  nu3,
+  c_age,
+  gender,
+  w0,
+  CF = NULL,
+  li,
+  lg,
+  c1,
+  s1,
+  s2,
+  s3,
+  w2,
+  rho2,
+  rho3,
+  ret,
+  retr,
+  psi,
+  alpha,
+  warnings = TRUE
+)
 }
 \arguments{
 \item{ret_age}{OptVar: retirement age, can be set anywhere between 60 and 70 (default: 65)}
@@ -53,7 +77,9 @@ alternatively: expected wealth (that is not disposable) at retirement, stays the
 
 \item{psi}{optional, spread to take a loan/leverage for third pillar savings}
 
-\item{alpha}{parameter to choose fraction of wealth NOT consumed during retirement - see file 'Consumption_3p.ods'}
+\item{alpha}{parameter to choose fraction of wealth NOT consumed during retirement but kept for investment (and subsequent consumption) - see file 'Consumption_3p.ods'}
+
+\item{warnings}{optional: should warnings be given? (default=TRUE)}
 }
 \value{
 returns a list with three elements:
@@ -62,7 +88,8 @@ returns a list with three elements:
 - a matrix of wealth before retirement (dim c_age:(ret_age-1), # of scenarios)
 }
 \description{
-Title
+This function calculates the total cash flows (for each scenario and working age/retirment) given all
+input parameters nedding all previously defined functions
 }
 \examples{
 data(ret);data(retr)

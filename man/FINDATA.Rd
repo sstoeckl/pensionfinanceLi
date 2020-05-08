@@ -4,7 +4,9 @@
 \name{FINDATA}
 \alias{FINDATA}
 \title{Various financial variables}
-\format{A time series (xts) object with 588 rows and 8 variables (all described in the vignette `vignette("INPUT_returns")`)}
+\format{
+A time series (xts) object with 588 rows and 8 variables (all described in the vignette `vignette("INPUT_returns")`)
+}
 \source{
 THOMSON REUTERS DATASTREAM
 }

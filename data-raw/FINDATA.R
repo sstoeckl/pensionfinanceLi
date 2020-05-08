@@ -107,6 +107,7 @@ R <- na.omit(Return.calculate(D,method="log"))
 library(pensionfinanceLi)
 # Adjust the real estate series
 R$recom <- R$recom+0.03/4 # add 0.03/4 to account for real estate, evtl. change - see nsi.xls add 4.1%
+### in MHAs original file: he uses the 3% correction but also privdes 3.5% and 4.1% "AssetReturnX.RData")
 V <- tsDyn::lineVar(R , 1, model = "VAR")
 B <- V$coefficients[1:5,2:6] # slope parameters
 c <- V$coefficients[1:5,1] # intercepts

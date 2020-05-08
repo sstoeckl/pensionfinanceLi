@@ -12,6 +12,7 @@
 #' @param psi optional, spread to take a loan/leverage for third pillar savings
 #' @param c fraction of income that is consumed while still working (current assumption: constant)
 #' @param w0 time c_age wealth that is not disposable, assumption: still available at retirement (no growth or decline), alternatively: expected wealth (that is not disposable) at retirement
+#' @param warnings optional: should warnings be given? (default=TRUE)
 #'
 #' @return list with two elemnts:
 #' -  consumption during savings years (matrix with dim=c(sav_years,# of Scenarios))
@@ -27,22 +28,23 @@
 #'            free_cf_before_tax=free_cf_before_tax,retr=retr[,,1:10],s3=0,w0=0,psi=0.015,c=1)
 #'
 #' @export
-tpCFwork<-function(ret_age=65, c_age, w3, free_cf_before_tax, retr, s3, w0, psi=0.015, c){
+tpCFwork<-function(ret_age=65, c_age, w3, free_cf_before_tax, retr, s3, w0, psi=0.015, c, warnings=TRUE){
   # control parameters w3=weights, retage = retirement age (same as in first pillar), annfrac = annuity fraction in [0,1]
-  # other rho3 = conversion factor in pillar three (may be gender-specific)
   # s3 = savings3
   #########################################
   ## 0. checks
+  if (warnings){
   if ((ret_age < 60)|ret_age>70) stop("'ret_age' must be between 60 and 70")
   if (c_age > ret_age) stop("'c_age' must be below 'ret_age'")
   if ((c_age < 18)|c_age>70) stop("'c_age' must be between 18 and 7")
   if (dim(retr)[1]!=122) stop("Somethings wrong with dimension of return vector")
-  if (s3 < 0) stop("'s3' liquid wealth invested in third pillar must be larger than 0")
+  if (s3 < 0) warning("'s3' liquid wealth invested in third pillar is negtaive and will be punished with a larger LIBOR rate given by psi!")
   if ((psi < 0)|(psi > 1)) warning ("'psi' interest rate spread should be positive and not too large!")
   if (dim(retr)[2]!=length(w3)) stop("Somethings wrong with dimension of return vector vs the portfolio weights")
   if (!setequal(names(w3),colnames(ret[,,1]))) stop("The given portfolo weights do not match the given return names")
-  if (sum(w3)!=1) warning("'w3' Portfolio weights do not sum up to 1")
-  if ((c <= 0.1)|(c > 1)) warning ("'c' consumption while working should be between 0.1 and 1!")
+  if (abs(sum(w3)-1)>=10e-10) warning("'w3' Portfolio weights do not sum up to 1")
+  if ((c < 0.1)|(c > 1)) warning ("'c' consumption while working should be between 0.1 and 1!")
+  }
   #########################################
   ## 1. Pre-Calculations
   # years left for saving
@@ -63,16 +65,18 @@ tpCFwork<-function(ret_age=65, c_age, w3, free_cf_before_tax, retr, s3, w0, psi=
   consumption <- array(NA,c(ret_age-c_age,dim(retr)[3]))
   rownames(wealth_development) <- rownames(consumption) <- as.character(seq(c_age,ret_age-1))
     # In first year
-    free_cf_after_tax <- taxCFwork(free_cf_before_tax[1], s3+w0)
-      wealth_development[1,] <- s3*(1+pf_ret[1,]) + (1-c)*free_cf_after_tax
+  cf_tax <- taxCFwork(free_cf_before_tax[1], s3+w0) # wealth from 1.1.
+  free_cf_after_tax <- free_cf_before_tax[1] - cf_tax$from_cf
+      wealth_development[1,] <- s3*(1+pf_ret[1,]) + (1-c)*free_cf_after_tax - cf_tax$from_wealth
       consumption[1,] <- c*free_cf_after_tax
     # in all folowing years
-  if(ret_age-c_age>=2){
+  if(sav_years>=2){
     for(age in seq(c_age+1,ret_age-1)){
       t <- age - c_age
       # cash flow = income minus taxes (wealth from last period)
-      free_cf_after_tax <- taxCFwork(free_cf_before_tax[t+1], wealth_development[t,] + w0)
-        wealth_development[t+1,] <- wealth_development[t,]*(1+pf_ret[t+1,]) + (1-c)*free_cf_after_tax
+      cf_tax <- taxCFwork(free_cf_before_tax[t+1], wealth_development[t,] + w0)
+      free_cf_after_tax <- free_cf_before_tax[t+1] - cf_tax$from_cf
+        wealth_development[t+1,] <- wealth_development[t,]*(1+pf_ret[t+1,]) + (1-c)*free_cf_after_tax - cf_tax$from_wealth
         consumption[t+1,] <- c*free_cf_after_tax
     }
   }
@@ -81,4 +85,54 @@ tpCFwork<-function(ret_age=65, c_age, w3, free_cf_before_tax, retr, s3, w0, psi=
     tpw$wealth <- wealth_development
   return(tpw)
 }
-
+# ##
+# # 1) Saving longer (higher retirement age) should increase wealth and decrease consumption at retirement (due to higher wealth taxes)
+# out4 <- NULL; vec <- 60:70
+# for (ret_age in vec){
+#   out <- tpCFwork(ret_age=ret_age,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+#                   free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],s3=300000,w0=300000,psi=0.015,c=0.6)
+#   out4 <- rbind(out4,c(mean(out$cons[as.character(ret_age-1),]),mean(out$wealth[as.character(ret_age-1),])))
+# }
+# par(mfrow=c(2,1))
+# plot(vec,out4[,1],main = "Consumption at retirement")
+# plot(vec,out4[,2],main = "Wealth at retirement")
+# # 2) Saving less years (higher current) should decrease wealth and increase consumption at retirement (due to lower wealth taxes)
+# out4 <- NULL; vec <- 42:64
+# for (c_age in vec){
+#   out <- tpCFwork(ret_age=65,c_age=c_age,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+#                   free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],s3=300000,w0=300000,psi=0.015,c=0.6)
+#   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$wealth["64",])))
+# }
+# par(mfrow=c(2,1))
+# plot(vec,out4[,1],main = "Consumption before retirement")
+# plot(vec,out4[,2],main = "Wealth before retirement")
+# # 3) Higher consumption should decrease wealth and increase consumption before retirement
+# out4 <- NULL; vec <- seq(0.1,1,0.1)
+# for (c in vec){
+#   out <- tpCFwork(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+#                   free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],s3=300000,w0=300000,psi=0.015,c=c)
+#   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$wealth["64",])))
+# }
+# par(mfrow=c(2,1))
+# plot(vec,out4[,1],main = "Consumption before retirement")
+# plot(vec,out4[,2],main = "Wealth before retirement")
+# # 4) Higher iliquid wealth (w0) should increase taxes and therefore reduce consumption and wealth within certain brackets
+# out4 <- NULL; vec <- seq(0,1000000,10000)
+# for (w0 in vec){
+#   out <- tpCFwork(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+#                   free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],s3=300000,w0=w0,psi=0.015,c=0.6)
+#   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$wealth["64",])))
+# }
+# par(mfrow=c(2,1))
+# plot(vec,out4[,1],main = "Consumption before retirement")
+# plot(vec,out4[,2],main = "Wealth before retirement")
+# # 5) Higher liquid wealth (s3) should increase returns and also taxes and therefore reduce consumption (which is taken off the free cash-flow) and increase wealth within certain brackets
+# out4 <- NULL; vec <- seq(0,1000000,10000)
+# for (s3 in vec){
+#   out <- tpCFwork(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+#                   free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],s3=s3,w0=300000,psi=0.015,c=0.6)
+#   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$wealth["64",])))
+# }
+# par(mfrow=c(2,1))
+# plot(vec,out4[,1],main = "Consumption before retirement")
+# plot(vec,out4[,2],main = "Wealth before retirement")

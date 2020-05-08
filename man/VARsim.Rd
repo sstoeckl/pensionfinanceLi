@@ -4,8 +4,15 @@
 \alias{VARsim}
 \title{Simulate from given (pre-estimated) VAR process}
 \usage{
-VARsim(V, simN = 1000, age.max = 122, age = 0, frequency = 4,
-  s = NULL, covres = NULL)
+VARsim(
+  V,
+  simN = 1000,
+  age.max = 122,
+  age = 0,
+  frequency = 4,
+  s = NULL,
+  covres = NULL
+)
 }
 \arguments{
 \item{V}{Output of a VAR Estimation (in package tsDyn)}

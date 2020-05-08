@@ -4,7 +4,7 @@
 \alias{taxCFret}
 \title{Calculate total taxes for pension cash-flows}
 \usage{
-taxCFret(fpcf, totalcf, wealth)
+taxCFret(fpcf, totalcf, wealth, warnings = TRUE)
 }
 \arguments{
 \item{fpcf}{first pillar pension cash-flow}
@@ -12,6 +12,8 @@ taxCFret(fpcf, totalcf, wealth)
 \item{totalcf}{total pension cash-flow (including fpcf)}
 
 \item{wealth}{wealth at 1.1. of tax year (can be negative)}
+
+\item{warnings}{optional: should warnings be given? (default=TRUE)}
 }
 \value{
 pension income after tax (vector or scalar)

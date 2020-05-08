@@ -4,7 +4,7 @@
 \alias{taxCFlumpsum}
 \title{Calculate lumpsum after taxes}
 \usage{
-taxCFlumpsum(lumpsum, ret_age = 65, gender)
+taxCFlumpsum(lumpsum, ret_age = 65, gender, warnings = TRUE)
 }
 \arguments{
 \item{lumpsum}{capital taken out at retirement from second pillar (vector?)}
@@ -12,6 +12,8 @@ taxCFlumpsum(lumpsum, ret_age = 65, gender)
 \item{ret_age}{optional, retirement age, can be set anywhere between 60 and 70 (default: 65)}
 
 \item{gender}{gender, 0=male and 1=female}
+
+\item{warnings}{optional: should warnings be given? (default=TRUE)}
 }
 \value{
 

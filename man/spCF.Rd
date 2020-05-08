@@ -4,7 +4,20 @@
 \alias{spCF}
 \title{Second Pillar Cash Flows}
 \usage{
-spCF(ret_age = 65, nu2, c_age, c2, li, lg, w2, ret, retr, s2, rho2)
+spCF(
+  ret_age = 65,
+  nu2,
+  c_age,
+  c2,
+  li,
+  lg,
+  w2 = setNames(c(0.3, 0.3, 0.3, 0.1, 0), c("msci", "b10", "recom", "libor", "infl")),
+  ret,
+  retr,
+  s2,
+  rho2,
+  warnings = TRUE
+)
 }
 \arguments{
 \item{ret_age}{optional, retirement age, can be set anywhere between 60 and 70 (default: 65)}
@@ -28,11 +41,13 @@ spCF(ret_age = 65, nu2, c_age, c2, li, lg, w2, ret, retr, s2, rho2)
 \item{s2}{savings in second pillar as of t=0}
 
 \item{rho2}{conversion factor in second pillar for regular retirement age}
+
+\item{warnings}{optional: should warnings be given? (default=TRUE)}
 }
 \value{
 List with elements:
-- a vector of lumpsum spendings (length = number of scenarions) and
-- a matrix with annuity payments starting at ret_age until 122 (rows) with number of columns eqqual to the number of scenarios
+- a vector of lumpsum spendings (length = number of scenarios) and
+- a matrix with annuity payments starting at ret_age until 122 (rows) with number of columns equal to the number of scenarios
 - vector of wealth levels at retirement
 }
 \description{
@@ -43,7 +58,6 @@ ficticious persons have died. Contributions to the second pillar are doubled by 
 data(ret); data(retr)
 sp_ex <- spCF(ret_age=65,nu2=.5,c_age=42,c2=.12,
            li=100000,lg=0.01,
-           w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
            ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
 sp_ex2 <- spCF(ret_age=65,nu2=0.01,c_age=64,c2=0.01,li=0,lg=0.01,w2=setNames(c(1,0,0,0,0),c("msci","b10","recom","libor","infl")),
            ret=ret[,,1:10],retr=retr[,,1:10],s2=0,rho2=0.0000001)

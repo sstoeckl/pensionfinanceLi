@@ -4,9 +4,37 @@
 \alias{util}
 \title{Calculate utility of total consumption and bequest}
 \usage{
-util(ret_age, tw3, c, c2, nu2, nu3, ra, delta, alpha, beta, c_age, gender,
-  gender_mortalityTable, w0, CF, li, lg, c1, s1, s2, s3, w2, rho2, rho3,
-  ret, retr, psi, verbose = FALSE)
+util(
+  ret_age,
+  tw3,
+  c,
+  c2,
+  nu2,
+  nu3,
+  ra,
+  delta,
+  alpha,
+  beta,
+  c_age,
+  gender,
+  gender_mortalityTable,
+  w0,
+  CF,
+  li,
+  lg,
+  c1,
+  s1,
+  s2,
+  s3,
+  w2,
+  rho2,
+  rho3,
+  ret,
+  retr,
+  psi,
+  verbose = FALSE,
+  warnings = TRUE
+)
 }
 \arguments{
 \item{ret_age}{Decision Variable: retirement age, can be set anywhere between 60 and 70 (default: 65)}
@@ -26,7 +54,7 @@ HERE: Choose only allocation to stocks, bonds and real estate, cash will be dete
 
 \item{delta}{Given Variable: Time Preference}
 
-\item{alpha}{Decision variable: Parameter to choose fraction of wealth NOT consumed during retirement - see file 'Consumption_3p.ods'}
+\item{alpha}{parameter to choose fraction of wealth NOT consumed during retirement but kept for investment (and subsequent consumption) - see file 'Consumption_3p.ods'}
 
 \item{beta}{Given variable: Relative Weight of bequest utility}
 
@@ -66,19 +94,21 @@ alternatively: expected wealth (that is not disposable) at retirement, stays the
 \item{psi}{Given variable: spread to take a loan/leverage for third pillar savings}
 
 \item{verbose}{optional: show additional information while calculating utility (default: FALSE)}
+
+\item{warnings}{optional: should warnings be given? (default=TRUE)}
 }
 \value{
 Expected utility
 }
 \description{
-Description: Utility for total cash-flows
+Expected Utility for total cash-flows is calculated here and used for optimization
 }
 \examples{
 data(ret); data(retr)
 MortalityTables::mortalityTables.load("Austria_Annuities")
 
 util_ex <- util(ret_age=65,c_age=42,
-                tw3=setNames(c(.25,.25,.25),c("msci","b10","recom")),
+                tw3=c(.25,.25,.25),
                 c=0.6,c2=.12,nu2=.5,nu3=0.01,ra=4,delta=0.02,alpha=0.96,beta=0.75,gender=0,
                 gender_mortalityTable=MortalityTables::baseTable(AVOe2005R.male),
                 w0=300000,CF=NULL,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
