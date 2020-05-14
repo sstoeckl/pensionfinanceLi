@@ -31,7 +31,7 @@
 )
 }
 \arguments{
-\item{inputvec}{c(ret_age,c, c2, nu2, nu3, alpha, w3)}
+\item{inputvec}{c(ret_age,c, c2, nu2, nu3, alpha, w3, ret_age)}
 }
 \description{
 Helper 1: Optimization function

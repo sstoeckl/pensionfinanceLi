@@ -17,6 +17,9 @@
 #' data(V)
 #' retPA <- VARsim(V,simN=10)
 #'
+#' @importFrom utils setTxtProgressBar txtProgressBar
+#' @importFrom stats var
+#'
 #' @export
 VARsim <- function(V, simN=1000, age.max=122, age=0, frequency=4, s=NULL, covres=NULL){
   T <- (age.max-age)*frequency # work with quarterly/monthly data (frequency = 4 or 12)

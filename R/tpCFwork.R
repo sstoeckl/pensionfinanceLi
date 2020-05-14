@@ -69,7 +69,7 @@ tpCFwork<-function(ret_age=65, c_age, w3, free_cf_before_tax, retr, s3, w0, psi=
   consumption <- array(NA,c(ret_age-c_age,dim(retr)[3]))
   rownames(wealth_development) <- rownames(consumption) <- as.character(seq(c_age,ret_age-1))
     # In first year
-  cf_tax <- taxCFwork(free_cf_before_tax[1], s3, w0) # wealth from 1.1.
+  cf_tax <- taxCFwork(free_cf_before_tax[1], liquid_wealth = s3, illiquid_wealth = w0) # wealth from 1.1.
   free_cf_after_tax <- free_cf_before_tax[1] - cf_tax$from_cf
   # if s3<0: pay libor + psi. If s3 >0 invest according to w3/pf_ret
       wealth_development[1,] <- as.numeric(s3>0)*s3*(1+pf_ret[1,]) + as.numeric(s3<=0)*s3*(1+debt[1,]) + (1-c)*free_cf_after_tax - cf_tax$from_liquid_wealth
@@ -79,7 +79,7 @@ tpCFwork<-function(ret_age=65, c_age, w3, free_cf_before_tax, retr, s3, w0, psi=
     for(age in seq(c_age+1,ret_age-1)){
       t <- age - c_age
       # cash flow = income minus taxes (wealth from last period)
-      cf_tax <- taxCFwork(free_cf_before_tax[t+1], wealth_development[t,], w0)
+      cf_tax <- taxCFwork(free_cf_before_tax[t+1], liquid_wealth = wealth_development[t,], illiquid_wealth = w0)
       free_cf_after_tax <- free_cf_before_tax[t+1] - cf_tax$from_cf
         wealth_development[t+1,] <- as.numeric(wealth_development[t,]>0)*wealth_development[t,]*(1+pf_ret[1,]) +
           as.numeric(wealth_development[t,]<=0)*wealth_development[t,]*(1+debt[1,]) + (1-c)*free_cf_after_tax - cf_tax$from_liquid_wealth

@@ -6,6 +6,11 @@
 \usage{
 .load_parameters(type = 1, gend = 0)
 }
+\arguments{
+\item{type}{Select one of the three personalities for testing: 1) Standard Type, 2) Good earner, large debt, 3) low income, young, almost no savings, prepared to work longer}
+
+\item{gend}{gender (0=male, 1=female)}
+}
 \description{
 Load Parameters
 }

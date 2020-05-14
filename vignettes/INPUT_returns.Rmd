@@ -14,12 +14,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup, message=FALSE}
+```{r setup, message=FALSE, eval=FALSE}
 library(pensionfinanceLi)
 library(dplyr)
 library(tibble)
 library(tidyquant)
 library(knitr)
+library(timetk)
 ```
 
 This vignette explains in detail the variables and the processes used for the generation of investment returns in the model.
@@ -53,20 +54,20 @@ After loading the data for further processing,
 
 We take all series as they are and calculate statistics. Because Real Estate performs bad, we adjust returns by 3 percent.
 
-```{r}
+```{r eval=FALSE}
 load("../data/FINDATA.rda")
 D <- na.omit(merge(FINDATA$msci,FINDATA$b10,FINDATA$recom,cumprod(na.omit(1+FINDATA$libor/1200)),FINDATA$infl))
 R <- na.omit(Return.calculate(D,method="log"))
 R %>% cbind(.,R$recom+0.03/4) %>% table.AnnualizedReturns() %>% kable()
 ```
-```{r}
+```{r eval=FALSE}
 R %>% cbind(.,R$recom+0.03/4) %>% table.Stats() %>% kable()
 ```
-```{r}
+```{r eval=FALSE}
 R %>% cbind(.,R$recom+0.03/4) %>% cor() %>% kable()
 ```
 
-```{r}
+```{r eval=FALSE}
 R %>% cbind(.,R$recom+0.03/4) %>% chart.CumReturns(.,legend=TRUE)
 ```
 
@@ -76,7 +77,7 @@ Does this make sense economically?
 
 #### VAR process
 
-```{r}
+```{r eval=FALSE}
 R$recom <- R$recom+0.03/4 # add 0.03/4 to account for real estate, evtl. change - see nsi.xls add 4.1%
 V <- tsDyn::lineVar(R , 1, model = "VAR")
 B <- V$coefficients[1:5,2:6] # slope parameters
@@ -85,7 +86,7 @@ summary(V)
 ```
 
 Therefore we get steady state:
-```{r}
+```{r eval=FALSE}
 s <- solve(diag(5)-B)%*%c
 print(exp(s*4)-1) # sanity check whether the process makes econmically sense
 ```
@@ -119,7 +120,7 @@ D3 %>% table.AnnualizedReturns()
 ```
 
 
-```{r}
+```{r eval=FALSE}
 data(ret)
 # average over all slices [,,i]
 retM <- apply(ret,c(1,2),mean)

@@ -28,11 +28,13 @@ optimalLC(
   ret,
   retr,
   psi,
+  verbose = FALSE,
+  warnings = FALSE,
   trace
 )
 }
 \arguments{
-\item{initial_values}{Starting values c(ret_age,c, c2, nu2, nu3, alpha, w3)}
+\item{initial_values}{Starting values c(ret_age, c, c2, nu2, nu3, alpha, w3)}
 
 \item{upper_bounds}{Upper bounds for optimization}
 
@@ -44,9 +46,9 @@ optimalLC(
 Expected utility
 }
 \description{
-Here we minimize negative expected utility (given by function `util`). Parameters can be fixed by setting "tight" boundaries.
+Here we minimize negative expected utility (given by function `util`). Parameters can be fixed by setting "tight" boundaries
 }
 \examples{
-
-
+\dontrun{
+}
 }

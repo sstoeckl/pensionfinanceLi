@@ -10,10 +10,10 @@
 #' @return income after tax (vector or scalar)
 #'
 #' @examples
-#' taxCFwork(income=c(100000,100000,100000),liquid_wealth=c(100000,50000,-100000),illiquid_Wealth=c(100000,150000,100000))
+#' taxCFwork(income=c(100000,100000,100000),liquid_wealth=c(100000,50000,-100000),illiquid_wealth=c(100000,150000,100000))
 #'
 #' @export
-taxCFwork <- function(income,liquid_wealth,illiquid_Wealth){
+taxCFwork <- function(income,liquid_wealth,illiquid_wealth){
   #########################################
   ## 0. checks
   # ret_age and c_age checked before
@@ -34,7 +34,7 @@ taxCFwork <- function(income,liquid_wealth,illiquid_Wealth){
   dim(tbr) <- c(3,8); tbr <- t(tbr)
   #########################################
   ## 3.
-  taxbase <- income + (liquid_wealth + illiquid_Wealth)*0.04 - deduct
+  taxbase <- income + (liquid_wealth + illiquid_wealth)*0.04 - deduct
   taxbase_no_wealth <- income - deduct
   taxamount <- (( (taxbase>tbr[1,1])*(taxbase*tbr[1,2]-tbr[1,3]) )+
     ( (taxbase>tbr[2,1])*(taxbase*tbr[2,2]-tbr[2,3]) )+

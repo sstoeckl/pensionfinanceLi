@@ -33,7 +33,7 @@ makeweights <- function(tw3){
   w3["libor"] <- if (!abs(sum(tw3))==Inf) {1 - sum(tw3)}
   return(w3)
 }
-nSim <- 1000
+nSim <- 10000
 #
 outALL <- tibble(type=numeric(),gend=numeric(),opt=character(),c=numeric(),c2=numeric(),nu2=numeric(),nu3=numeric(),alpha=numeric(),
                  msci=numeric(),b10=numeric(),recom=numeric(),libor=numeric(),ret_age=numeric(),

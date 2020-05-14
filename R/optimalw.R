@@ -1,6 +1,6 @@
 #' Optimiser to maximize Expected Utility
 #'
-#' Here we minimize negative expected utility (given by function `util`). Parameters can be fixed by setting "tight" boundaries.
+#' Here we minimize negative expected utility (given by function `util`). Parameters can be fixed by setting "tight" boundaries
 #'
 #' @param initial_values Starting values c(w3)
 #' @param upper_bounds Upper bounds for optimization

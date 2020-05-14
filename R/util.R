@@ -55,6 +55,8 @@
 #'                 w2=setNames(c(0,0,0,1,0),c("msci","b10","recom","libor","infl")),
 #'                 rho2=0.0001,rho3=0.0001,ret=ret[,,1:10],retr=retr[,,1:10],psi=0)
 #'
+#' @importFrom stats setNames
+#'
 #' @export
 util <- function(ret_age,tw3,c,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,gender_mortalityTable,w0,CF,li,lg,c1,s1,s2,s3,w2,rho2,rho3,ret,retr,psi,verbose=FALSE, warnings=TRUE){
   #### PARAMETER CHECK: If not fulfilled, then punish utility
@@ -106,9 +108,9 @@ util <- function(ret_age,tw3,c,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,gende
         # tcf$cons[,del_index] <- 0
         # wealth[,del_index] <- 0
         ### 3a. utility of entire lifetime consumption (scaled for numerical reasons)
-        UC <- apply(tcf$cons,2,function(x){sum((((x+w0)/w0)^(1-ra))/(1-ra)%*%delta_vec*sur)})
+        UC <- apply(tcf$cons,2,function(x){sum((((x+max(10000,w0))/max(10000,w0))^(1-ra))/(1-ra)%*%delta_vec*sur)})
         ### 3b. utility of bequest
-        UB <- apply(wealth,2,function(x){sum((((x+w0)/w0)^(1-ra))/(1-ra)%*%delta_vec*uncondmort)})
+        UB <- apply(wealth,2,function(x){sum((((x+max(10000,w0))/max(10000,w0))^(1-ra))/(1-ra)%*%delta_vec*uncondmort)})
       }
         ### 3c. Expected utility
         EU <- mean(UC+beta*UB)

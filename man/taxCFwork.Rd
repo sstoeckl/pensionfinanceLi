@@ -4,12 +4,14 @@
 \alias{taxCFwork}
 \title{Calculate Income after taxes during savings phase}
 \usage{
-taxCFwork(income, wealth)
+taxCFwork(income, liquid_wealth, illiquid_wealth)
 }
 \arguments{
 \item{income}{income bfore tax (vector or scalar)}
 
-\item{wealth}{wealth at 1.1. of tax year}
+\item{liquid_wealth}{liquid wealth at 1.1. of tax year (S3)}
+
+\item{illiquid_wealth}{illiquid wealth at 1.1. of tax year (w0)}
 }
 \value{
 income after tax (vector or scalar)
@@ -19,6 +21,6 @@ The current function calculates income after deduction taxes during the cash-flo
 input parameter for the third pillar function (tpCFwork), where CF after tax is neded to determine consumption/saving
 }
 \examples{
-taxCFwork(income=100000,wealth=c(300000,310000))
+taxCFwork(income=c(100000,100000,100000),liquid_wealth=c(100000,50000,-100000),illiquid_wealth=c(100000,150000,100000))
 
 }

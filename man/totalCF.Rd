@@ -93,13 +93,13 @@ input parameters nedding all previously defined functions
 }
 \examples{
 data(ret);data(retr)
-totalcf_ex <- totalCF(ret_age=65,c_age=42,
+totalcf_test <- totalCF(ret_age=65,c_age=42,
                 w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
                 c=0.6,c2=.12,nu2=.5,nu3=0.01,gender=0,
                 w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
                 w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
                 rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
-totalcf_ex2 <- totalCF(ret_age=65,c_age=64,
+totalcf_test2 <- totalCF(ret_age=65,c_age=64,
                 w3=setNames(c(1,0,0,0,0),c("msci","b10","recom","libor","infl")),
                 c=1,c2=0,nu2=0,nu3=0,gender=0,
                 w0=0,li=100,lg=0,c1=0,s1=c(0,0),s2=0,s3=0,

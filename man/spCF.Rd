@@ -52,7 +52,7 @@ List with elements:
 }
 \description{
 Cash Flows are generated for the payment phase of the second pillar, starting at ret_age until 122 because that is when all our
-ficticious persons have died. Contributions to the second pillar are doubled by the employer.
+ficticious persons have died. Contributions to the second pillar are doubled by the employer
 }
 \examples{
 data(ret); data(retr)
@@ -61,4 +61,5 @@ sp_ex <- spCF(ret_age=65,nu2=.5,c_age=42,c2=.12,
            ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
 sp_ex2 <- spCF(ret_age=65,nu2=0.01,c_age=64,c2=0.01,li=0,lg=0.01,w2=setNames(c(1,0,0,0,0),c("msci","b10","recom","libor","infl")),
            ret=ret[,,1:10],retr=retr[,,1:10],s2=0,rho2=0.0000001)
+
 }

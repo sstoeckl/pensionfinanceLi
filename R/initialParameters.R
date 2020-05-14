@@ -1,10 +1,12 @@
 #' Load Parameters
 #'
+#' @param type Select one of the three personalities for testing: 1) Standard Type, 2) Good earner, large debt, 3) low income, young, almost no savings, prepared to work longer
+#' @param gend gender (0=male, 1=female)
+#'
 #' @import MortalityTables
 #'
 #' @export
-.load_parameters <<- function(type=1,gend=0){
-  library(MortalityTables)
+.load_parameters <- function(type=1,gend=0){
   MortalityTables::mortalityTables.load("Austria_Annuities")
   if (gend==0){
     gender_mortalityTable <<- MortalityTables::baseTable(AVOe2005R.male)

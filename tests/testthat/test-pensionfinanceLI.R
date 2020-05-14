@@ -49,10 +49,10 @@ test_that("third pillar CF during savings phase works", {
 })
 
 test_that("Taxes during savings phase", {
-  expect_equal(length(taxCFwork(income=c(100000,100000),liquid_wealth=c(10000,300000),illiquid_Wealth = c(300000,300000))$from_cf),
-               length(taxCFwork(income=c(100000,100000),liquid_wealth=c(10000,300000),illiquid_Wealth = c(300000,300000))$from_liquid_wealth))
-  expect_equal(taxCFwork(income=c(100000,100000),liquid_wealth=c(10000,300000),illiquid_Wealth = c(300000,300000))$from_cf, c(7712.5,7712.5))
-  expect_equal(taxCFwork(income=c(100000,100000),liquid_wealth=c(10000,300000),illiquid_Wealth = c(300000,300000))$from_liquid_wealth, c(1727.5,3467.5))
+  expect_equal(length(taxCFwork(income=c(100000,100000),liquid_wealth=c(10000,300000),illiquid_wealth = c(300000,300000))$from_cf),
+               length(taxCFwork(income=c(100000,100000),liquid_wealth=c(10000,300000),illiquid_wealth = c(300000,300000))$from_liquid_wealth))
+  expect_equal(taxCFwork(income=c(100000,100000),liquid_wealth=c(10000,300000),illiquid_wealth = c(300000,300000))$from_cf, c(7712.5,7712.5))
+  expect_equal(taxCFwork(income=c(100000,100000),liquid_wealth=c(10000,300000),illiquid_wealth = c(300000,300000))$from_liquid_wealth, c(1727.5,3467.5))
 })
 
 test_that("Taxes for lumpsumpayments", {

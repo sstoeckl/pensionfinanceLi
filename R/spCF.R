@@ -1,7 +1,7 @@
 #' Second Pillar Cash Flows
 #'
 #' Cash Flows are generated for the payment phase of the second pillar, starting at ret_age until 122 because that is when all our
-#' ficticious persons have died. Contributions to the second pillar are doubled by the employer.
+#' ficticious persons have died. Contributions to the second pillar are doubled by the employer
 #'
 #'
 #' @param ret_age optional, retirement age, can be set anywhere between 60 and 70 (default: 65)
@@ -29,7 +29,10 @@
 #'            ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
 #' sp_ex2 <- spCF(ret_age=65,nu2=0.01,c_age=64,c2=0.01,li=0,lg=0.01,w2=setNames(c(1,0,0,0,0),c("msci","b10","recom","libor","infl")),
 #'            ret=ret[,,1:10],retr=retr[,,1:10],s2=0,rho2=0.0000001)
+#'
 #' @importFrom pracma ones
+#' @importFrom stats setNames quantile
+#'
 #' @export
 spCF <- function(ret_age=65,nu2,c_age,c2,li,lg,w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),ret,retr,s2,rho2, warnings=TRUE){
   # control parameters ret_age = retirement_age (as first pillar), annfrac = annuity fraction in [0,1]
