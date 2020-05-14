@@ -34,7 +34,8 @@
     s1 <<- c(15, 40000)        #
     s11 <<- 15
     s12 <<- 20000
-    s2 <<- -200000               # liquid wealth
+    s2 <<-  20000              # Second pillar savings
+    s3 <<-  -200000            # liquid wealth
     w2 <<- setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl"))
     rho2 <<- 0.05              # Pension Conversion Factor second pillar
     rho3 <<- 0.04              # Pension Conversion Factor third pillar
@@ -44,25 +45,25 @@
     # Low income, younger almost no savings, wants to work longer
     ret_age <<- 69             # standard retirement age
     w3 <<- setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")) # portfolio weights (mostly not used)
-    cc <<- 0.8                  # consumption from labor income
+    cc <<- 0.8                 # consumption from labor income
     c2 <<- 0.12                # contribution to second pillar from labor income (doubled by employer up to 12%)
-    nu2 <<- 0.75                # part of the second pillar transformed to lifelong pension
+    nu2 <<- 0.75               # part of the second pillar transformed to lifelong pension
     nu3 <<- 0.75               # part of the third pillar transformed to lifelong pension
-    ra <<- 10                   # risk aversion
+    ra <<- 10                  # risk aversion
     delta <<- 0.02             # time preference
-    aalpha <<- 0.90             # Fraction of pension wealth not consumed (kept for reinvestment)
-    bbeta <<- 0.25              # Bequest utility weight
+    aalpha <<- 0.90            # Fraction of pension wealth not consumed (kept for reinvestment)
+    bbeta <<- 0.25             # Bequest utility weight
     c_age <<- 35               # current age
-    w0 <<- 10000              # non-liquid wealth (counts only for wealth tax)
+    w0 <<- 10000               # non-liquid wealth (counts only for wealth tax)
     CF <<- 0                   # NOT IMPLEMENTED
-    li <<- 40000              # labor income
+    li <<- 40000               # labor income
     lg <<- 0.01                # labor income annual growth
     c1 <<- 0.07                # contribution to first pillar (mandatory)
     s1 <<- c(10, 20000)        #
     s11 <<- 10
     s12 <<- 20000
     s2 <<- 10000               # Second pillar savings
-    s3 <<- 1000               # liquid wealth
+    s3 <<- 1000                # liquid wealth
     w2 <<- setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl"))
     rho2 <<- 0.05              # Pension Conversion Factor second pillar
     rho3 <<- 0.04              # Pension Conversion Factor third pillar
