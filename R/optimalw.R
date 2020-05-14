@@ -26,16 +26,17 @@
 #' @importFrom optimx optimx
 #'
 #' @export
-optimalw <- function(initial_values,upper_bounds,lower_bounds,ret_age,cc,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,gender_mortalityTable,w0,
+optimalw <- function(initial_values,upper_bounds=NULL,lower_bounds=NULL,ret_age,cc,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,gender_mortalityTable,w0,
                      CF,li,lg,c1,s1,s2,s3,w2,rho2,rho3,ret,retr,psi,verbose=FALSE,warnings=FALSE,trace=0){
-  mc <- data.frame(method=c("Nelder-Mead","L-BFGS-B"), maxit=c(50,50), maxfeval= c(50,50))
+  #mc <- data.frame(method=c("Nelder-Mead","L-BFGS-B"), maxit=c(50,50), maxfeval= c(50,50))
+  mc <- data.frame(method=c("Nelder-Mead"), maxit=c(50*3^2), maxfeval= c(50*3^2))
   ivmat <- as.matrix(rbind(rep(1,3),rep(0,3),c(-1,0,1),c(0,1,0),c(0,0,1)))
   res <- NULL
-  for (i in c(1:5)){
+  for (i in c(1:1)){
     resn <- optimx::polyopt(par=initial_values,
                    fn=.util_optim_w, gr=NULL,hess=NULL,#gr=function(x) pracma::gradient(util_optim,x),
-                   #lower=lower_bounds,
-                   #upper=upper_bounds,
+                   lower=lower_bounds,
+                   upper=upper_bounds,
                    methcontrol=mc, control=list(trace=trace),
                    ret_age=ret_age,cc=cc,c2=c2,nu2=nu2,nu3=nu3,
                    ra=ra,delta=delta,alpha=aalpha,beta=bbeta,c_age=c_age,gender=gender,
@@ -43,7 +44,7 @@ optimalw <- function(initial_values,upper_bounds,lower_bounds,ret_age,cc,c2,nu2,
                    w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,
                    rho2=rho2,rho3=rho3,
                    ret=ret,retr=retr,psi=psi,verbose=verbose,warnings=warnings)
-    res <- cbind("i"=1,"method"=c("Nelder-Mead","L-BFGS-B"),data.frame(resn, row.names=NULL))
+    res <- cbind("i"=1,"method"=c("Nelder-Mead"),data.frame(resn, row.names=NULL))
     cat("Round ",i,"\n")
     if (min(res[-1,"convergence"])==0) {break()}
     initial_values <- ivmat[i,]

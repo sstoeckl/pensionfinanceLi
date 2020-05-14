@@ -49,9 +49,10 @@ test_that("third pillar CF during savings phase works", {
 })
 
 test_that("Taxes during savings phase", {
-  expect_equal(length(taxCFwork(income=c(100000,100000),wealth=c(10000,300000))$from_cf), length(taxCFwork(income=c(100000,100000),wealth=c(10000,300000))$from_wealth))
-  expect_equal(taxCFwork(income=c(100000,100000),wealth=c(10000,300000))$from_cf, c(7712.5,7712.5))
-  expect_equal(taxCFwork(income=c(100000,100000),wealth=c(10000,300000))$from_wealth, c(50,1667.5))
+  expect_equal(length(taxCFwork(income=c(100000,100000),liquid_wealth=c(10000,300000),illiquid_Wealth = c(300000,300000))$from_cf),
+               length(taxCFwork(income=c(100000,100000),liquid_wealth=c(10000,300000),illiquid_Wealth = c(300000,300000))$from_liquid_wealth))
+  expect_equal(taxCFwork(income=c(100000,100000),liquid_wealth=c(10000,300000),illiquid_Wealth = c(300000,300000))$from_cf, c(7712.5,7712.5))
+  expect_equal(taxCFwork(income=c(100000,100000),liquid_wealth=c(10000,300000),illiquid_Wealth = c(300000,300000))$from_liquid_wealth, c(1727.5,3467.5))
 })
 
 test_that("Taxes for lumpsumpayments", {
@@ -76,7 +77,7 @@ test_that("third pillar CF during retirement phase works", {
   expect_equal(tpCFret(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
                        alpha=0.96,wealth_at_ret_age=100000,retr=retr[,,1:10],psi=0.015), tpret_test, tolerance=1e-7)
   expect_equal(tpCFret(ret_age=65,c_age=42,w3=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-                                    alpha=0.96,wealth_at_ret_age=0,retr=retr[,,1:10],psi=0), tpret_test2, tolerance=1e-7)
+                       alpha=0.96,wealth_at_ret_age=c(rep(-10000,5),rep(10000,5)),retr=retr[,,1:10],psi=0), tpret_test2, tolerance=1e-7)
 })
 
 test_that("total CF works", {

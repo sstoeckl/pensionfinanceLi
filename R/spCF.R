@@ -82,7 +82,7 @@ spCF <- function(ret_age=65,nu2,c_age,c2,li,lg,w2=setNames(c(.30,.30,.30,.10,0),
   #########################################
   ## 3. Cashflow
   # savings in second pillar (starting with savings until now, growing on with fraction of (growing) labor income * 2)
-  lcf <- c(s2,2*c2*li*(1+lg)^(seq(sav_years)-1))  # 2*c2 because of 50/50 contribution split
+  lcf <- c(s2,(c2+min(c2,0.12))*li*(1+lg)^(seq(sav_years)-1))  # 2*c2 because of 50/50 contribution split
   # what is the wealth of each element of lcf at the end of savings phase?
   sp_wealth_at_ret_age <- apply(payed_ret,2,function(x){lcf%*%c(rev(cumprod(1+rev(x))),1)}) # rev to give s0 the aggregate returns
   dim(sp_wealth_at_ret_age)<-c(1,ncol(payed_ret)); rownames(sp_wealth_at_ret_age) <- (ret_age-1)

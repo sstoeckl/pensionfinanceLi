@@ -26,141 +26,115 @@ The first case is a 50-year old male (female) single with no children, having a 
 employer) for second-pillar contributions. Non-disposable wealth is `W0=300'000`, and the insured has a risk aversion of `ra=8`, a time preference rate of `delta=0.02`, and plans to retire at `retage=65`. The insured has a working history of `20` years in the first pillar with an average income of `70'000` (`s1`), and `300'000` of savings in the second pillar. Currently, there are no savings in the third pillar, but no debt either. The investor weighs bequest utility relative to consumption utility at `beta=0.75`.
 
 ```{r eval=FALSE, echo=FALSE, messages=FALSE,warning=FALSE}
-.load_parameters(gend=0,type=1)
-# First optimize everything
-library(tictoc);library(beepr)
-tic()
-outLC <- 
-toc()
-tic()
-outLC <- 
-toc()
-tic()
-outw <- optimalw(rep(0,0,0,3),upper_bounds,lower_bounds,ret_age=ret_age,cc=cc,c2=c2,nu2=nu2,nu3=nu3,
+library(tictoc);library(beepr);library(tidyverse)
+makeweights <- function(tw3){
+  w3 <- setNames(rep(0,4),c("msci","b10","recom","libor"))
+  w3[c("msci","b10","recom")] <- tw3
+  w3["libor"] <- if (!abs(sum(tw3))==Inf) {1 - sum(tw3)}
+  return(w3)
+}
+nSim <- 1000
+#
+outALL <- tibble(type=numeric(),gend=numeric(),opt=character(),c=numeric(),c2=numeric(),nu2=numeric(),nu3=numeric(),alpha=numeric(),
+                 msci=numeric(),b10=numeric(),recom=numeric(),libor=numeric(),ret_age=numeric(),
+                 method=character(),util=numeric(),fevals=numeric(),convergence=numeric(),nSim=numeric())
+for (type in 1:3){
+  for (gend in 0:1){
+    .load_parameters(gend=gend,type=type)
+    cat("Running type ",type," and gend ",gend,"!\n")
+    # 1) Full Scale Optimization
+        tic() # c(c, c2, nu2, nu3, alpha, w3)
+      outLC <- optimalLC(initial_values = c(0.5,0.1,0.5,0.5,1,rep(0,3),70),upper_bounds=NULL,lower_bounds=NULL,
+                       #ret_age=ret_age,
+                       ra=ra,delta=delta,beta=bbeta,c_age=c_age,gender=gender,gender_mortalityTable=gender_mortalityTable,
+                       w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,rho3=rho3,ret=ret[,,1:nSim],retr=retr[,,1:nSim],psi=psi,trace=0)
+        toc()
+        beep()
+        names(outLC)[3:7] <- c("c","c2","nu2","nu3","alpha"); names(outLC)[c(11,12)] <- c("ret_age","util")
+      outALL <- bind_rows(outALL,c("opt"="LC","type"=type,"gend"=gend,outLC[c("c","c2","nu2","nu3","alpha")],makeweights(outLC[c("p6","p7","p8")]),
+                                   outLC[c("ret_age","method")],outLC[c("util","fevals","convergence")],"nSim"=nSim))
+    # 2) Only some Parameters
+      tic() # c(c, alpha, w3)
+    outwc <- optimalwc(initial_values = unname(unlist(c(outLC[c("c","alpha")],outLC[c("p6","p7","p8")]))),upper_bounds=NULL,lower_bounds=NULL,
+                 ret_age=ret_age,c2=c2,nu2=nu2,nu3=nu3,
+                 ra=ra,delta=delta,beta=bbeta,c_age=c_age,gender=gender,gender_mortalityTable=gender_mortalityTable,
+                 w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,rho3=rho3,ret=ret[,,1:nSim],retr=retr[,,1:nSim],psi=psi,trace=0)
+      toc()
+      beep()
+      names(outwc)[3:4] <- c("c","alpha"); names(outwc)[c(8)] <- c("util")
+    outALL <- bind_rows(outALL,c("opt"="wc","type"=type,"gend"=gend,outwc["c"],"c2"=c2,"nu2"=nu2,"nu3"=nu3,outwc["alpha"],
+                                 makeweights(outwc[c("p3","p4","p5")]),"ret_age"=ret_age,
+                                 outwc[c("method")],outwc[c("util","fevals","convergence")],"nSim"=nSim))
+    # 3) Only weights
+      tic() # c(w3)
+    outw <- optimalw(unname(unlist(outwc[c("p3","p4","p5")])),upper_bounds=NULL,lower_bounds=NULL,
+                 ret_age=ret_age,cc=cc,c2=c2,nu2=nu2,nu3=nu3,
                  ra=ra,delta=delta,alpha=aalpha,beta=bbeta,c_age=c_age,gender=gender,gender_mortalityTable=gender_mortalityTable,
-                 w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,rho3=rho3,ret=ret,retr=retr,psi=psi,trace=2)
-toc()
-beep()
-outw
-util(ret_age=ret_age,c=cc,c2=c2,nu2=nu2,nu3=nu3,tw3=unlist(outw[1,3:5]),#unlist(outw["Nelder-Mead",1:3]),
-          ra=ra,delta=delta,alpha=aalpha,beta=bbeta,c_age=c_age,gender=gender,gender_mortalityTable=gender_mortalityTable,
-          w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,rho3=rho3,ret=ret,retr=retr,psi=psi)
+                 w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,rho3=rho3,ret=ret[,,1:nSim],retr=retr[,,1:nSim],psi=psi,trace=0)
+      toc()
+      beep()
+      names(outw)[c(6)] <- c("util")
+    outALL <- bind_rows(outALL,c("opt"="w","type"=type,"gend"=gend,"c"=cc,"c2"=c2,"nu2"=nu2,"nu3"=nu3,"alpha"=aalpha,
+                                 makeweights(outw[c("p1","p2","p3")]),"ret_age"=ret_age,
+                                 outw[c("method")],outw[c("util","fevals","convergence")],"nSim"=nSim))
+    
+  }
+}
+
+
 ```
-```{r}
+
+```{r eval=FALSE}
+
+```
+
+```{r eval=FALSE}
 library(tidyverse)
 #data(ret);data(retr)
-tw3 <- unlist(outw[1,3:5])
+tw3 <- unlist(outwc[2,5:7]+0.01)
+warnings<-TRUE
 # research pathological case
-util(ret_age=ret_age,c=cc,c2=c2,nu2=nu2,nu3=nu3,tw3=tw3,#unlist(outw["Nelder-Mead",1:3]),
-          ra=ra,delta=delta,alpha=aalpha,beta=bbeta,c_age=c_age,gender=gender,gender_mortalityTable=gender_mortalityTable,
+util(ret_age=ret_age,c=outwc[2,3],c2=c2,nu2=nu2,nu3=nu3,tw3=tw3,#unlist(outw["Nelder-Mead",1:3]),
+          ra=20000,delta=delta,alpha=outwc[2,4],beta=bbeta,c_age=c_age,gender=gender,gender_mortalityTable=gender_mortalityTable,
           w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,rho3=rho3,ret=ret,retr=retr,psi=psi)
-w3 <- setNames(rep(0,5),c("msci","b10","recom","libor","infl"))
-w3[c("msci","b10","recom")] <- tw3
-w3["libor"] <- if (!abs(sum(tw3))==Inf) {1 - sum(tw3)}
-# go through slowly
-sav_years <- ret_age - c_age
-#########################################
-## 2. Cash-Flows
-### 2a. First Pillar
-fpcf <- fpCF(ret_age = ret_age, c_age = c_age, li=li, lg=lg, s1=s1, ret=ret, warnings=warnings)
-### 2b. Second Pillar
-spcf <- spCF(ret_age = ret_age,nu2 = nu2,c_age = c_age,c2=c2,li=li,lg=lg,w2=w2,ret=ret,retr=retr,s2=s2,rho2=rho2, warnings=warnings)
-### 3. Third Pillar
-free_cf_before_tax <- li*(1+lg)^(seq(sav_years)-1)*(1-c1-c2)
-names(free_cf_before_tax) <- c_age:(ret_age-1)
-## 3a. CF during working phase
-# includes wealth development and consumption development during working phase
-tpcfw <- tpCFwork(ret_age = ret_age, c_age = c_age, w3 = w3,
-                  free_cf_before_tax = free_cf_before_tax,
-                  retr=retr, s3=s3, w0=w0, psi=psi, c=cc, warnings=warnings)
-## third pillar lumpsum is wealth that is NOT converted to life-long pension (nu3: how much will be converted to life-long pension)
-tp_lumpsum <- tpcfw$wealth[as.character(ret_age-1),,drop=FALSE] * (1-nu3)
-## lumpsum after tax
-lumpsum_after_tax <- taxCFlumpsum(lumpsum = spcf$lumpsum, gender = gender,ret_age = ret_age, warnings=warnings) + tp_lumpsum
-## 3rd pillar annuity is wealth converted to life-long pension using conversion rate rho3 and early/late retirement adjustment of 2nd pillar
-# we create a timeseries from it
-tp_pension_ann <- (spcf$pension*0+1)[,1,drop=FALSE] %*% ((tpcfw$wealth*nu3*rho3*(1+0.126*(ret_age-65)))[as.character(ret_age-1),,drop=FALSE])
-## 3b. CF during retirement
-tpcf_ret <- tpCFret(ret_age = ret_age, c_age = c_age, w3 = w3, alpha = aalpha,
-                        wealth_at_ret_age = lumpsum_after_tax,
-                        retr = retr, psi=psi, warnings=warnings)
-    cf_ret <- fpcf + spcf$pension + tp_pension_ann
-    ret_tax <- taxCFret(fpcf = fpcf, totalcf = cf_ret, wealth = tpcf_ret$wealth + w0, warnings=warnings)
-    cf_ret_after_tax <- cf_ret - ret_tax$from_cf
-    wealth_after_tax <- tpcf_ret$wealth - ret_tax$from_wealth
-### 4. Consumption
-consumption <- rbind(tpcfw$cons, tpcf_ret$cons + cf_ret_after_tax)
-# output
-cf<-list()
-cf$cons <- consumption
-cf$wealth_after_ret <- wealth_after_tax
-cf$wealth_before_ret <- tpcfw$wealth
+############### Now execute util and subsequently totalCF
+  w3 <- setNames(rep(0,5),c("msci","b10","recom","libor","infl"))
+  w3[c("msci","b10","recom")] <- tw3
+  w3["libor"] <- if (!abs(sum(tw3))==Inf) {1 - sum(tw3)}
+w3
+###############
+### UTILITY
+tcf <- totalCF(ret_age = ret_age, w3 = w3, c = outwc[2,3], c2 = c2,
+                   nu2 = nu2, nu3 = nu3, c_age = c_age, gender = gender,
+                   w0 = w0, li = li, lg = lg, c1 = c1, s1 = s1, s2 = s2, s3 = s3,
+                   w2 = w2, rho2 = rho2, rho3 = rho3, ret = ret, retr = retr, psi = psi, alpha = outwc[2,4], warnings=warnings)
+    #########################################
+    ## 2. prepare discount factors and survival probabilities
+    delta_vec <- (1-delta)^(seq(1,(122-c_age+1))); names(delta_vec) <- (c_age):122
+    # cumulative survival probabilities
+    sur <- cumprod(1-gender_mortalityTable[(c_age-1):(length(gender_mortalityTable)-1)])
+    #########################################
+    ## 3. Calculate utilities
+    # find those that have negative cons or wealth
+    wealth <- rbind(tcf$wealth_before_ret,tcf$wealth_after_ret)
+    uncondmort <- c(1,sur)*gender_mortalityTable[(c_age-1):length(gender_mortalityTable)]
+    uncondmort <- uncondmort[-length(uncondmort)]
+    ### 3a. utility of entire lifetime consumption (scaled for numerical reasons)
+      UC <- apply(tcf$cons,2,function(x){sum((((x+w0)/w0)^(1-ra))/(1-ra)%*%delta_vec*sur)})
+      ### 3b. utility of bequest
+      UB <- apply(wealth,2,function(x){sum((((x+w0)/w0)^(1-ra))/(1-ra)%*%delta_vec*uncondmort)})
+      ### 3c. Expected utility
+      EU <- mean(UC+beta*UB)
+  ## Analysis
+  which.min(UC)
+  UC[which.min(UC)]
+  tcf$cons[,which.min(UC)]
+################
+    
+  
 
-### A: Consumption BEFORE RETIREMENT
-## before retirement (what is left of your salary after deducting c1 and c2 and tax)
-tpcfw$cons %>% rowMeans() %>% as.data.frame %>% rownames_to_column() %>% rename("tp_cons_before_ret"=2)
-### B: Wealth Development BEFORE retirement
-# Average returns during working phase given w3
-  if (w3["libor"] < 0){retr[,"libor",] <- retr[,"libor",] + psi}
-  ma <- retr[c_age:122,names(w3),,drop=FALSE]
-  pf_ret <- apply(ma,3,function(x) (exp(x)-1)%*%w3); dim(pf_ret) <- c(length(c_age:122),dim(retr)[3])
-ALLDATA <- tibble("rowname"=as.character(c_age:122), "PF_ret"=pf_ret %>% rowMeans(), "PF_sd"=pf_ret %>% matrixStats::rowSds()) %>% left_join(
-  tpcfw$cons %>% rowMeans() %>% as.data.frame %>% rownames_to_column() %>% rename("tp_cons_before_ret"=2),by="rowname") %>% left_join(
-# savings in fp: NA
-# savings in sp (at end of savings phase):
-spcf$wealth %>% rowMeans() %>% as.data.frame %>% rownames_to_column() %>% rename("sp_wealth"=2),by="rowname") %>% left_join(
-# savings in tp:
-tpcfw$wealth %>% rowMeans() %>% as.data.frame %>% rownames_to_column() %>% rename("tp_wealth"=2),by="rowname") %>% left_join(
-### C: Consumption AFTER RETIREMENT (PENSION)
-# pension from fp:
-fpcf %>% rowMeans() %>% as.data.frame %>% rownames_to_column() %>% rename("fp_pension"=2),by="rowname") %>% left_join(
-# pension from sp:
-spcf$pension %>% rowMeans() %>% as.data.frame %>% rownames_to_column() %>% rename("sp_pension"=2),by="rowname") %>% left_join(
-# pension (annuitized) from tp:
-tp_pension_ann %>% rowMeans() %>% as.data.frame %>% rownames_to_column() %>% rename("tp_annuity"=2),by="rowname") %>% left_join(
-# total pension before tax
-cf_ret %>% rowMeans() %>% as.data.frame %>% rownames_to_column() %>% rename("all_pension"=2),by="rowname") %>% left_join(
-# total pension after tax
-cf_ret_after_tax %>% rowMeans() %>% as.data.frame %>% rownames_to_column() %>% rename("all_pension_after_tax"=2),by="rowname") %>% left_join(
-# self managed pension from tp/aggregate wealth
-tpcf_ret$cons %>% rowMeans() %>% as.data.frame %>% rownames_to_column() %>% rename("tp_self_managed_pension"=2),by="rowname") %>% left_join(
 
-### D: Wealth Development AFTER retirement
-# sp wealth is split into pension (above) and lumpsum:
-spcf$wealth %>% rowMeans() %>% as.data.frame %>% rownames_to_column() %>% rename("sp_wealth_after_ret"=2),by="rowname") %>% left_join(
-spcf$lumpsum %>% rowMeans() %>% as.data.frame %>% rownames_to_column() %>% rename("sp_lumpsum"=2),by="rowname") %>% left_join(
-# tp wealth is split into pension (above) and lumpsum:
-tpcfw$wealth %>% rowMeans() %>% as.data.frame %>% rownames_to_column() %>% rename("tp_wealth_after_ret"=2),by="rowname") %>% left_join(
-tp_lumpsum %>% rowMeans() %>% as.data.frame %>% rownames_to_column() %>% rename("tp_lumpsum"=2),by="rowname") %>% left_join(
-# total lumpsums after paying tax
-lumpsum_after_tax %>% rowMeans() %>% as.data.frame %>% rownames_to_column() %>% rename("sp_tp_lumpsum"=2),by="rowname") %>% left_join(
-# total wealth development after retirement
-wealth_after_tax %>% rowMeans() %>% as.data.frame %>% rownames_to_column() %>% rename("tp_wealth_after_tax"=2),by="rowname")
-writexl::write_xlsx(ALLDATA,path = "D:/test.xlsx")
 
-######################## UTILITY
-delta_vec <- (1-delta)^(seq(1,(122-c_age+1)))
-names(delta_vec) <- (c_age):122
-# decide on gender_mortalityTable beforehand
-sur <- cumprod(1-gender_mortalityTable[(c_age-1):(length(gender_mortalityTable)-1)])
-#########################################
-## 3. Calculate utilities
-### 3a. utility of entire life consumption (scaled for numerical reasons)
-UC <- apply(tcf$cons,2,function(x){sum(((x+10e3)/10e3)^(1-ra)/(1-ra)%*%delta_vec*sur)})
-### 3b. utility of bequest
-# wealth <- rbind(tcf$wealth_before_ret,tcf$wealth_after_ret)
-# uncondmort <- c(1,sur)*gender_mortalityTable[(c_age-1):length(gender_mortalityTable)]
-# uncondmort <- uncondmort[-length(uncondmort)]
-# UB <- apply(wealth,2,function(x){sum(((x+10000)/10000)^(1-ra)/(1-ra)%*%delta_vec*uncondmort)})
-# ### 3c. Expected utility
-# EU <- mean(UC+beta*UB)
-# 
-# ######
-# tcf$cons %>% rowMeans() %>% as.data.frame %>% rownames_to_column() %>% rename("cons"=2) %>%
-#   left_join(rbind(tcf$wealth_before_ret,tcf$wealth_after_ret) %>% rowMeans() %>% as.data.frame %>% rownames_to_column() %>% rename("wealth"=2),by="rowname") %>%
-#   #pivot_longer(cols=2:3, values_to = "val", names_to = "id") %>% 
-#   mutate(rowname=as.numeric(rowname)) %>%
-#   ggplot(aes(x=rowname,y=cons)) + geom_line()
 ```
 
 

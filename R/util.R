@@ -57,65 +57,75 @@
 #'
 #' @export
 util <- function(ret_age,tw3,c,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,gender_mortalityTable,w0,CF,li,lg,c1,s1,s2,s3,w2,rho2,rho3,ret,retr,psi,verbose=FALSE, warnings=TRUE){
-  w3 <- setNames(rep(0,5),c("msci","b10","recom","libor","infl"))
-  w3[c("msci","b10","recom")] <- tw3
-  w3["libor"] <- if (!abs(sum(tw3))==Inf) {1 - sum(tw3)}
-  #w3["infl"] <- 0
-  if (verbose) print(w3)
-  # warnings
-  if (warnings){
-    if (ra==1) warning ("Using log utility rather than power utility")
+  #### PARAMETER CHECK: If not fulfilled, then punish utility
+  if (any(tw3<0)|sum(tw3)>1.5|((s3<0)&(alpha>1))|nu2<0|nu2>1|nu3>1|nu3<0|ret_age<60|ret_age>70|c>1){
+    EU <- -5000
+  } else {
+    w3 <- setNames(rep(0,5),c("msci","b10","recom","libor","infl"))
+    w3[c("msci","b10","recom")] <- tw3
+    w3["libor"] <- if (!abs(sum(tw3))==Inf) {1 - sum(tw3)}
+    #w3["infl"] <- 0
+    if (verbose) print(w3)
+    # warnings
+    if (warnings){
+      if (ra==1) warning ("Using log utility rather than power utility")
+    }
+    #########################################
+    ## 1. Calculate total cash-flow
+    tcf <- totalCF(ret_age = ret_age, w3 = w3, c = c, c2 = c2,
+                   nu2 = nu2, nu3 = nu3, c_age = c_age, gender = gender,
+                   w0 = w0, li = li, lg = lg, c1 = c1, s1 = s1, s2 = s2, s3 = s3,
+                   w2 = w2, rho2 = rho2, rho3 = rho3, ret = ret, retr = retr, psi = psi, alpha = alpha, warnings=warnings)
+    ## stop if any total consumption term is negative
+    if (min(tcf$cons)<0){
+      EU <- -5000
+    } else {
+      #########################################
+      ## 2. prepare discount factors and survival probabilities
+      delta_vec <- (1-delta)^(seq(1,(122-c_age+1)))
+        names(delta_vec) <- (c_age):122
+      # cumulative survival probabilities
+      sur <- cumprod(1-gender_mortalityTable[(c_age-1):(length(gender_mortalityTable)-1)])
+      #########################################
+      ## 3. Calculate utilities
+      # find those that have negative cons or wealth
+      wealth <- rbind(tcf$wealth_before_ret,tcf$wealth_after_ret)
+      uncondmort <- c(1,sur)*gender_mortalityTable[(c_age-1):length(gender_mortalityTable)]
+      uncondmort <- uncondmort[-length(uncondmort)]
+      #### adapt cons and wealth to have -Inf wherever <0 in cons or wealth (therefore it does count for the utility function but scales it down)
+      if (ra==1){
+        # del_index <- union(which(apply(tcf$cons,2,function(x) max(x<=0))==1),which(apply(wealth,2,function(x) max(x<=0))==1))
+        # tcf$cons[,del_index] <- 0.5
+        # wealth[,del_index] <- 0.5
+        ### 3a. utility of entire lifetime consumption (scaled for numerical reasons)
+        UC <- apply(tcf$cons,2,function(x){sum(log(x)*delta_vec*sur)})
+        ### 3b. utility of bequest
+        UB <- apply(wealth,2,function(x){sum(log(x)*delta_vec*uncondmort)})
+      } else {
+        # del_index <- union(which(apply(tcf$cons,2,function(x) max(x<=0))==1),which(apply(wealth,2,function(x) max(x<=0))==1))
+        # tcf$cons[,del_index] <- 0
+        # wealth[,del_index] <- 0
+        ### 3a. utility of entire lifetime consumption (scaled for numerical reasons)
+        UC <- apply(tcf$cons,2,function(x){sum((((x+w0)/w0)^(1-ra))/(1-ra)%*%delta_vec*sur)})
+        ### 3b. utility of bequest
+        UB <- apply(wealth,2,function(x){sum((((x+w0)/w0)^(1-ra))/(1-ra)%*%delta_vec*uncondmort)})
+      }
+        ### 3c. Expected utility
+        EU <- mean(UC+beta*UB)
+    }
   }
-  #########################################
-  ## 1. Calculate total cash-flow
-  tcf <- totalCF(ret_age = ret_age, w3 = w3, c = c, c2 = c2,
-                 nu2 = nu2, nu3 = nu3, c_age = c_age, gender = gender,
-                 w0 = w0, li = li, lg = lg, c1 = c1, s1 = s1, s2 = s2, s3 = s3,
-                 w2 = w2, rho2 = rho2, rho3 = rho3, ret = ret, retr = retr, psi = psi, alpha = alpha, warnings=warnings)
-  #########################################
-  ## 2. prepare discount factors and survival probabilities
-  delta_vec <- (1-delta)^(seq(1,(122-c_age+1)))
-    names(delta_vec) <- (c_age):122
-  # cumulative survival probabilities
-  sur <- cumprod(1-gender_mortalityTable[(c_age-1):(length(gender_mortalityTable)-1)])
-  #########################################
-  ## 3. Calculate utilities
-  # find those that have negative cons or wealth
-  wealth <- rbind(tcf$wealth_before_ret,tcf$wealth_after_ret)
-  uncondmort <- c(1,sur)*gender_mortalityTable[(c_age-1):length(gender_mortalityTable)]
-  uncondmort <- uncondmort[-length(uncondmort)]
-  #### adapt cons and wealth to have -Inf wherever <0 in cons or wealth (therefore it does count for the utility function but scales it down)
-  if (ra==1){
-    del_index <- union(which(apply(tcf$cons,2,function(x) max(x<=0))==1),which(apply(wealth,2,function(x) max(x<=0))==1))
-    tcf$cons[,del_index] <- 0.5
-    wealth[,del_index] <- 0.5
-    ### 3a. utility of entire lifetime consumption (scaled for numerical reasons)
-    UC <- apply(tcf$cons,2,function(x){sum(log(x)*delta_vec*sur)})
-    ### 3b. utility of bequest
-    UB <- apply(wealth,2,function(x){sum(log(x)*delta_vec*uncondmort)})
-  } else{
-    tcf$cons[,del_index] <- -Inf
-    wealth[,del_index] <- -Inf
-    ### 3a. utility of entire lifetime consumption (scaled for numerical reasons)
-    UC <- apply(tcf$cons,2,function(x){sum((((x+10000)/10000)^(1-ra))/(1-ra)%*%delta_vec*sur)})
-    ### 3b. utility of bequest
-    UB <- apply(wealth,2,function(x){sum((((x+10000)/10000)^(1-ra))/(1-ra)%*%delta_vec*uncondmort)})
-  }
-
-    ### 3c. Expected utility
-    EU <- max(UC+bbeta*UB)
   return(EU)
 }
 #' Helper functions
 #'
 #' Helper 1: Optimization function
 #'
-#' @param inputvec c(ret_age,c, c2, nu2, nu3, alpha, w3)
+#' @param inputvec c(ret_age,c, c2, nu2, nu3, alpha, w3, ret_age)
 #'
 .util_optim <- function(inputvec,ra,delta,beta,c_age,gender,gender_mortalityTable,w0,CF,li,lg,c1,s1,s2,s3,w2,rho2,rho3,ret,retr,psi,verbose=FALSE, warnings=FALSE){
   #ret_age,tw3,c,c2,nu2,nu3,delta,alpha
   # inputvec=c(ret_age,c,c2,nu2,nu3,alpha,tw3)
-  return(-util(ret_age=inputvec[1],tw3=inputvec[7:9],c=inputvec[2],c2=inputvec[3],nu2=inputvec[4],nu3=inputvec[5],ra=ra,delta=delta,alpha=inputvec[6],
+  return(-util(ret_age=round(inputvec[9],0),tw3=inputvec[6:8],c=inputvec[1],c2=inputvec[2],nu2=inputvec[3],nu3=inputvec[4],ra=ra,delta=delta,alpha=inputvec[5],
               beta=beta,c_age=c_age,gender=gender,
               gender_mortalityTable=gender_mortalityTable,w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,rho3=rho3,
               ret=ret,retr=retr,psi=psi,verbose=verbose, warnings=warnings))
@@ -145,9 +155,9 @@ util <- function(ret_age,tw3,c,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,gende
               ret=ret,retr=retr,psi=psi,verbose=verbose, warnings=warnings))
 }
 #################### CHECKING the utility function
-MortalityTables::mortalityTables.load("Austria_Annuities")
-gender_mortalityTable <- MortalityTables::baseTable(AVOe2005R.male)
-# # 1) Higher retirement age - does lead to decreasing utility
+# MortalityTables::mortalityTables.load("Austria_Annuities")
+# gender_mortalityTable <- MortalityTables::baseTable(AVOe2005R.male)
+# # 1) Higher retirement age - does lead to decreasing utility - due to not consuming the lage amounts of my wealth
 # out4 <- NULL; vec <- 60:70
 # for (ret_age in vec){
 #   out <- util(ret_age=ret_age,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.01,ra=4,delta=0.02,alpha=0.96,
@@ -164,13 +174,13 @@ gender_mortalityTable <- MortalityTables::baseTable(AVOe2005R.male)
 #   out <- util(ret_age=65,c_age=c_age,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.01,ra=4,delta=0.02,alpha=0.96,
 #               beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=300000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
 #               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-#               rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
+#               rho2=0.05,rho3=0.04,ret=ret[,,1:100],retr=retr[,,1:100],psi=0.015,verbose=FALSE)
 #   out4 <- rbind(out4,out)
 # }
 # plot(vec,out4[,1],main = "Utility",type="l")
 #   # Request for "consumption of everything: One needs low enough wealth to be achieving an optimum here. What about habit formation?
-# # 3) Higher consumption durig work life leads to too little savings for retirement which therefore peaks
-# out4 <- NULL; vec <- seq(0.6,1.1,0.01)
+# # 3) Higher consumption during work life leads to too little savings for retirement which therefore peaks
+# out4 <- NULL; vec <- seq(0.6,1,0.01)
 # for (c in vec){
 #   out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=c,c2=0.12,nu2=.5,nu3=0.01,ra=4,delta=0.02,alpha=0.96,
 #               beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=300000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
@@ -210,10 +220,10 @@ gender_mortalityTable <- MortalityTables::baseTable(AVOe2005R.male)
 # }
 # plot(vec,out4[,1],main = "Utility",type="l")
 # # 7) Risk aversion. Larger risk aversion leads to ??? [higher utility]
-# out4 <- NULL; vec <- seq(1,20,1)
+# out4 <- NULL; vec <- seq(2,20,1)
 # for (ra in vec){
 #   out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=ra,delta=0.02,alpha=0.96,
-#               beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=-10000,
+#               beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=10000,
 #               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
 #               rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
 #   out4 <- rbind(out4,out)
@@ -260,8 +270,8 @@ gender_mortalityTable <- MortalityTables::baseTable(AVOe2005R.male)
 #   out4 <- rbind(out4,out)
 # }
 # plot(vec,out4[,1],main = "Utility",type="l")
-# # 12) Income. Higher income higher utility
-# out4 <- NULL; vec <- seq(0,100000,10000)
+# # 12) Income. Higher income higher utility (starting above the benefits from fp)
+# out4 <- NULL; vec <- seq(30000,100000,10000)
 # for (li in vec){
 #   out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
 #               beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=li,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=-10000,
@@ -337,6 +347,16 @@ gender_mortalityTable <- MortalityTables::baseTable(AVOe2005R.male)
 #               beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=-10000,
 #               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
 #               rho2=0.05,rho3=rho3,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
+#   out4 <- rbind(out4,out)
+# }
+# plot(vec,out4[,1],main = "Utility",type="l")
+# # 20) Larger investment
+# out4 <- NULL; vec <- seq(-1,1,0.1)
+# for (xw3 in vec){
+#   out <- util(ret_age=65,c_age=42,tw3=c(xw3,xw3,xw3),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
+#               beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=-10000,
+#               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+#               rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
 #   out4 <- rbind(out4,out)
 # }
 # plot(vec,out4[,1],main = "Utility",type="l")

@@ -38,7 +38,7 @@ tpCFwork<-function(ret_age=65, c_age, w3, free_cf_before_tax, retr, s3, w0, psi=
   if (c_age > ret_age) stop("'c_age' must be below 'ret_age'")
   if ((c_age < 18)|c_age>70) stop("'c_age' must be between 18 and 7")
   if (dim(retr)[1]!=122) stop("Somethings wrong with dimension of return vector")
-  if (s3 < 0) warning("'s3' liquid wealth invested in third pillar is negtaive and will be punished with a larger LIBOR rate given by psi!")
+  if (s3 < 0) warning("'s3' liquid wealth invested in third pillar is negative and will be punished with a larger LIBOR rate given by psi!")
   if ((psi < 0)|(psi > 1)) warning ("'psi' interest rate spread should be positive and not too large!")
   if (dim(retr)[2]!=length(w3)) stop("Somethings wrong with dimension of return vector vs the portfolio weights")
   if (!setequal(names(w3),colnames(ret[,,1]))) stop("The given portfolo weights do not match the given return names")
@@ -55,9 +55,13 @@ tpCFwork<-function(ret_age=65, c_age, w3, free_cf_before_tax, retr, s3, w0, psi=
   if (w3["libor"] < 0){retr[,"libor",] <- retr[,"libor",] + psi}
   # portfolio returns (real) during saving years
   ma <- retr[c_age:(ret_age-1),names(w3),,drop=FALSE]
+  ma_d <- retr[c_age:(ret_age-1),"libor",,drop=FALSE]
   pf_ret <- apply(ma,3,function(x) (exp(x)-1)%*%w3) # discrete returns times portfolio weights
+  # interest for negative liquid wealth
+  if (w3["libor"] < 0){debt <- apply(ma_d,3,function(x) (exp(x)-1))} else {debt <- apply(ma_d,3,function(x) (exp(x+psi)-1))}
   # necessary to keep matrix dimensions
     dim(pf_ret) <- c(length(c_age:(ret_age-1)),dim(retr)[3])
+    dim(debt) <- c(length(c_age:(ret_age-1)),dim(retr)[3])
   # cf<-c(s3,freecfbeforetax)  #what for? (where used again?)
   #########################################
   ## 3. Wealth and Cash Flows
@@ -65,18 +69,20 @@ tpCFwork<-function(ret_age=65, c_age, w3, free_cf_before_tax, retr, s3, w0, psi=
   consumption <- array(NA,c(ret_age-c_age,dim(retr)[3]))
   rownames(wealth_development) <- rownames(consumption) <- as.character(seq(c_age,ret_age-1))
     # In first year
-  cf_tax <- taxCFwork(free_cf_before_tax[1], s3+w0) # wealth from 1.1.
+  cf_tax <- taxCFwork(free_cf_before_tax[1], s3, w0) # wealth from 1.1.
   free_cf_after_tax <- free_cf_before_tax[1] - cf_tax$from_cf
-      wealth_development[1,] <- s3*(1+pf_ret[1,]) + (1-c)*free_cf_after_tax - cf_tax$from_wealth
+  # if s3<0: pay libor + psi. If s3 >0 invest according to w3/pf_ret
+      wealth_development[1,] <- as.numeric(s3>0)*s3*(1+pf_ret[1,]) + as.numeric(s3<=0)*s3*(1+debt[1,]) + (1-c)*free_cf_after_tax - cf_tax$from_liquid_wealth
       consumption[1,] <- c*free_cf_after_tax
     # in all folowing years
   if(sav_years>=2){
     for(age in seq(c_age+1,ret_age-1)){
       t <- age - c_age
       # cash flow = income minus taxes (wealth from last period)
-      cf_tax <- taxCFwork(free_cf_before_tax[t+1], wealth_development[t,] + w0)
+      cf_tax <- taxCFwork(free_cf_before_tax[t+1], wealth_development[t,], w0)
       free_cf_after_tax <- free_cf_before_tax[t+1] - cf_tax$from_cf
-        wealth_development[t+1,] <- wealth_development[t,]*(1+pf_ret[t+1,]) + (1-c)*free_cf_after_tax - cf_tax$from_wealth
+        wealth_development[t+1,] <- as.numeric(wealth_development[t,]>0)*wealth_development[t,]*(1+pf_ret[1,]) +
+          as.numeric(wealth_development[t,]<=0)*wealth_development[t,]*(1+debt[1,]) + (1-c)*free_cf_after_tax - cf_tax$from_liquid_wealth
         consumption[t+1,] <- c*free_cf_after_tax
     }
   }
@@ -86,7 +92,7 @@ tpCFwork<-function(ret_age=65, c_age, w3, free_cf_before_tax, retr, s3, w0, psi=
   return(tpw)
 }
 # ##
-# # 1) Saving longer (higher retirement age) should increase wealth and decrease consumption at retirement (due to higher wealth taxes)
+# # 1) Saving longer (higher retirement age) should increase wealth at retirement and keep consumption constant (due to higher wealth taxes, which we pay from liquid wealth)
 # out4 <- NULL; vec <- 60:70
 # for (ret_age in vec){
 #   out <- tpCFwork(ret_age=ret_age,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
@@ -96,7 +102,7 @@ tpCFwork<-function(ret_age=65, c_age, w3, free_cf_before_tax, retr, s3, w0, psi=
 # par(mfrow=c(2,1))
 # plot(vec,out4[,1],main = "Consumption at retirement")
 # plot(vec,out4[,2],main = "Wealth at retirement")
-# # 2) Saving less years (higher current) should decrease wealth and increase consumption at retirement (due to lower wealth taxes)
+# # 2) Saving less years (higher current) should decrease wealth and keep consumption at retirement constant
 # out4 <- NULL; vec <- 42:64
 # for (c_age in vec){
 #   out <- tpCFwork(ret_age=65,c_age=c_age,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
@@ -116,7 +122,7 @@ tpCFwork<-function(ret_age=65, c_age, w3, free_cf_before_tax, retr, s3, w0, psi=
 # par(mfrow=c(2,1))
 # plot(vec,out4[,1],main = "Consumption before retirement")
 # plot(vec,out4[,2],main = "Wealth before retirement")
-# # 4) Higher iliquid wealth (w0) should increase taxes and therefore reduce consumption and wealth within certain brackets
+# # 4) Higher illiquid wealth (w0) should increase taxes and therefore reduce wealth within certain brackets (consumption constant)
 # out4 <- NULL; vec <- seq(0,1000000,10000)
 # for (w0 in vec){
 #   out <- tpCFwork(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
@@ -126,7 +132,7 @@ tpCFwork<-function(ret_age=65, c_age, w3, free_cf_before_tax, retr, s3, w0, psi=
 # par(mfrow=c(2,1))
 # plot(vec,out4[,1],main = "Consumption before retirement")
 # plot(vec,out4[,2],main = "Wealth before retirement")
-# # 5) Higher liquid wealth (s3) should increase returns and also taxes and therefore reduce consumption (which is taken off the free cash-flow) and increase wealth within certain brackets
+# # 5) Higher liquid wealth (s3) should increase returns and also taxes but not reduce consumption
 # out4 <- NULL; vec <- seq(0,1000000,10000)
 # for (s3 in vec){
 #   out <- tpCFwork(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
