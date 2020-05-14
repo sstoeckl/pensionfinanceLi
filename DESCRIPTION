@@ -1,6 +1,6 @@
 Package: pensionfinanceLi
 Type: Package
-Title: Package for functions that are necessary to optimize for taking optimal decisions in Liechtenstein's pension system.
+Title: Package for functions that are necessary to optimize for taking optimal decisions in Liechtenstein's pension system
 Version: 0.1.0
 Author: Author: c(person("Sebastian", "Stoeckl", email = "sebastian.stoeckl@uni.li", role = c("aut","cre"), comment = c(ORCID = "0000-0002-4196-6093")))
 Maintainer: Sebastian Stöckl <sebastian.stoeckl@uni.li>
