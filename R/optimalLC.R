@@ -27,9 +27,9 @@ optimalLC <- function(initial_values,upper_bounds,lower_bounds,ra,delta,beta,c_a
   #mc <- data.frame(method=c("Nelder-Mead","L-BFGS-B"), maxit=c(50,50), maxfeval= c(50,50))
   mc <- data.frame(method=c("Nelder-Mead"), maxit=c(50*9^2), maxfeval= c(50*9^2))
   ivmat <- as.matrix(rbind(c(0.5,0.1,0,0,1,rep(1/3,3),65),
-                           c(0.5,0.1,0,0,1,rep(1/3,3),65)))
+                           c(0.5,0.1,0.1,0.1,1,rep(1/3,3),65)))
   res <- NULL
-  for (i in c(1:1)){
+  for (i in c(1:3)){
     resn <- optimx::polyopt(par=initial_values,
                             fn=.util_optim, gr=NULL,hess=NULL,#gr=function(x) pracma::gradient(util_optim,x),
                             #lower=lower_bounds,
@@ -47,7 +47,7 @@ optimalLC <- function(initial_values,upper_bounds,lower_bounds,ra,delta,beta,c_a
                             ret=ret,retr=retr,psi=psi,verbose=verbose,warnings=warnings)
     res <- cbind("i"=1,"method"=c("Nelder-Mead"),data.frame(resn, row.names=NULL))
     cat("Round ",i,"\n")
-    if (min(res[-1,"convergence"])==0) {break()}
+    if (min(res["convergence"])==0) {break()}
     initial_values <- ivmat[i,]
   }
   return(res)

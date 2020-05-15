@@ -33,7 +33,7 @@ makeweights <- function(tw3){
   w3["libor"] <- if (!abs(sum(tw3))==Inf) {1 - sum(tw3)}
   return(w3)
 }
-nSim <- 10000
+nSim <- 10
 #
 outALL <- tibble(type=numeric(),gend=numeric(),opt=character(),c=numeric(),c2=numeric(),nu2=numeric(),nu3=numeric(),alpha=numeric(),
                  msci=numeric(),b10=numeric(),recom=numeric(),libor=numeric(),ret_age=numeric(),
@@ -91,12 +91,20 @@ for (type in 1:3){
 ```{r eval=FALSE}
 library(tidyverse)
 #data(ret);data(retr)
-tw3 <- unlist(outwc[2,5:7]+0.01)
+tw3 <- unlist(outLC[c("p6","p7","p8")])
 warnings<-TRUE
+ret_age=round(outLC[1,"ret_age"])
+cc=outLC[1,"c"] 
+c2=outLC[1,"c2"]
+nu2=outLC[1,"nu2"]
+nu3=outLC[1,"nu3"]
+aalpha=outLC[1,"alpha"]
 # research pathological case
-util(ret_age=ret_age,c=outwc[2,3],c2=c2,nu2=nu2,nu3=nu3,tw3=tw3,#unlist(outw["Nelder-Mead",1:3]),
-          ra=20000,delta=delta,alpha=outwc[2,4],beta=bbeta,c_age=c_age,gender=gender,gender_mortalityTable=gender_mortalityTable,
+# profvis({
+util(ret_age=ret_age,c=cc,c2=c2,nu2=nu2,nu3=nu3,tw3=tw3,#unlist(outw["Nelder-Mead",1:3]),
+          ra=ra,delta=delta,alpha=aalpha,beta=bbeta,c_age=c_age,gender=gender,gender_mortalityTable=gender_mortalityTable,
           w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,rho3=rho3,ret=ret,retr=retr,psi=psi)
+  # })
 ############### Now execute util and subsequently totalCF
   w3 <- setNames(rep(0,5),c("msci","b10","recom","libor","infl"))
   w3[c("msci","b10","recom")] <- tw3
@@ -104,27 +112,26 @@ util(ret_age=ret_age,c=outwc[2,3],c2=c2,nu2=nu2,nu3=nu3,tw3=tw3,#unlist(outw["Ne
 w3
 ###############
 ### UTILITY
-tcf <- totalCF(ret_age = ret_age, w3 = w3, c = outwc[2,3], c2 = c2,
+tcf <- totalCF(ret_age = ret_age, w3 = w3, c = cc, c2 = c2,
                    nu2 = nu2, nu3 = nu3, c_age = c_age, gender = gender,
                    w0 = w0, li = li, lg = lg, c1 = c1, s1 = s1, s2 = s2, s3 = s3,
-                   w2 = w2, rho2 = rho2, rho3 = rho3, ret = ret, retr = retr, psi = psi, alpha = outwc[2,4], warnings=warnings)
-    #########################################
-    ## 2. prepare discount factors and survival probabilities
-    delta_vec <- (1-delta)^(seq(1,(122-c_age+1))); names(delta_vec) <- (c_age):122
-    # cumulative survival probabilities
-    sur <- cumprod(1-gender_mortalityTable[(c_age-1):(length(gender_mortalityTable)-1)])
-    #########################################
-    ## 3. Calculate utilities
-    # find those that have negative cons or wealth
-    wealth <- rbind(tcf$wealth_before_ret,tcf$wealth_after_ret)
-    uncondmort <- c(1,sur)*gender_mortalityTable[(c_age-1):length(gender_mortalityTable)]
-    uncondmort <- uncondmort[-length(uncondmort)]
+                   w2 = w2, rho2 = rho2, rho3 = rho3, ret = ret, retr = retr, psi = psi, alpha = aalpha, warnings=warnings)
+    delta_vec <- (1-delta)^(seq(1,(122-c_age+1)))
+        names(delta_vec) <- (c_age):122
+      # cumulative survival probabilities
+      sur <- cumprod(1-gender_mortalityTable[(c_age-1):(length(gender_mortalityTable)-1)])
+      #########################################
+      ## 3. Calculate utilities
+      # find those that have negative cons or wealth
+      wealth <- rbind(tcf$wealth_before_ret,tcf$wealth_after_ret)
+      uncondmort <- c(1,sur)*gender_mortalityTable[(c_age-1):length(gender_mortalityTable)]
+      uncondmort <- uncondmort[-length(uncondmort)]
     ### 3a. utility of entire lifetime consumption (scaled for numerical reasons)
-      UC <- apply(tcf$cons,2,function(x){sum((((x+w0)/w0)^(1-ra))/(1-ra)%*%delta_vec*sur)})
+      UC <- apply(tcf$cons,2,function(x){sum((((x+max(10000,w0))/max(10000,w0))^(1-ra))/(1-ra)%*%delta_vec*sur)})
       ### 3b. utility of bequest
-      UB <- apply(wealth,2,function(x){sum((((x+w0)/w0)^(1-ra))/(1-ra)%*%delta_vec*uncondmort)})
+      UB <- apply(wealth,2,function(x){sum((((x+max(10000,w0))/max(10000,w0))^(1-ra))/(1-ra)%*%delta_vec*uncondmort)})
       ### 3c. Expected utility
-      EU <- mean(UC+beta*UB)
+      EU <- mean(UC+bbeta*UB)
   ## Analysis
   which.min(UC)
   UC[which.min(UC)]

@@ -60,7 +60,7 @@
 #' @export
 util <- function(ret_age,tw3,c,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,gender_mortalityTable,w0,CF,li,lg,c1,s1,s2,s3,w2,rho2,rho3,ret,retr,psi,verbose=FALSE, warnings=TRUE){
   #### PARAMETER CHECK: If not fulfilled, then punish utility
-  if (any(tw3<0)|sum(tw3)>1.5|((s3<0)&(alpha>1))|nu2<0|nu2>1|nu3>1|nu3<0|ret_age<60|ret_age>70|c>1){
+  if (any(tw3<0)|sum(tw3)>1.5|((s3<0)&(alpha>1))|nu2<0|nu2>1|nu3>1|nu3<0|ret_age<60|ret_age>70|c>1|c<0|c2>1|c2<0){
     EU <- -5000
   } else {
     w3 <- setNames(rep(0,5),c("msci","b10","recom","libor","infl"))
@@ -80,6 +80,8 @@ util <- function(ret_age,tw3,c,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,gende
                    w2 = w2, rho2 = rho2, rho3 = rho3, ret = ret, retr = retr, psi = psi, alpha = alpha, warnings=warnings)
     ## stop if any total consumption term is negative
     if (min(tcf$cons)<0){
+      EU <- -5000
+    } else if (- min(tcf$wealth_after_ret,tcf$wealth_before_ret) > 0.8 * w0) {
       EU <- -5000
     } else {
       #########################################

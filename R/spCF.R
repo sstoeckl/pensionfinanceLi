@@ -96,8 +96,9 @@ spCF <- function(ret_age=65,nu2,c_age,c2,li,lg,w2=setNames(c(.30,.30,.30,.10,0),
   sp_pensionstart <- sp_wealth_at_ret_age*nu2*rho2*(1+0.126*(ret_age-65)) #last term is early/late retirement adjustment of SPL
   # adjustment for inflation: simplifying assumption of "no inflation adjustment"
   # no inflation adjustment leads to deflation in real terms
-  infl <- ret[ret_age:122,"infl",]
-  h2 <- apply(infl,2,function(x) exp(-cumsum(x/2)))
+  #infl <- ret[ret_age:122,"infl",]
+  #h2 <- apply(infl,2,function(x) exp(-cumsum(x/2)))
+  h2 <- apply(ret[ret_age:122,"infl",],2,function(x) exp(-cumsum(x/2)))
   rownames(h2) <- as.character(ret_age:122)
   sp_pension <- matrix(sp_pensionstart,byrow=TRUE,nrow=nrow(h2),ncol=ncol(h2))*h2
   # create output

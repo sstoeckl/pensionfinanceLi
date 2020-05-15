@@ -62,6 +62,7 @@ totalCF <- function(ret_age,w3,c,c2,nu2,nu3,c_age,gender,w0,CF=NULL,li,lg,c1,s1,
     if ((rho2 <= 0)|(rho3 > 0.2)) warning ("'rho2' conversion rate should be larger than zero and smaller than 0.2 (which is already an extreme case)")
     if ((rho3 <= 0)|(rho3 > 0.2)) warning ("'rho3' conversion rate should be larger than zero and smaller than 0.2 (which is already an extreme case)")
     if (!is.null(CF)) warning('Onetime cashflows are not yet modelled and will not be considered')
+    if (-s3>0.8*w0) stop('more liquid debt than illiquid wealth - infeasible case')
   }
   #########################################
   ## 1. Pre-Calculations
@@ -83,16 +84,16 @@ totalCF <- function(ret_age,w3,c,c2,nu2,nu3,c_age,gender,w0,CF=NULL,li,lg,c1,s1,
                         retr=retr, s3=s3, w0=w0, psi=psi, c=c, warnings=warnings)
       ## third pillar lumpsum is wealth that is NOT converted to life-long pension (nu3: how much will be converted to life-long pension)
       # for the case that wealth is negative do not allow for annuitization of anything
-      tp_wealth_for_pension <- tpcfw$wealth[as.character(ret_age-1),,drop=FALSE]
+      tp_wealth_befor_pension <- tpcfw$wealth[as.character(ret_age-1),,drop=FALSE]
       # if wealth>0 allow for annuitization of nu3, if <0 put it all to the lumpsum
-      tp_lumpsum <- tp_wealth_for_pension * (1 - nu3*as.numeric(tp_wealth_for_pension>=0))
+      tp_lumpsum <- tp_wealth_befor_pension * (1 - nu3*as.numeric(tp_wealth_befor_pension>=0))
       ## lumpsum after tax
       # 2nd pillar tax (special tax treatment for lump sum payments from second pillar, assumption: no insurance products in third pillar!)
       # 3rd pillar lumpsum is just wealth at retirement after reduction by nu3
       lumpsum_after_tax <- taxCFlumpsum(lumpsum = spcf$lumpsum, gender = gender,ret_age = ret_age, warnings=warnings) + tp_lumpsum
       ## 3rd pillar annuity is wealth converted to life-long pension using conversion rate rho3 and early/late retirement adjustment of 2nd pillar
       # we create a timeseries from it
-      tp_pension_ann <- (spcf$pension*0+1)[,1,drop=FALSE] %*% ((tp_wealth_for_pension*nu3*as.numeric(tp_wealth_for_pension>=0)*rho3*(1+0.126*(ret_age-65))))
+      tp_pension_ann <- (spcf$pension*0+1)[,1,drop=FALSE] %*% ((tp_wealth_befor_pension*nu3*as.numeric(tp_wealth_befor_pension>=0)*rho3*(1+0.126*(ret_age-65))))
     ## 3b. CF during retirement
     tpcf_ret <- tpCFret(ret_age = ret_age, c_age = c_age, w3 = w3, alpha = alpha,
                         wealth_at_ret_age = lumpsum_after_tax,

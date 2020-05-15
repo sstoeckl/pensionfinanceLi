@@ -41,17 +41,19 @@ tpCFret <- function(ret_age=65,c_age,w3,alpha,wealth_at_ret_age,retr,psi=0.015, 
   ## 2. Returns
   # check for leverage in the libor vector, add spread if negative
   if (w3["libor"] < 0){retr[,"libor",] <- retr[,"libor",] + psi}
-
   ## self-managed pension
   # portfolio returns (real) during saving years
-  ma <- retr[(ret_age+1):122,names(w3),,drop=FALSE]
-  ma_d <- retr[(ret_age+1):122,"libor",,drop=FALSE]
-  pf_ret <- apply(ma,3,function(x) (exp(x)-1)%*%w3) # discrete returns times portfolio weights
-  # interest for negative liquid wealth
-  if (w3["libor"] < 0){debt <- apply(ma_d,3,function(x) (exp(x)-1))} else {debt <- apply(ma_d,3,function(x) (exp(x+psi)-1))}
+      # ma <- retr[(ret_age+1):122,names(w3),,drop=FALSE]
+      # ma_d <- retr[(ret_age+1):122,"libor",,drop=FALSE]
+      # pf_ret <- apply(ma,3,function(x) (exp(x)-1)%*%w3) # discrete returns times portfolio weights
+      # # interest for negative liquid wealth
+      # if (w3["libor"] < 0){debt <- apply(ma_d,3,function(x) (exp(x)-1))} else {debt <- apply(ma_d,3,function(x) (exp(x+psi)-1))}
+  pf_ret <- apply(retr[(ret_age+1):122,names(w3),,drop=FALSE],3,function(x) (exp(x)-1)%*%w3) # discrete returns times portfolio weights
+  if (w3["libor"] < 0){debt <- apply(retr[(ret_age+1):122,"libor",,drop=FALSE],3,function(x) (exp(x)-1))} else {debt <- apply(retr[(ret_age+1):122,"libor",,drop=FALSE],3,function(x) (exp(x+psi)-1))}
+  # # interest for negative liquid wealth
+  # if (w3["libor"] < 0){debt <- apply(ma_d,3,function(x) (exp(x)-1))} else {debt <- apply(ma_d,3,function(x) (exp(x+psi)-1))}
   # necessary to keep matrix dimensions
-  dim(pf_ret) <- c(length((ret_age+1):122),dim(retr)[3])
-  dim(debt) <- c(length((ret_age+1):122),dim(retr)[3])
+  dim(pf_ret) <- dim(debt) <- c(length((ret_age+1):122),dim(retr)[3])
   #
   cfact3 <- alpha # !!! alpha = const!!!
   ## 1) In case the final wealth is positive we take away cfact3 from wealth before we add interest
@@ -61,9 +63,9 @@ tpCFret <- function(ret_age=65,c_age,w3,alpha,wealth_at_ret_age,retr,psi=0.015, 
   # In all cases we leave negative wealth as bequest and therefore have to adapt the utility function
   ## Step 1 adapt e
   e1 <- apply(pf_ret,2,function(x){cumprod((1+x)*cfact3)})
-  e1 <- rbind(e1[1,]*0+1,e1) # this is ultimaively wrong but looks better. for correct treatment delete here and delete "+1" in lines 47f
+  e1 <- rbind(e1[1,]*0+1,e1) # this is ultimatively wrong but looks better. for correct treatment delete here and delete "+1" in lines 47f
   e2 <- apply(debt,2,function(x){cumprod((1+x))})
-  e2 <- rbind(e2[1,]*0+1,e2) # this is ultimaively wrong but looks better. for correct treatment delete here and delete "+1" in lines 47f
+  e2 <- rbind(e2[1,]*0+1,e2) # this is ultimatively wrong but looks better. for correct treatment delete here and delete "+1" in lines 47f
   e <- matrix(as.numeric(wealth_at_ret_age>=0),nrow=nrow(e1),ncol=ncol(e1),byrow=TRUE)*e1 +
           matrix(as.numeric(wealth_at_ret_age<0),nrow=nrow(e2),ncol=ncol(e2),byrow=TRUE)*e2
   wealth <- matrix(wealth_at_ret_age,byrow = TRUE,nrow=nrow(e),ncol=ncol(e))*e
