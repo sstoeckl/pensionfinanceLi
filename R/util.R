@@ -126,10 +126,10 @@ util <- function(ret_age,tw3,c,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,gende
 #'
 #' @param inputvec c(ret_age,c, c2, nu2, nu3, alpha, w3, ret_age)
 #'
-.util_optim <- function(inputvec,ra,delta,beta,c_age,gender,gender_mortalityTable,w0,CF,li,lg,c1,s1,s2,s3,w2,rho2,rho3,ret,retr,psi,verbose=FALSE, warnings=FALSE){
+.util_optim <- function(inputvec,ret_age,ra,delta,beta,c_age,gender,gender_mortalityTable,w0,CF,li,lg,c1,s1,s2,s3,w2,rho2,rho3,ret,retr,psi,verbose=FALSE, warnings=FALSE){
   #ret_age,tw3,c,c2,nu2,nu3,delta,alpha
   # inputvec=c(ret_age,c,c2,nu2,nu3,alpha,tw3)
-  return(-util(ret_age=round(inputvec[9],0),tw3=inputvec[6:8],c=inputvec[1],c2=inputvec[2],nu2=inputvec[3],nu3=inputvec[4],ra=ra,delta=delta,alpha=inputvec[5],
+  return(-util(ret_age=ret_age,tw3=inputvec[6:8],c=inputvec[1],c2=inputvec[2],nu2=inputvec[3],nu3=inputvec[4],ra=ra,delta=delta,alpha=inputvec[5],
               beta=beta,c_age=c_age,gender=gender,
               gender_mortalityTable=gender_mortalityTable,w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,rho3=rho3,
               ret=ret,retr=retr,psi=psi,verbose=verbose, warnings=warnings))
