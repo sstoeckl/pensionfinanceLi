@@ -25,6 +25,7 @@
 #'
 #' @importFrom optimx optimx
 #' @importFrom tibble tibble
+#' @importFrom dplyr bind_rows
 #'
 #' @export
 optimalw <- function(initial_values,upper_bounds=NULL,lower_bounds=NULL,ret_age,cc,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,gender_mortalityTable,w0,
@@ -50,7 +51,7 @@ optimalw <- function(initial_values,upper_bounds=NULL,lower_bounds=NULL,ret_age,
                    w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,
                    rho2=rho2,rho3=rho3,
                    ret=ret,retr=retr,psi=psi,verbose=verbose,warnings=warnings)
-    res <- tibble::tibble("i"=1,"method"=c("Nelder-Mead"),bind_rows(unlist(resn)))
+    res <- tibble::tibble("i"=1,"method"=c("Nelder-Mead"),dplyr::bind_rows(unlist(resn)))
     cat("Round ",i,"\n")
     if (min(res["convergence"])==0) {break()}
   }
