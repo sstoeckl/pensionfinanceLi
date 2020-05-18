@@ -124,7 +124,7 @@ util <- function(ret_age,tw3,c,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,gende
 #'
 #' Helper 1: Optimization function
 #'
-#' @param inputvec c(ret_age,c, c2, nu2, nu3, alpha, w3, ret_age)
+#' @param inputvec c(c, c2, nu2, nu3, alpha, w3)
 #'
 .util_optim <- function(inputvec,ret_age,ra,delta,beta,c_age,gender,gender_mortalityTable,w0,CF,li,lg,c1,s1,s2,s3,w2,rho2,rho3,ret,retr,psi,verbose=FALSE, warnings=FALSE){
   #ret_age,tw3,c,c2,nu2,nu3,delta,alpha

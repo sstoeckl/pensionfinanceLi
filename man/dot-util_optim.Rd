@@ -6,6 +6,7 @@
 \usage{
 .util_optim(
   inputvec,
+  ret_age,
   ra,
   delta,
   beta,
@@ -31,7 +32,7 @@
 )
 }
 \arguments{
-\item{inputvec}{c(ret_age,c, c2, nu2, nu3, alpha, w3, ret_age)}
+\item{inputvec}{c(c, c2, nu2, nu3, alpha, w3)}
 }
 \description{
 Helper 1: Optimization function
