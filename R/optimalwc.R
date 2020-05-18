@@ -19,6 +19,7 @@
 #'          w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,rho3=rho3,ret=ret[,,1:10],retr=retr[,,1:10],psi=psi,trace=1,reltol=1e-4)
 #'
 #' @importFrom optimx optimx
+#' @importFrom tibble tibble
 #'
 #' @export
 optimalwc <- function(initial_values,upper_bounds,lower_bounds,ret_age,c2,nu2,nu3,ra,delta,beta,c_age,gender,gender_mortalityTable,w0,

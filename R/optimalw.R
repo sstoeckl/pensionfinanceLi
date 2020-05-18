@@ -24,6 +24,7 @@
 #' }
 #'
 #' @importFrom optimx optimx
+#' @importFrom tibble tibble
 #'
 #' @export
 optimalw <- function(initial_values,upper_bounds=NULL,lower_bounds=NULL,ret_age,cc,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,gender_mortalityTable,w0,

@@ -19,6 +19,7 @@
 #'
 #' }
 #' @importFrom optimx optimx
+#' @importFrom tibble tibble
 #'
 #' @export
 optimalLC <- function(initial_values,upper_bounds,lower_bounds,ret_age,ra,delta,beta,c_age,gender,gender_mortalityTable,w0,
