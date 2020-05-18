@@ -33,11 +33,12 @@ makeweights <- function(tw3){
   w3["libor"] <- if (!abs(sum(tw3))==Inf) {1 - sum(tw3)}
   return(w3)
 }
-nSim <- 10
+optim
+nSim <- 100
 #
 outALL <- tibble(type=numeric(),gend=numeric(),opt=character(),c=numeric(),c2=numeric(),nu2=numeric(),nu3=numeric(),alpha=numeric(),
                  msci=numeric(),b10=numeric(),recom=numeric(),libor=numeric(),ret_age=numeric(),
-                 method=character(),util=numeric(),fevals=numeric(),convergence=numeric(),nSim=numeric())
+                 method=character(),util=numeric(),convergence=numeric(),nSim=numeric())
 for (type in 1:3){
   for (gend in 0:1){
     .load_parameters(gend=gend,type=type)
@@ -47,12 +48,12 @@ for (type in 1:3){
       outLC <- optimalLC(initial_values = c(0.5,0.1,0.5,0.5,1,rep(0,3)),upper_bounds=NULL,lower_bounds=NULL,
                        ret_age=ret_age,
                        ra=ra,delta=delta,beta=bbeta,c_age=c_age,gender=gender,gender_mortalityTable=gender_mortalityTable,
-                       w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,rho3=rho3,ret=ret[,,1:nSim],retr=retr[,,1:nSim],psi=psi,trace=0)
+                       w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,rho3=rho3,ret=ret[,,1:nSim],retr=retr[,,1:nSim],psi=psi,trace=1)
         toc()
         beep()
         names(outLC)[3:7] <- c("c","c2","nu2","nu3","alpha"); names(outLC)[c(12)] <- c("util")
-      outALL <- bind_rows(outALL,c("opt"="LC","type"=type,"gend"=gend,outLC[c("c","c2","nu2","nu3","alpha")],makeweights(outLC[c("p6","p7","p8")]),
-                                   outLC[c("method")],outLC[c("util","fevals","convergence")],"nSim"=nSim))
+      outALL <- bind_rows(outALL,c("opt"="LC","type"=type,"gend"=gend,outLC[c("c","c2","nu2","nu3","alpha")],makeweights(outLC[c("par6","par7","par8")]),
+                                   outLC[c("method")],outLC[c("util","convergence")],"nSim"=nSim))
     # 2) Only some Parameters
       tic() # c(c, alpha, w3)
     outwc <- optimalwc(initial_values = unname(unlist(c(outLC[c("c","alpha")],outLC[c("p6","p7","p8")]))),upper_bounds=NULL,lower_bounds=NULL,
@@ -63,7 +64,7 @@ for (type in 1:3){
       beep()
       names(outwc)[3:4] <- c("c","alpha"); names(outwc)[c(8)] <- c("util")
     outALL <- bind_rows(outALL,c("opt"="wc","type"=type,"gend"=gend,outwc["c"],"c2"=c2,"nu2"=nu2,"nu3"=nu3,outwc["alpha"],
-                                 makeweights(outwc[c("p3","p4","p5")]),"ret_age"=ret_age,
+                                 makeweights(outwc[c("par3","par4","par5")]),"ret_age"=ret_age,
                                  outwc[c("method")],outwc[c("util","fevals","convergence")],"nSim"=nSim))
     # 3) Only weights
       tic() # c(w3)
@@ -75,7 +76,7 @@ for (type in 1:3){
       beep()
       names(outw)[c(6)] <- c("util")
     outALL <- bind_rows(outALL,c("opt"="w","type"=type,"gend"=gend,"c"=cc,"c2"=c2,"nu2"=nu2,"nu3"=nu3,"alpha"=aalpha,
-                                 makeweights(outw[c("p1","p2","p3")]),"ret_age"=ret_age,
+                                 makeweights(outw[c("par1","par2","par3")]),"ret_age"=ret_age,
                                  outw[c("method")],outw[c("util","fevals","convergence")],"nSim"=nSim))
     
   }
