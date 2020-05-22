@@ -52,3 +52,32 @@ optimalwc <- function(initial_values,upper_bounds,lower_bounds,ret_age,c2,nu2,nu
   }
   return(res)
 }
+optimalwc2 <- function(initial_values,upper_bounds,lower_bounds,ret_age,c2,nu2,nu3,ra,delta,beta,c_age,gender,gender_mortalityTable2,w0,
+                      CF,li,lg,c1,s1,s2,s3,rho2,rho3,ret,retr,SPFretsel,psi,verbose=FALSE,warnings=FALSE,trace=0,reltol=sqrt(.Machine$double.eps)){
+  #mc <- data.frame(method=c("Nelder-Mead","L-BFGS-B"), maxit=c(50,50), maxfeval= c(50,50))
+  mc <- data.frame(method=c("Nelder-Mead"), maxit=c(50*5^2), maxfeval= c(50*5^2))
+  ivmat <- rbind(initial_values,as.matrix(rbind(c(0.5,1,rep(0,3)),c(1,1,rep(0,3)))))
+  res <- NULL
+  for (i in c(1:3)){
+    resn <- optim(par=ivmat[i,],
+                  fn=.util_optim_wc2, #gr=NULL,hess=NULL,#gr=function(x) pracma::gradient(util_optim,x),
+                  #lower=lower_bounds,
+                  #upper=upper_bounds,
+                  method="Nelder-Mead",
+                  control=list(#all.methods=TRUE,
+                    reltol=reltol,
+                    trace=trace,
+                    maxit=50*5^2),#, factr = 1e-10),
+                  #itnmax=50*3^2,
+                  ret_age=ret_age,c2=c2,nu2=nu2,nu3=nu3,
+                  ra=ra,delta=delta,beta=beta,c_age=c_age,gender=gender,
+                  gender_mortalityTable2=gender_mortalityTable2,
+                  w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,
+                  rho2=rho2,rho3=rho3,
+                  ret=ret,retr=retr,SPFretsel=SPFretsel,psi=psi,verbose=verbose,warnings=warnings)
+    res <- tibble::tibble("i"=1,"method"=c("Nelder-Mead"),dplyr::bind_rows(unlist(resn)))
+    cat("Round ",i,"\n")
+    if (min(res["convergence"])==0) {break()}
+  }
+  return(res)
+}

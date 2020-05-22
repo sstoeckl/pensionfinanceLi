@@ -139,4 +139,31 @@ dimnames(retr) <- dimnames(ret)
 # save
 save(retr,file = "data-raw/VAR_returnreal_sim.RData")
 usethis::use_data(retr,overwrite=TRUE)
+##################################################################
+## 6: Creating real returns
+w2 <- setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl"))
+SPFret <- list()
+for (c_age in 20:70){
+  SPFret[[ as.character(c_age) ]] <- list()
+  for (ret_age in 60:70){
+    if (c_age>=ret_age){next}
+    ma <- retr[c_age:(ret_age-1),names(w2),,drop=FALSE]
+    pf_ret <- apply(ma,3,function(x) (exp(x)-1)%*%w2) # discrete real returns times portfolio weights
+    # necessary to keep matrix dimensions
+    dim(pf_ret) <- c(length(c_age:(ret_age-1)),dim(ret)[3])
+    # now limit max and min performance (equivalent to smoothed performance)
+    # for all future periods and scenarios we limit
+    ind25 <- which(pf_ret<quantile(pf_ret,.25))
+    ind75 <- which(pf_ret>quantile(pf_ret,.75))
+    # calculate actually paid returns as mean over all (smoothed)
+    payed_ret <- pracma::ones(nrow(pf_ret),ncol(pf_ret))*mean(pf_ret)
+    # the best/worst years get 2% more (less) than the overall mean
+    payed_ret[ind25] <- mean(pf_ret)-.02
+    payed_ret[ind75] <- mean(pf_ret)+.02
+    rownames(payed_ret) <- as.character(c_age:(ret_age-1))
+    SPFret[[ as.character(c_age) ]][[ as.character(ret_age)]] <- payed_ret
+  }
+}
+save(SPFret,file = "data-raw/SPCF.RData")
+usethis::use_data(SPFret,overwrite=TRUE)
 

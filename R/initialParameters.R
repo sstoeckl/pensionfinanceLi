@@ -10,9 +10,11 @@
   MortalityTables::mortalityTables.load("Austria_Annuities")
   if (gend==0){
     gender_mortalityTable <<- MortalityTables::baseTable(AVOe2005R.male)
+    gender_mortalityTable2 <<- cbind(MortalityTables::baseTable(AVOe2005R.male),MortalityTables::baseTable(AVOe2005R.female))
     gender <<- gend
     } else {
     gender_mortalityTable <<- MortalityTables::baseTable(AVOe2005R.female)
+    gender_mortalityTable2 <<- cbind(MortalityTables::baseTable(AVOe2005R.male),MortalityTables::baseTable(AVOe2005R.female))
     gender <<- gend
   }
   if (type==2){

@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(pensionfinanceLi)
 library(MortalityTables)
-data(ret);data(retr)
+data(ret);data(retr);data(SPFret)
 ```
 
 # Base Case (according to paper)
@@ -86,7 +86,24 @@ for (type in 1:3){
 ```
 
 ```{r eval=FALSE}
-
+gc()
+.load_parameters(gend=0,type=1)
+SPFretsel <- .SPFretch(SPFret,c_age=c_age,ret_age=ret_age)
+tic() # c(c, alpha, w3)
+    outwc2 <- optimalwc2(initial_values = c(0.5,1,0,0,0),upper_bounds=NULL,lower_bounds=NULL,
+                 ret_age=ret_age,c2=c2,nu2=nu2,nu3=nu3,
+                 ra=ra,delta=delta,beta=bbeta,c_age=c_age,gender=gender,gender_mortalityTable2=gender_mortalityTable2,
+                 w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,rho2=rho2,rho3=rho3,ret=ret,retr=retr,SPFretsel=SPFretsel,psi=psi,trace=1)
+      toc()
+      beep()
+            gc()
+      tic() # c(c, alpha, w3)
+    outwc <- optimalwc(initial_values = c(0.5,1,0,0,0),upper_bounds=NULL,lower_bounds=NULL,
+                 ret_age=ret_age,c2=c2,nu2=nu2,nu3=nu3,
+                 ra=ra,delta=delta,beta=bbeta,c_age=c_age,gender=gender,gender_mortalityTable=gender_mortalityTable,
+                 w0=w0,CF=CF,li=li,lg=lg,w2=w2,c1=c1,s1=s1,s2=s2,s3=s3,rho2=rho2,rho3=rho3,ret=ret,retr=retr,psi=psi,trace=1)
+      toc()
+      beep()
 ```
 
 ```{r eval=FALSE}
