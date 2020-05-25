@@ -38,20 +38,24 @@
 #' @examples
 #' data(ret); data(retr); data(SPFret)
 #' MortalityTables::mortalityTables.load("Austria_Annuities")
-#' SPFretsel <- .SPFretch(SPFret,c_age=42,ret_age=65)
+#' .load_parameters(gend=0,type=1)
+#' SPFretsel <- .SPFretch(SPFret,c_age=c_age,ret_age=ret_age)
 #'
-#' utilall_ex <- utilall(ret_age=65,c_age=42,
+#' utilall_ex <- utilall(ret_age=ret_age,c_age=c_age,
 #'                 tw3=c(.25,.25,.25),
-#'                 c=0.6,c2=.12,nu2=.5,nu3=0.01,ra=4,delta=0.02,alpha=0.96,beta=0.75,gender=0,
+#'                 c=cc,c2=c2,nu2=nu2,nu3=nu3,ra=ra,delta=delta,alpha=aalpha,beta=bbeta,gender=gender,
 #'                 gender_mortalityTable2=cbind(MortalityTables::baseTable(AVOe2005R.male),MortalityTables::baseTable(AVOe2005R.female)),
-#'                 w0=300000,CF=NULL,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
-#'                 rho2=0.05,rho3=0.04,ret=ret,retr=retr,SPFretsel=SPFretsel,psi=0.015)
-#' utilall_ex2 <- utilall(ret_age=65,c_age=64,
-#'                 tw3=setNames(c(1,0,0),c("msci","b10","recom")),
-#'                 c=1,c2=0,nu2=0,nu3=0,ra=0,delta=0,alpha=1,beta=0,gender=0,
+#'                 w0=w0,CF=NULL,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,
+#'                 rho2=rho2,rho3=rho3,ret=ret,retr=retr,SPFretsel=SPFretsel,psi=psi)
+#'
+#' .load_parameters(gend=1,type=2)
+#' SPFretsel <- .SPFretch(SPFret,c_age=c_age,ret_age=ret_age)
+#' utilall_ex2 <- utilall(ret_age=ret_age,c_age=c_age,
+#'                 tw3=c(.25,.25,.25),
+#'                 c=cc,c2=c2,nu2=nu2,nu3=nu3,ra=ra,delta=delta,alpha=aalpha,beta=bbeta,gender=gender,
 #'                 gender_mortalityTable2=cbind(MortalityTables::baseTable(AVOe2005R.male),MortalityTables::baseTable(AVOe2005R.female)),
-#'                 w0=0,CF=NULL,li=0,lg=0,c1=0,s1=c(0,0),s2=0,s3=0,
-#'                 rho2=0.0001,rho3=0.0001,ret=ret,retr=retr,SPFretsel=.SPFretch(SPFret,c_age=42,ret_age=65),psi=0)
+#'                 w0=w0,CF=NULL,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,
+#'                 rho2=rho2,rho3=rho3,ret=ret,retr=retr,SPFretsel=SPFretsel,psi=psi)
 #'
 #' @importFrom stats setNames
 #'
@@ -88,7 +92,7 @@ utilall <- function(ret_age,tw3,c,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,ge
         # 2.1 is a "mysterious revaluation factor" used by AHV
         avg_laborincome <- (mean(li*(1+lg)^(seq(sav_years)))*sav_years + s1[1]*s1[2])/(sav_years + s1[1])*2.1
         # Data
-        pension_adj <- c(-0.218,-0.18,-0.14,-0.097,-0.05,0,0.045,0.093,0.144,0.201,0.261); names(pension_adj) <- 60:70
+        pension_adj <- setNames(c(-0.218,-0.18,-0.14,-0.097,-0.05,0,0.045,0.093,0.144,0.201,0.261),60:70)
         #########################################
         ## 2. First-Pillar specifics
         # Adjust income that will be evalued by 1stP to lie within these brackets:
@@ -97,9 +101,9 @@ utilall <- function(ret_age,tw3,c,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,ge
         # The following calculates the theoretical pension to be received given 44 (max) contribution years, it is an approximation based on an (?) Excel regression
         full_pension <- (815.4 + 0.02622247*avg_laborincome - 1.0193*10^(-7)*avg_laborincome^2)*13 # from regression in excel to replace AHV table
         # Adjust for fraction of contribution years (base and max: 44 years)
-        yearfrac <- min((s1[1]+sav_years)/44,1) #assumption that 44 contribution years
+        # yearfrac <- min((s1[1]+sav_years)/44,1) #assumption that 44 contribution years
         # calculate actual 1stP pension at ret_age and adjust for late/early retirement
-        fp_pensionstart <- yearfrac*full_pension*(1+pension_adj[as.character(ret_age)])
+        fp_pensionstart <- min((s1[1]+sav_years)/44,1)*full_pension*(1+pension_adj[as.character(ret_age)])
         #########################################
         ## 3. Adjustment for inflation
         # adjustment for inflation: simplifying assumption of "always half of observed inflation rate" (even if inflation is negative)
@@ -107,7 +111,7 @@ utilall <- function(ret_age,tw3,c,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,ge
         #h2 <- apply(ret[ret_age:122,"infl",],2,function(x) exp(-cumsum(x/2)))
         #rownames(h2) <- as.character(ret_age:122)
         # Now create final vector of 1st pillar pension cashflows
-        fpcf <- drop(fp_pensionstart)*apply(ret[ret_age:122,"infl",],2,function(x) exp(-cumsum(x/2)))
+        fpcf <- drop(fp_pensionstart)*exp(-apply(ret[ret_age:122,"infl",]/2,2,function(x) cumsum(x)))
       ### 2b. Second Pillar
         #########################################
         ## 3. Cashflow
@@ -115,8 +119,9 @@ utilall <- function(ret_age,tw3,c,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,ge
         lcf <- c(s2,(c2+min(c2,0.12))*li*(1+lg)^(seq(sav_years)-1))  # 2*c2 because of 50/50 contribution split
         # what is the wealth of each element of lcf at the end of savings phase?
         spcf <- list()
-        spcf$wealth <- apply(SPFretsel,2,function(x){lcf%*%c(rev(cumprod(1+rev(x))),1)}) # rev to give s0 the aggregate returns
-        dim(spcf$wealth)<-c(1,dim(ret)[3]); rownames(spcf$wealth) <- (ret_age-1)
+        spcf$wealth <- rev(lcf)%*%apply(1+SPFretsel[nrow(SPFretsel):1,],2,function(x){c(1,(cumprod(x)))}) # replace rev&rev to make muuuuch faster
+        #dim(spcf$wealth)<-c(1,dim(ret)[3]);
+        rownames(spcf$wealth) <- (ret_age-1)
         # Now calculate cashflows after ret_age
         # lumpsum payment from wealth_at ret_age
         spcf$lumpsum <- spcf$wealth*(1-nu2)
@@ -126,29 +131,27 @@ utilall <- function(ret_age,tw3,c,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,ge
         # no inflation adjustment leads to deflation in real terms
         #infl <- ret[ret_age:122,"infl",]
         #h2 <- apply(infl,2,function(x) exp(-cumsum(x/2)))
-        h2 <- apply(ret[ret_age:122,"infl",],2,function(x) exp(-cumsum(x/2)))
-        rownames(h2) <- as.character(ret_age:122)
-        spcf$pension <- matrix(spcf$wealth*nu2*rho2*(1+0.126*(ret_age-65)),byrow=TRUE,nrow=nrow(h2),ncol=ncol(h2))*h2
+        # h2 <- exp(-apply(ret[ret_age:122,"infl",]/2,2,function(x) cumsum(x)))
+        # rownames(h2) <- as.character(ret_age:122)
+        spcf$pension <- matrix(spcf$wealth*nu2*rho2*(1+0.126*(ret_age-65)),byrow=TRUE,nrow=length(ret_age:122),ncol=dim(retr)[3])*exp(-apply(ret[ret_age:122,"infl",]/2,2,function(x) cumsum(x)))
+        rownames(spcf$pension) <- as.character(ret_age:122)
       ### 3. Third Pillar
-      free_cf_before_tax <- li*(1+lg)^(seq(sav_years)-1)*(1-c1-c2)
-      names(free_cf_before_tax) <- c_age:(ret_age-1)
+      free_cf_before_tax <- setNames(li*(1+lg)^(seq(sav_years)-1)*(1-c1-c2),c_age:(ret_age-1))
+      #names(free_cf_before_tax) <- c_age:(ret_age-1)
       ## 3a. CF during working phase
         # includes wealth development and consumption development during working phase
-        if (w3["libor"] < 0){retr[,"libor",] <- retr[,"libor",] + psi}
+        retr[,"libor",] <- retr[,"libor",] + as.numeric(w3["libor"] < 0)*psi
         # portfolio returns (real) during saving years
-        ma <- retr[c_age:(ret_age-1),names(w3),,drop=FALSE]
-        ma_d <- retr[c_age:(ret_age-1),"libor",,drop=FALSE]
-        pf_ret <- apply(ma,3,function(x) (exp(x)-1)%*%w3) # discrete returns times portfolio weights
+        #ma <- exp(retr[c_age:(ret_age-1),names(w3),,drop=FALSE])-1
+        pf_ret <- apply(exp(retr[c_age:(ret_age-1),names(w3),,drop=FALSE])-1,3,function(x) x%*%w3) # discrete returns times portfolio weights
         # interest for negative liquid wealth
-        if (w3["libor"] < 0){debt <- apply(ma_d,3,function(x) (exp(x)-1))} else {debt <- apply(ma_d,3,function(x) (exp(x+psi)-1))}
-        # necessary to keep matrix dimensions
-        dim(pf_ret) <- c(length(c_age:(ret_age-1)),dim(retr)[3])
-        dim(debt) <- c(length(c_age:(ret_age-1)),dim(retr)[3])
+        #ma_d <- exp(retr[c_age:(ret_age-1),"libor",,drop=FALSE]+as.numeric(w3["libor"] >= 0)*psi)-1
+        debt <- apply(exp(retr[c_age:(ret_age-1),"libor",,drop=FALSE]+as.numeric(w3["libor"] >= 0)*psi)-1,3,function(x) x)
+        dim(pf_ret) <- dim(debt) <- c(length(c_age:(ret_age-1)),dim(retr)[3])
         # cf<-c(s3,freecfbeforetax)  #what for? (where used again?)
         #########################################
         ## 3. Wealth and Cash Flows
-        wealth_development <- array(NA,c(ret_age-c_age,dim(retr)[3]))
-        consumption <- array(NA,c(ret_age-c_age,dim(retr)[3]))
+        wealth_development <- consumption <- array(NA,c(ret_age-c_age,dim(retr)[3]))
         rownames(wealth_development) <- rownames(consumption) <- as.character(seq(c_age,ret_age-1))
         # In first year
         cf_tax <- taxCFwork(free_cf_before_tax[1], liquid_wealth = s3, illiquid_wealth = w0) # wealth from 1.1.
@@ -170,12 +173,12 @@ utilall <- function(ret_age,tw3,c,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,ge
         }
         tpcfw <- list()
         tpcfw$cons <- consumption
-        tpcfw$wealth <- wealth_development
+        #tpcfw$wealth <- wealth_development
     tcf<-list()
-    tcf$wealth_before_ret <- tpcfw$wealth
+    tcf$wealth_before_ret <- wealth_development #tpcfw$wealth
       ## third pillar lumpsum is wealth that is NOT converted to life-long pension (nu3: how much will be converted to life-long pension)
       # for the case that wealth is negative do not allow for annuitization of anything
-      tp_wealth_befor_pension <- tpcfw$wealth[as.character(ret_age-1),,drop=FALSE]
+      tp_wealth_befor_pension <- tcf$wealth_before_ret[as.character(ret_age-1),,drop=FALSE]
       # if wealth>0 allow for annuitization of nu3, if <0 put it all to the lumpsum
       tp_lumpsum <- tp_wealth_befor_pension * (1 - nu3*as.numeric(tp_wealth_befor_pension>=0))
       ## lumpsum after tax
@@ -186,10 +189,8 @@ utilall <- function(ret_age,tw3,c,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,ge
       # we create a timeseries from it
       tp_pension_ann <- (spcf$pension*0+1)[,1,drop=FALSE] %*% ((tp_wealth_befor_pension*nu3*as.numeric(tp_wealth_befor_pension>=0)*rho3*(1+0.126*(ret_age-65))))
       ## 3b. CF during retirement
-        pf_ret <- apply(retr[(ret_age+1):122,names(w3),,drop=FALSE],3,function(x) (exp(x)-1)%*%w3) # discrete returns times portfolio weights
-        if (w3["libor"] < 0){debt <- apply(retr[(ret_age+1):122,"libor",,drop=FALSE],3,function(x) (exp(x)-1))} else {debt <- apply(retr[(ret_age+1):122,"libor",,drop=FALSE],3,function(x) (exp(x+psi)-1))}
-        # # interest for negative liquid wealth
-        # if (w3["libor"] < 0){debt <- apply(ma_d,3,function(x) (exp(x)-1))} else {debt <- apply(ma_d,3,function(x) (exp(x+psi)-1))}
+        pf_ret <- apply((exp(retr[(ret_age+1):122,names(w3),,drop=FALSE])-1),3,function(x) x%*%w3) # discrete returns times portfolio weights
+        debt <- apply((exp(retr[(ret_age+1):122,"libor",,drop=FALSE]+as.numeric(w3["libor"] >= 0)*psi)-1),3,function(x) x)
         # necessary to keep matrix dimensions
         dim(pf_ret) <- dim(debt) <- c(length((ret_age+1):122),dim(retr)[3])
         #
@@ -200,9 +201,9 @@ utilall <- function(ret_age,tw3,c,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,ge
         # also: we could still consume (aka reverse mortgage) by borrowing on w0 (lets say up to 80%*w0).
         # In all cases we leave negative wealth as bequest and therefore have to adapt the utility function
         ## Step 1 adapt e
-        e1 <- apply(pf_ret,2,function(x){cumprod((1+x)*cfact3)})
+        e1 <- apply((1+pf_ret)*cfact3,2,function(x){cumprod(x)})
         e1 <- rbind(e1[1,]*0+1,e1) # this is ultimatively wrong but looks better. for correct treatment delete here and delete "+1" in lines 47f
-        e2 <- apply(debt,2,function(x){cumprod((1+x))})
+        e2 <- apply((1+debt),2,function(x){cumprod(x)})
         e2 <- rbind(e2[1,]*0+1,e2) # this is ultimatively wrong but looks better. for correct treatment delete here and delete "+1" in lines 47f
         e <- matrix(as.numeric(lumpsum_after_tax>=0),nrow=nrow(e1),ncol=ncol(e1),byrow=TRUE)*e1 +
           matrix(as.numeric(lumpsum_after_tax<0),nrow=nrow(e2),ncol=ncol(e2),byrow=TRUE)*e2
@@ -269,6 +270,7 @@ utilall <- function(ret_age,tw3,c,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,ge
 #'
 #' Helper 0: Sel SPFret
 #'
+#' @export
 .SPFretch <- function(SPFret,c_age,ret_age){
   return(SPFret[[as.character(c_age)]][[as.character(ret_age)]])
 }

@@ -104,19 +104,23 @@ Expected Utility for total cash-flows is calculated here and used for optimizati
 \examples{
 data(ret); data(retr); data(SPFret)
 MortalityTables::mortalityTables.load("Austria_Annuities")
-SPFretsel <- .SPFretch(SPFret,c_age=42,ret_age=65)
+.load_parameters(gend=0,type=1)
+SPFretsel <- .SPFretch(SPFret,c_age=c_age,ret_age=ret_age)
 
-utilall_ex <- utilall(ret_age=65,c_age=42,
+utilall_ex <- utilall(ret_age=ret_age,c_age=c_age,
                 tw3=c(.25,.25,.25),
-                c=0.6,c2=.12,nu2=.5,nu3=0.01,ra=4,delta=0.02,alpha=0.96,beta=0.75,gender=0,
+                c=cc,c2=c2,nu2=nu2,nu3=nu3,ra=ra,delta=delta,alpha=aalpha,beta=bbeta,gender=gender,
                 gender_mortalityTable2=cbind(MortalityTables::baseTable(AVOe2005R.male),MortalityTables::baseTable(AVOe2005R.female)),
-                w0=300000,CF=NULL,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
-                rho2=0.05,rho3=0.04,ret=ret,retr=retr,SPFretsel=SPFretsel,psi=0.015)
-utilall_ex2 <- utilall(ret_age=65,c_age=64,
-                tw3=setNames(c(1,0,0),c("msci","b10","recom")),
-                c=1,c2=0,nu2=0,nu3=0,ra=0,delta=0,alpha=1,beta=0,gender=0,
+                w0=w0,CF=NULL,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,
+                rho2=rho2,rho3=rho3,ret=ret,retr=retr,SPFretsel=SPFretsel,psi=psi)
+
+.load_parameters(gend=1,type=2)
+SPFretsel <- .SPFretch(SPFret,c_age=c_age,ret_age=ret_age)
+utilall_ex2 <- utilall(ret_age=ret_age,c_age=c_age,
+                tw3=c(.25,.25,.25),
+                c=cc,c2=c2,nu2=nu2,nu3=nu3,ra=ra,delta=delta,alpha=aalpha,beta=bbeta,gender=gender,
                 gender_mortalityTable2=cbind(MortalityTables::baseTable(AVOe2005R.male),MortalityTables::baseTable(AVOe2005R.female)),
-                w0=0,CF=NULL,li=0,lg=0,c1=0,s1=c(0,0),s2=0,s3=0,
-                rho2=0.0001,rho3=0.0001,ret=ret,retr=retr,SPFretsel=.SPFretch(SPFret,c_age=42,ret_age=65),psi=0)
+                w0=w0,CF=NULL,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,
+                rho2=rho2,rho3=rho3,ret=ret,retr=retr,SPFretsel=SPFretsel,psi=psi)
 
 }
