@@ -46,7 +46,7 @@
 #'                 gender_mortalityTable=MortalityTables::baseTable(AVOe2005R.male),
 #'                 w0=300000,CF=NULL,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
 #'                 w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-#'                 rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015)
+#'                 rho2=0.05,rho3=0.04,ret=ret,retr=retr,psi=0.015)
 #' util_ex2 <- util(ret_age=65,c_age=64,
 #'                 tw3=setNames(c(1,0,0),c("msci","b10","recom")),
 #'                 c=1,c2=0,nu2=0,nu3=0,ra=0,delta=0,alpha=1,beta=0,gender=0,
