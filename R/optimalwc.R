@@ -52,6 +52,31 @@ optimalwc <- function(initial_values,upper_bounds,lower_bounds,ret_age,c2,nu2,nu
   }
   return(res)
 }
+#' Optimiser to maximize Expected Utility (fast)
+#'
+#' Here we minimize negative expected utility (given by function `util`). Parameters can be fixed by setting "tight" boundaries
+#'
+#' @param initial_values Starting values c(c, alpha, w3)
+#' @param upper_bounds Upper bounds for optimization
+#' @param lower_bounds Lower bounds for optimization
+#' @param ... all other parameters
+#'
+#' @return Expected utility
+#'
+#' @examples
+#'
+#' data(ret);data(retr)
+#' .load_parameters()
+#' initial_values <- c(0.5, 0.95, 0.25, 0.25, 0.25)
+#' outwc <- optimalwc(initial_values,upper_bounds=NULL,lower_bounds=NULL,ret_age=ret_age,c2=c2,nu2=nu2,nu3=nu3,
+#'          ra=18,delta=delta,beta=bbeta,c_age=c_age,gender=gender,gender_mortalityTable=gender_mortalityTable,
+#'          w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,rho3=rho3,ret=ret[,,1:10],retr=retr[,,1:10],psi=psi,trace=1,reltol=1e-4)
+#'
+#' @importFrom optimx optimx
+#' @importFrom tibble tibble
+#' @importFrom dplyr bind_rows
+#'
+#' @export
 optimalwc2 <- function(initial_values,upper_bounds,lower_bounds,ret_age,c2,nu2,nu3,ra,delta,beta,c_age,gender,gender_mortalityTable2,w0,
                       CF,li,lg,c1,s1,s2,s3,rho2,rho3,ret,retr,SPFretsel,psi,verbose=FALSE,warnings=FALSE,trace=0,reltol=sqrt(.Machine$double.eps)){
   #mc <- data.frame(method=c("Nelder-Mead","L-BFGS-B"), maxit=c(50,50), maxfeval= c(50,50))
