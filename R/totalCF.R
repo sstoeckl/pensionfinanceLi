@@ -1,10 +1,10 @@
 #' Total Cash Flow Calculation
 #'
-#' This function calculates the total cash flows (for each scenario and working age/retirment) given all
-#' input parameters nedding all previously defined functions
+#' This function calculates the total cash flows (for each scenario and working age/retirement) given all
+#' input parameters needing all previously defined functions
 #'
 #' @param ret_age Decision Variable: retirement age, can be set anywhere between 60 and 70 (default: 65)
-#' @param w3 OptDecision VariableVar: third pillar portfolio allocation (given either as vector or as matrix with entries) for all years
+#' @param w3 Decision Variable: third pillar portfolio allocation (given either as vector or as matrix with entries) for all years
 #' @param c Decision Variable: fraction of income that is consumed while still working (current assumption: constant)
 #' @param c2 Decision Variable: second pillar savings as fraction of gross income (still missing: health, a-fonds-perdu payments)
 #' @param nu2 Decision Variable: fraction of second pillar savings that is converted to life-long pension

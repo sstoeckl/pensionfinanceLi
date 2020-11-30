@@ -32,3 +32,15 @@
 #'
 #' @source own calculation
 "retr"
+
+#' Portfolio returns in second pillar created internally
+#' for a pre-fixed average asset allocation
+#'
+#' A list (c_age: 18-69) of lists (ret_age: 60-70) that each contains a
+#' matrix detailing the returns of the second pillar investments
+#' in all 10000 scenarios
+#'
+#' @format An (69-18+1)x(70-60+1)x((70-20)+c_age)x10000 array
+#'
+#' @source own calculation
+"SPFret"

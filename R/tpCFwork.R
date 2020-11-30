@@ -20,12 +20,18 @@
 #'
 #' @examples
 #' data(ret); data(retr)
-#' free_cf_before_tax <- c(81000.00,81810.00,82628.10,83454.38,84288.92,85131.81,85983.13,86842.96,87711.39,88588.51,
-#' 89474.39,90369.14,91272.83,92185.56,93107.41,94038.49,94978.87,95928.66,96887.95,97856.82,98835.39,99823.75,100821.98)
-#' tpwork_ex <- tpCFwork(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-#'            free_cf_before_tax=free_cf_before_tax,retr=retr[,,1:10],s3=300000,w0=300000,psi=0.015,c=0.6)
-#' tpwork_ex2 <- tpCFwork(ret_age=65,c_age=42,w3=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-#'            free_cf_before_tax=free_cf_before_tax,retr=retr[,,1:10],s3=0,w0=0,psi=0.015,c=1)
+#' free_cf_before_tax <- c(81000.00,81810.00,82628.10,83454.38,
+#' 84288.92,85131.81,85983.13,86842.96,87711.39,88588.51,
+#' 89474.39,90369.14,91272.83,92185.56,93107.41,94038.49,
+#' 94978.87,95928.66,96887.95,97856.82,98835.39,99823.75,100821.98)
+#' tpwork_ex <- tpCFwork(ret_age=65,c_age=42,
+#' w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+#'            free_cf_before_tax=free_cf_before_tax,
+#'            retr=retr[,,1:10],s3=300000,w0=300000,psi=0.015,c=0.6)
+#' tpwork_ex2 <- tpCFwork(ret_age=65,c_age=42,
+#' w3=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+#'            free_cf_before_tax=free_cf_before_tax,
+#'            retr=retr[,,1:10],s3=0,w0=0,psi=0.015,c=1)
 #'
 #' @export
 tpCFwork<-function(ret_age=65, c_age, w3, free_cf_before_tax, retr, s3, w0, psi=0.015, c, warnings=TRUE){

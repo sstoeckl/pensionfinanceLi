@@ -45,7 +45,48 @@ optimalwc(
 
 \item{lower_bounds}{Lower bounds for optimization}
 
-\item{...}{all other parameters}
+\item{ret_age}{Given variable: retirement age, can be set anywhere between 60 and 70 (default: 65)}
+
+\item{c2}{Given variable: second pillar savings as fraction of gross income (still missing: health, a-fonds-perdu payments)}
+
+\item{nu2}{Given variable: fraction of second pillar savings that is converted to life-long pension}
+
+\item{nu3}{Given variable: fraction of third pillar savings that is converted to life-long pension}
+
+\item{c_age}{Given variable: the investor's current age (assuming birthday is calculation-day)}
+
+\item{gender}{Given variable: gender, 0=male and 1=female}
+
+\item{w0}{Given variable: time c_age wealth that is not disposable, assumption: still available at retirement (no growth or decline),
+alternatively: expected wealth (that is not disposable) at retirement, stays the same over time}
+
+\item{CF}{Given Variables: income shocks, such as inheritance (not currently implemented)}
+
+\item{li}{Given variable: gross labor income at time 0 (in the last year before birthday)}
+
+\item{lg}{Given variable: labor growth rate (in real terms, constant)}
+
+\item{c1}{Given variable: first pillar savings as fraction of gross income}
+
+\item{s1}{Given variable: vector consisting of two components: c(number of contribution years at age=c_age,historical average yearly income until c_age)}
+
+\item{s2}{Given variable: savings in second pillar as of t=0}
+
+\item{s3}{Given variable: liquid wealth - invested in the third pillar (current assumption: no tax advantage for third pillar)}
+
+\item{w2}{Given variable: portfolio allocation in second pillar (assumed to be fixed and not influenced by the decision maker)}
+
+\item{rho2}{Given variable: conversion factor in second pillar for regular retirement age}
+
+\item{rho3}{Given variable: conversion factor in third pillar for regular retirement age}
+
+\item{ret}{Given variable: investment return scenarios (nominal)}
+
+\item{retr}{Given variable: investment return scenarios (real)}
+
+\item{psi}{Given variable: optional, spread to take a loan/leverage for third pillar savings}
+
+\item{warnings}{optional: should warnings be given? (default=TRUE)}
 }
 \value{
 Expected utility
@@ -58,8 +99,12 @@ Here we minimize negative expected utility (given by function `util()`). Paramet
 data(ret);data(retr)
 .load_parameters()
 initial_values <- c(0.5, 0.95, 0.25, 0.25, 0.25)
-outwc <- optimalwc(initial_values,upper_bounds=NULL,lower_bounds=NULL,ret_age=ret_age,c2=c2,nu2=nu2,nu3=nu3,
-         ra=18,delta=delta,beta=bbeta,c_age=c_age,gender=gender,gender_mortalityTable=gender_mortalityTable,
-         w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,rho3=rho3,ret=ret[,,1:10],retr=retr[,,1:10],psi=psi,trace=1,reltol=1e-4)
+outwc <- optimalwc(initial_values,upper_bounds=NULL,lower_bounds=NULL,
+ret_age=ret_age,c2=c2,nu2=nu2,nu3=nu3,
+         ra=18,delta=delta,beta=bbeta,c_age=c_age,gender=gender,
+         gender_mortalityTable=gender_mortalityTable,
+         w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,
+         rho2=rho2,rho3=rho3,ret=ret[,,1:10],retr=retr[,,1:10],
+         psi=psi,trace=1,reltol=1e-4)
 
 }

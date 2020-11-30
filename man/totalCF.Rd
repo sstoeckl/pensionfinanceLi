@@ -34,7 +34,7 @@ totalCF(
 \arguments{
 \item{ret_age}{Decision Variable: retirement age, can be set anywhere between 60 and 70 (default: 65)}
 
-\item{w3}{OptDecision VariableVar: third pillar portfolio allocation (given either as vector or as matrix with entries) for all years}
+\item{w3}{Decision Variable: third pillar portfolio allocation (given either as vector or as matrix with entries) for all years}
 
 \item{c}{Decision Variable: fraction of income that is consumed while still working (current assumption: constant)}
 
@@ -88,8 +88,8 @@ returns a list with three elements:
 - a matrix of wealth before retirement (dim c_age:(ret_age-1), # of scenarios)
 }
 \description{
-This function calculates the total cash flows (for each scenario and working age/retirment) given all
-input parameters nedding all previously defined functions
+This function calculates the total cash flows (for each scenario and working age/retirement) given all
+input parameters needing all previously defined functions
 }
 \examples{
 data(ret);data(retr)

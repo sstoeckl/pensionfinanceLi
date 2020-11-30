@@ -43,8 +43,10 @@
 #'
 #' utilall_ex <- utilall(ret_age=ret_age,c_age=c_age,
 #'                 tw3=c(.25,.25,.25),
-#'                 c=cc,c2=c2,nu2=nu2,nu3=nu3,ra=ra,delta=delta,alpha=aalpha,beta=bbeta,gender=gender,
-#'                 gender_mortalityTable2=cbind(MortalityTables::baseTable(AVOe2005R.male),MortalityTables::baseTable(AVOe2005R.female)),
+#'                 c=cc,c2=c2,nu2=nu2,nu3=nu3,ra=ra,delta=delta,alpha=aalpha,
+#'                 beta=bbeta,gender=gender,
+#'                 gender_mortalityTable2=cbind(MortalityTables::baseTable(AVOe2005R.male),
+#'                 MortalityTables::baseTable(AVOe2005R.female)),
 #'                 w0=w0,CF=NULL,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,
 #'                 rho2=rho2,rho3=rho3,ret=ret,retr=retr,SPFretsel=SPFretsel,psi=psi)
 #'
@@ -52,8 +54,10 @@
 #' SPFretsel <- .SPFretch(SPFret,c_age=c_age,ret_age=ret_age)
 #' utilall_ex2 <- utilall(ret_age=ret_age,c_age=c_age,
 #'                 tw3=c(.25,.25,.25),
-#'                 c=cc,c2=c2,nu2=nu2,nu3=nu3,ra=ra,delta=delta,alpha=aalpha,beta=bbeta,gender=gender,
-#'                 gender_mortalityTable2=cbind(MortalityTables::baseTable(AVOe2005R.male),MortalityTables::baseTable(AVOe2005R.female)),
+#'                 c=cc,c2=c2,nu2=nu2,nu3=nu3,ra=ra,delta=delta,alpha=aalpha,
+#'                 beta=bbeta,gender=gender,
+#'                 gender_mortalityTable2=cbind(MortalityTables::baseTable(AVOe2005R.male),
+#'                 MortalityTables::baseTable(AVOe2005R.female)),
 #'                 w0=w0,CF=NULL,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,
 #'                 rho2=rho2,rho3=rho3,ret=ret,retr=retr,SPFretsel=SPFretsel,psi=psi)
 #'
@@ -270,43 +274,13 @@ utilall <- function(ret_age,tw3,c,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,ge
 #'
 #' Helper 0: Sel SPFret
 #'
+#' @param SPFret Pre-computed grid of second pillar investment performances (pre-computed for the weights as assumed in the documentation)
+#' @param c_age the investor's current age (assuming birthday is calculation-day)
+#' @param ret_age retirement age, can be set anywhere between 60 and 70 (default: 65)
+#'
+#' @return Expected utility
+#'
 #' @export
 .SPFretch <- function(SPFret,c_age,ret_age){
   return(SPFret[[as.character(c_age)]][[as.character(ret_age)]])
-}
-#' Helper 1: Optimization function
-#'
-#' @param inputvec c(c, c2, nu2, nu3, alpha, w3)
-#'
-.util_optim2 <- function(inputvec,ret_age,ra,delta,beta,c_age,gender,gender_mortalityTable2,w0,CF,li,lg,c1,s1,s2,s3,rho2,rho3,ret,retr,SPFretsel,psi,verbose=FALSE, warnings=FALSE){
-  #ret_age,tw3,c,c2,nu2,nu3,delta,alpha
-  # inputvec=c(ret_age,c,c2,nu2,nu3,alpha,tw3)
-  return(-utilall(ret_age=ret_age,tw3=inputvec[6:8],c=inputvec[1],c2=inputvec[2],nu2=inputvec[3],nu3=inputvec[4],ra=ra,delta=delta,alpha=inputvec[5],
-              beta=beta,c_age=c_age,gender=gender,
-              gender_mortalityTable2=gender_mortalityTable2,w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,rho2=rho2,rho3=rho3,
-              ret=ret,retr=retr,SPFretsel=SPFretsel,psi=psi,verbose=verbose, warnings=warnings))
-}
-#' Helper 2: Optimize portfolio weights and consumption c,
-#'
-#' @param inputvec c(c, alpha, w3)
-#'
-.util_optim_wc2 <- function(inputvec,ret_age,c2,nu2,nu3,ra,delta,beta,c_age,gender,gender_mortalityTable2,w0,CF,li,lg,c1,s1,s2,s3,rho2,rho3,ret,retr,SPFretsel,psi,verbose=FALSE, warnings=FALSE){
-  #ret_age,tw3,c,c2,nu2,nu3,delta,alpha
-  # inputvec=c(ret_age,c,c2,nu2,nu3,alpha,tw3)
-  return(-utilall(ret_age=ret_age,tw3=inputvec[3:5],c=inputvec[1],c2=c2,nu2=nu2,nu3=nu3,ra=ra,delta=delta,alpha=inputvec[2],
-               beta=beta,c_age=c_age,gender=gender,
-               gender_mortalityTable2=gender_mortalityTable2,w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,rho2=rho2,rho3=rho3,
-               ret=ret,retr=retr,SPFretsel=SPFretsel,psi=psi,verbose=verbose, warnings=warnings))
-}
-#' Helper 3: Optimize only portfolio weights
-#'
-#' @param inputvec c(w3)
-#'
-.util_optim_w2 <- function(inputvec,ret_age,cc,c2,nu2,nu3,ra,delta,alpha,beta,c_age,gender,gender_mortalityTable2,w0,CF,li,lg,c1,s1,s2,s3,rho2,rho3,ret,retr,SPFretsel,psi,verbose=FALSE, warnings=FALSE){
-  #ret_age,tw3,c,c2,nu2,nu3,delta,alpha
-  # inputvec=c(ret_age,c,c2,nu2,nu3,alpha,tw3)
-  return(-utilall(ret_age=ret_age,tw3=inputvec,c=cc,c2=c2,nu2=nu2,nu3=nu3,ra=ra,delta=delta,alpha=alpha,
-              beta=beta,c_age=c_age,gender=gender,
-              gender_mortalityTable2=gender_mortalityTable2,w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,rho2=rho2,rho3=rho3,
-              ret=ret,retr=retr,SPFretsel=SPFretsel,psi=psi,verbose=verbose, warnings=warnings))
 }

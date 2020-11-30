@@ -2,9 +2,9 @@ Package: pensionfinanceLi
 Type: Package
 Title: Optimal Pension Decisions in Liechtenstein
 Version: 0.9.9000
-Author: c(person("Sebastian", "Stoeckl", email = "sebastian.stoeckl@uni.li", role = c("aut","cre"), comment = c(ORCID = "0000-0002-4196-6093")),person("Michael", "Hanke", email = "michael.hanke@uni.li", role="aut"))
+Authors@R: c(person("Sebastian", "Stoeckl", email = "sebastian.stoeckl@uni.li", role = c("aut","cre"), comment = c(ORCID = "0000-0002-4196-6093")),person("Michael", "Hanke", email = "michael.hanke@uni.li", role="aut"))
 Maintainer: Sebastian Stöckl <sebastian.stoeckl@uni.li>
-Description: This R-package provides the documentation as well as the necessary functions to optimize the situation of a typical person insured in Liechtenstein's Pension System. Currently, however, we do not implement any special cases. For a detailed documentation check `vignette("model")`.
+Description: This R-package provides the documentation as well as the necessary functions to optimize the situation of a typical person insured in Liechtenstein's Pension System. Currently, however, we do not implement any special cases. For a detailed documentation check `vignette('model')`.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

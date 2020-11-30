@@ -109,8 +109,10 @@ SPFretsel <- .SPFretch(SPFret,c_age=c_age,ret_age=ret_age)
 
 utilall_ex <- utilall(ret_age=ret_age,c_age=c_age,
                 tw3=c(.25,.25,.25),
-                c=cc,c2=c2,nu2=nu2,nu3=nu3,ra=ra,delta=delta,alpha=aalpha,beta=bbeta,gender=gender,
-                gender_mortalityTable2=cbind(MortalityTables::baseTable(AVOe2005R.male),MortalityTables::baseTable(AVOe2005R.female)),
+                c=cc,c2=c2,nu2=nu2,nu3=nu3,ra=ra,delta=delta,alpha=aalpha,
+                beta=bbeta,gender=gender,
+                gender_mortalityTable2=cbind(MortalityTables::baseTable(AVOe2005R.male),
+                MortalityTables::baseTable(AVOe2005R.female)),
                 w0=w0,CF=NULL,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,
                 rho2=rho2,rho3=rho3,ret=ret,retr=retr,SPFretsel=SPFretsel,psi=psi)
 
@@ -118,8 +120,10 @@ utilall_ex <- utilall(ret_age=ret_age,c_age=c_age,
 SPFretsel <- .SPFretch(SPFret,c_age=c_age,ret_age=ret_age)
 utilall_ex2 <- utilall(ret_age=ret_age,c_age=c_age,
                 tw3=c(.25,.25,.25),
-                c=cc,c2=c2,nu2=nu2,nu3=nu3,ra=ra,delta=delta,alpha=aalpha,beta=bbeta,gender=gender,
-                gender_mortalityTable2=cbind(MortalityTables::baseTable(AVOe2005R.male),MortalityTables::baseTable(AVOe2005R.female)),
+                c=cc,c2=c2,nu2=nu2,nu3=nu3,ra=ra,delta=delta,alpha=aalpha,
+                beta=bbeta,gender=gender,
+                gender_mortalityTable2=cbind(MortalityTables::baseTable(AVOe2005R.male),
+                MortalityTables::baseTable(AVOe2005R.female)),
                 w0=w0,CF=NULL,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,
                 rho2=rho2,rho3=rho3,ret=ret,retr=retr,SPFretsel=SPFretsel,psi=psi)
 

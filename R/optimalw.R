@@ -5,7 +5,29 @@
 #' @param initial_values Starting values c(w3)
 #' @param upper_bounds Upper bounds for optimization
 #' @param lower_bounds Lower bounds for optimization
-#' @param ... all other parameters
+#' @param c Given Variable: fraction of income that is consumed while still working (current assumption: constant)
+#' @param c2 Given Variable: second pillar savings as fraction of gross income (still missing: health, a-fonds-perdu payments)
+#' @param nu2 Given Variable: fraction of second pillar savings that is converted to life-long pension
+#' @param nu3 Given Variable: fraction of third pillar savings that is converted to life-long pension
+#' @param alpha Given Variable: parameter to choose fraction of wealth NOT consumed during retirement but kept for investment (and subsequent consumption)
+#' @param c_age Given variable: the investor's current age (assuming birthday is calculation-day)
+#' @param gender Given variable: gender, 0=male and 1=female
+#' @param w0 Given variable: time c_age wealth that is not disposable, assumption: still available at retirement (no growth or decline),
+#' alternatively: expected wealth (that is not disposable) at retirement, stays the same over time
+#' @param CF Given Variables: income shocks, such as inheritance (not currently implemented)
+#' @param li Given variable: gross labor income at time 0 (in the last year before birthday)
+#' @param lg Given variable: labor growth rate (in real terms, constant)
+#' @param c1 Given variable: first pillar savings as fraction of gross income
+#' @param s1 Given variable: vector consisting of two components: c(number of contribution years at age=c_age,historical average yearly income until c_age)
+#' @param s2 Given variable: savings in second pillar as of t=0
+#' @param s3 Given variable: liquid wealth - invested in the third pillar (current assumption: no tax advantage for third pillar)
+#' @param w2 Given variable: portfolio allocation in second pillar (assumed to be fixed and not influenced by the decision maker)
+#' @param rho2 Given variable: conversion factor in second pillar for regular retirement age
+#' @param rho3 Given variable: conversion factor in third pillar for regular retirement age
+#' @param ret Given variable: investment return scenarios (nominal)
+#' @param retr Given variable: investment return scenarios (real)
+#' @param psi Given variable: optional, spread to take a loan/leverage for third pillar savings
+#' @param warnings optional: should warnings be given? (default=TRUE)
 #'
 #' @return Expected utility
 #'
@@ -14,13 +36,19 @@
 #' data(ret);data(retr)
 #' .load_parameters(gend=0,type=1)
 #' initial_values <- c(0.25, 0.25, 0.25)
-#' outw <- optimalw(initial_values,upper_bounds,lower_bounds,ret_age=ret_age,cc=cc,c2=c2,nu2=nu2,nu3=nu3,
-#'          ra=ra,delta=delta,alpha=aalpha,beta=bbeta,c_age=c_age,gender=gender,gender_mortalityTable=gender_mortalityTable,
-#'          w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,rho3=rho3,ret=ret,retr=retr,psi=psi,trace=1,reltol=1e-4)
-#' outw %>% tibble::rownames_to_column() %>% as_tibble %>% arrange (value) %>% filter(convcode==0,kkt1==TRUE,kkt2==TRUE)
-#' util(ret_age=ret_age,c=cc,c2=c2,nu2=nu2,nu3=nu3,tw3=outw2$xmin+c(0,-0.01,-0.01),#unlist(outw["Nelder-Mead",1:3]),
-#'          ra=ra,delta=delta,alpha=aalpha,beta=bbeta,c_age=c_age,gender=gender,gender_mortalityTable=gender_mortalityTable,
-#'          w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,rho3=rho3,ret=ret,retr=retr,psi=psi)
+#' outw <- optimalw(initial_values,upper_bounds,lower_bounds,
+#' ret_age=ret_age,cc=cc,c2=c2,nu2=nu2,nu3=nu3,
+#'          ra=ra,delta=delta,alpha=aalpha,beta=bbeta,c_age=c_age,
+#'          gender=gender,gender_mortalityTable=gender_mortalityTable,
+#'          w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,
+#'          rho2=rho2,rho3=rho3,ret=ret,retr=retr,psi=psi,trace=1,reltol=1e-4)
+#' outw %>% tibble::rownames_to_column() %>% as_tibble %>% arrange (value) %>%
+#' filter(convcode==0,kkt1==TRUE,kkt2==TRUE)
+#' util(ret_age=ret_age,c=cc,c2=c2,nu2=nu2,nu3=nu3,tw3=outw2$xmin+c(0,-0.01,-0.01),
+#'          ra=ra,delta=delta,alpha=aalpha,beta=bbeta,c_age=c_age,
+#'          gender=gender,gender_mortalityTable=gender_mortalityTable,
+#'          w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,
+#'          rho2=rho2,rho3=rho3,ret=ret,retr=retr,psi=psi)
 #' }
 #'
 #' @importFrom optimx optimx

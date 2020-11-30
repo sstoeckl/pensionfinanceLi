@@ -22,6 +22,7 @@ for the third pillar function `tpCFwork()`, where CF after tax is needed to dete
 specifies which part of taxes should be paid from income and which part from liquid wealth
 }
 \examples{
-taxCFwork(income=c(100000,100000,100000),liquid_wealth=c(100000,50000,-100000),illiquid_wealth=c(100000,150000,100000))
+taxCFwork(income=c(100000,100000,100000),liquid_wealth=c(100000,50000,-100000),
+illiquid_wealth=c(100000,150000,100000))
 
 }

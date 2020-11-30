@@ -18,10 +18,14 @@
 #'
 #' @examples
 #' data(retr)
-#' tpret_ex <- tpCFret(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-#'            alpha=0.96,wealth_at_ret_age=100000,retr=retr[,,1:10],psi=0.015)
-#' tpret_ex <- tpCFret(ret_age=65,c_age=42,w3=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-#'            alpha=0.96,wealth_at_ret_age=c(rep(-10000,5),rep(10000,5)),retr=retr[,,1:10],psi=0)
+#' tpret_ex <- tpCFret(ret_age=65,c_age=42,
+#' w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+#'            alpha=0.96,wealth_at_ret_age=100000,
+#'            retr=retr[,,1:10],psi=0.015)
+#' tpret_ex <- tpCFret(ret_age=65,c_age=42,
+#' w3=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+#'            alpha=0.96,wealth_at_ret_age=c(rep(-10000,5),
+#'            rep(10000,5)),retr=retr[,,1:10],psi=0)
 #'
 #' @export
 tpCFret <- function(ret_age=65,c_age,w3,alpha,wealth_at_ret_age,retr,psi=0.015, warnings=TRUE){

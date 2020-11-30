@@ -11,7 +11,8 @@
 #' @return net (after tax) income payments, specifying which part should be paid from cash-flows (income) and from liquid wealth
 #'
 #' @examples
-#' taxCFwork(income=c(100000,100000,100000),liquid_wealth=c(100000,50000,-100000),illiquid_wealth=c(100000,150000,100000))
+#' taxCFwork(income=c(100000,100000,100000),liquid_wealth=c(100000,50000,-100000),
+#' illiquid_wealth=c(100000,150000,100000))
 #'
 #' @export
 taxCFwork <- function(income,liquid_wealth,illiquid_wealth){

@@ -6,6 +6,16 @@
 \usage{
 .SPFretch(SPFret, c_age, ret_age)
 }
+\arguments{
+\item{SPFret}{Pre-computed grid of second pillar investment performances (pre-computed for the weights as assumed in the documentation)}
+
+\item{c_age}{the investor's current age (assuming birthday is calculation-day)}
+
+\item{ret_age}{retirement age, can be set anywhere between 60 and 70 (default: 65)}
+}
+\value{
+Expected utility
+}
 \description{
 Helper 0: Sel SPFret
 }
