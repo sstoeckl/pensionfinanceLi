@@ -26,6 +26,7 @@
 
 # knitr and R markdown default cache directories
 *_cache/
+*_cached/
 /cache/
 
 # Temporary files created by R markdown

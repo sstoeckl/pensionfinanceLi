@@ -30,9 +30,10 @@ The goal of pensionfinanceLi is to optimize the situation of a typical person in
 <!-- install.packages("pensionfinanceLi") -->
 <!-- ``` -->
 
-Currently this package is under heavy development. Due to the large file sizes, the development version can only be installed from [BitBucket](https://bitbucket.org/) with:
+Currently this package is under development, but can be used subject to careful control. It can be installed from [github](https://github.com) or [BitBucket](https://bitbucket.org/) with:
 
 ```{r instgit, eval=FALSE}
 # install.packages("devtools")
+devtools::install_github("sstoeckl/pensionfinanceLi")
 devtools::install_bitbucket("sstoeckl/pensionfinanceLi")
 ```

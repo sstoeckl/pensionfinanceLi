@@ -28,11 +28,12 @@ do not implement any special cases. For a detailed documentation check
 
 <!-- ``` -->
 
-Currently this package is under heavy development. Due to the large file
-sizes, the development version can only be installed from
-[BitBucket](https://bitbucket.org/) with:
+Currently this package is under development, but can be used subject to
+careful control. It can be installed from [github](https://github.com)
+or [BitBucket](https://bitbucket.org/) with:
 
 ``` r
 # install.packages("devtools")
+devtools::install_github("sstoeckl/pensionfinanceLi")
 devtools::install_bitbucket("sstoeckl/pensionfinanceLi")
 ```
