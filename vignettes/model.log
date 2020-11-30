@@ -1,0 +1,1301 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2020.11.29)  30 NOV 2020 10:28
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**model.tex
+(./model.tex
+LaTeX2e <2020-10-01> patch level 2
+L3 programming layer <2020-10-27> xparse <2020-03-03>
+(c:/texlive/2020/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2020/04/10 v1.4m Standard LaTeX document class
+(c:/texlive/2020/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2020/04/10 v1.4m Standard LaTeX file (size option)
+)
+\c@part=\count175
+\c@section=\count176
+\c@subsection=\count177
+\c@subsubsection=\count178
+\c@paragraph=\count179
+\c@subparagraph=\count180
+\c@figure=\count181
+\c@table=\count182
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\bibindent=\dimen138
+)
+(c:/texlive/2020/texmf-dist/tex/latex/pdfpages/pdfpages.sty
+Package: pdfpages 2020/01/28 v0.5q Insert pages of external PDF documents (AM)
+
+(c:/texlive/2020/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+)
+(c:/texlive/2020/texmf-dist/tex/latex/tools/calc.sty
+Package: calc 2017/05/25 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count183
+\calc@Bcount=\count184
+\calc@Adimen=\dimen139
+\calc@Bdimen=\dimen140
+\calc@Askip=\skip49
+\calc@Bskip=\skip50
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count185
+\calc@Cskip=\skip51
+)
+(c:/texlive/2020/texmf-dist/tex/latex/eso-pic/eso-pic.sty
+Package: eso-pic 2020/10/14 v3.0a eso-pic (RN)
+\ESO@tempdima=\dimen141
+\ESO@tempdimb=\dimen142
+
+(c:/texlive/2020/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks15
+)
+(c:/texlive/2020/texmf-dist/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2016/05/11 v2.12 LaTeX color extensions (UK)
+
+(c:/texlive/2020/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 225.
+
+(c:/texlive/2020/texmf-dist/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2020/10/05 v1.2a Graphics/color driver for pdftex
+)
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1348.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1352.
+Package xcolor Info: Model `RGB' extended on input line 1364.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1366.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1367.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1368.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
+))
+(c:/texlive/2020/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2020/09/09 v1.2b Enhanced LaTeX Graphics (DPC,SPQR)
+
+(c:/texlive/2020/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2020/08/30 v1.4c Standard LaTeX Graphics (DPC,SPQR)
+
+(c:/texlive/2020/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+)
+(c:/texlive/2020/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 105.
+)
+\Gin@req@height=\dimen143
+\Gin@req@width=\dimen144
+)
+\AM@pagewidth=\dimen145
+\AM@pageheight=\dimen146
+
+(c:/texlive/2020/texmf-dist/tex/latex/pdfpages/pppdftex.def
+File: pppdftex.def 2020/01/28 v0.5q Pdfpages driver for pdfTeX (AM)
+)
+\AM@pagebox=\box47
+\AM@global@opts=\toks16
+\AM@pagecnt=\count186
+\AM@toc@title=\toks17
+\c@AM@survey=\count187
+\AM@templatesizebox=\box48
+)
+(c:/R/R-4.0.3/share/texmf/tex/latex/Sweave.sty
+Package: Sweave 
+
+(c:/texlive/2020/texmf-dist/tex/latex/fancyvrb/fancyvrb.sty
+Package: fancyvrb 2020/05/03 v3.6 verbatim text (tvz,hv)
+\FV@CodeLineNo=\count188
+\FV@InFile=\read2
+\FV@TabBox=\box49
+\c@FancyVerbLine=\count189
+\FV@StepNumber=\count190
+\FV@OutFile=\write3
+)
+(c:/texlive/2020/texmf-dist/tex/latex/base/textcomp.sty
+Package: textcomp 2020/02/02 v2.0n Standard LaTeX package
+)
+(c:/texlive/2020/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2020/08/10 v2.0s Standard LaTeX package
+)
+(c:/texlive/2020/texmf-dist/tex/latex/ae/ae.sty
+Package: ae 2001/02/12 1.3 Almost European Computer Modern
+
+(c:/texlive/2020/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2020/08/10 v2.0s Standard LaTeX package
+)))
+LaTeX Font Info:    Trying to load font information for T1+aer on input line 6.
+
+
+(c:/texlive/2020/texmf-dist/tex/latex/ae/t1aer.fd
+File: t1aer.fd 1997/11/16 Font definitions for T1/aer.
+)
+(c:/texlive/2020/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+File: l3backend-pdftex.def 2020-09-24 L3 backend support: PDF output (pdfTeX)
+\l__kernel_color_stack_int=\count191
+\l__pdf_internal_box=\box50
+)
+(./model.aux)
+\openout1 = `model.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+ (c:/texlive/2020/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count192
+\scratchdimen=\dimen147
+\scratchbox=\box51
+\nofMPsegments=\count193
+\nofMParguments=\count194
+\everyMPshowfont=\toks18
+\MPscratchCnt=\count195
+\MPscratchDim=\dimen148
+\MPnumerator=\count196
+\makeMPintoPDFobject=\count197
+\everyMPtoPDFconversion=\toks19
+) (c:/texlive/2020/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+
+(c:/texlive/2020/texmf-dist/tex/generic/infwarerr/infwarerr.sty
+Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
+)
+(c:/texlive/2020/texmf-dist/tex/latex/grfext/grfext.sty
+Package: grfext 2019/12/03 v1.3 Manage graphics extensions (HO)
+
+(c:/texlive/2020/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty
+Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
+))
+(c:/texlive/2020/texmf-dist/tex/latex/kvoptions/kvoptions.sty
+Package: kvoptions 2020-10-07 v3.14 Key value format for package options (HO)
+
+(c:/texlive/2020/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
+Package: ltxcmds 2020-05-10 v1.25 LaTeX kernel commands for general use (HO)
+)
+(c:/texlive/2020/texmf-dist/tex/generic/kvsetkeys/kvsetkeys.sty
+Package: kvsetkeys 2019/12/15 v1.18 Key value parser (HO)
+))
+(c:/texlive/2020/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+(c:/texlive/2020/texmf-dist/tex/generic/iftex/iftex.sty
+Package: iftex 2020/03/06 v1.0d TeX engine tests
+)
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+85.
+Package grfext Info: Graphics extension search list:
+(grfext)             [.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPE
+G,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 504.
+
+(c:/texlive/2020/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
+(c:/texlive/2020/texmf-dist/tex/latex/pdflscape/pdflscape.sty
+Package: pdflscape 2019/12/05 v0.12 Display of landscape pages in PDF (HO)
+
+(c:/texlive/2020/texmf-dist/tex/latex/graphics/lscape.sty
+Package: lscape 2020/05/28 v3.02 Landscape Pages (DPC)
+)
+Package pdflscape Info: Auto-detected driver: pdftex on input line 81.
+)
+(./model-concordance.tex)
+<Report1.pdf, id=2, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf>
+Package pdftex.def Info: Report1.pdf  used on input line 8.
+(pdftex.def)             Requested size: 276.00105pt x 357.1752pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf>
+Package pdftex.def Info: Report1.pdf  used on input line 8.
+(pdftex.def)             Requested size: 276.00105pt x 357.1752pt.
+<Report1.pdf, id=5, page=1, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 1>
+Package pdftex.def Info: Report1.pdf , page1 used on input line 8.
+(pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 1>
+Package pdftex.def Info: Report1.pdf , page1 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 1>
+Package pdftex.def Info: Report1.pdf , page1 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 1>
+Package pdftex.def Info: Report1.pdf , page1 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 1>
+Package pdftex.def Info: Report1.pdf , page1 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [1
+
+ <./Report1.pdf{c:/texlive/2020/texmf-var/fonts/map/pdftex/updmap/pdftex.map}>]
+<Report1.pdf, id=77, page=2, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 2>
+Package pdftex.def Info: Report1.pdf , page2 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 2>
+Package pdftex.def Info: Report1.pdf , page2 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 2>
+Package pdftex.def Info: Report1.pdf , page2 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [2 <./Report1.pdf>]
+<Report1.pdf, id=89, page=3, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 3>
+Package pdftex.def Info: Report1.pdf , page3 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 3>
+Package pdftex.def Info: Report1.pdf , page3 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 3>
+Package pdftex.def Info: Report1.pdf , page3 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [3 <./Report1.pdf>]
+<Report1.pdf, id=93, page=4, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 4>
+Package pdftex.def Info: Report1.pdf , page4 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 4>
+Package pdftex.def Info: Report1.pdf , page4 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 4>
+Package pdftex.def Info: Report1.pdf , page4 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [4 <./Report1.pdf>]
+<Report1.pdf, id=97, page=5, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 5>
+Package pdftex.def Info: Report1.pdf , page5 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 5>
+Package pdftex.def Info: Report1.pdf , page5 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 5>
+Package pdftex.def Info: Report1.pdf , page5 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [5 <./Report1.pdf>]
+<Report1.pdf, id=101, page=6, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 6>
+Package pdftex.def Info: Report1.pdf , page6 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 6>
+Package pdftex.def Info: Report1.pdf , page6 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 6>
+Package pdftex.def Info: Report1.pdf , page6 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [6 <./Report1.pdf>]
+<Report1.pdf, id=105, page=7, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 7>
+Package pdftex.def Info: Report1.pdf , page7 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 7>
+Package pdftex.def Info: Report1.pdf , page7 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 7>
+Package pdftex.def Info: Report1.pdf , page7 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [7 <./Report1.pdf>]
+<Report1.pdf, id=115, page=8, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 8>
+Package pdftex.def Info: Report1.pdf , page8 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 8>
+Package pdftex.def Info: Report1.pdf , page8 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 8>
+Package pdftex.def Info: Report1.pdf , page8 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [8 <./Report1.pdf>]
+<Report1.pdf, id=119, page=9, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 9>
+Package pdftex.def Info: Report1.pdf , page9 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 9>
+Package pdftex.def Info: Report1.pdf , page9 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 9>
+Package pdftex.def Info: Report1.pdf , page9 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [9 <./Report1.pdf>]
+<Report1.pdf, id=128, page=10, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 10>
+Package pdftex.def Info: Report1.pdf , page10 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 10>
+Package pdftex.def Info: Report1.pdf , page10 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 10>
+Package pdftex.def Info: Report1.pdf , page10 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [10 <./Report1.pdf>]
+<Report1.pdf, id=132, page=11, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 11>
+Package pdftex.def Info: Report1.pdf , page11 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 11>
+Package pdftex.def Info: Report1.pdf , page11 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 11>
+Package pdftex.def Info: Report1.pdf , page11 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [11 <./Report1.pdf>]
+<Report1.pdf, id=139, page=12, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 12>
+Package pdftex.def Info: Report1.pdf , page12 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 12>
+Package pdftex.def Info: Report1.pdf , page12 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 12>
+Package pdftex.def Info: Report1.pdf , page12 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+
+[12 <./Report1.pdf>]
+<Report1.pdf, id=166, page=13, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 13>
+Package pdftex.def Info: Report1.pdf , page13 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 13>
+Package pdftex.def Info: Report1.pdf , page13 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 13>
+Package pdftex.def Info: Report1.pdf , page13 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [13 <./Report1.pdf>]
+<Report1.pdf, id=182, page=14, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 14>
+Package pdftex.def Info: Report1.pdf , page14 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 14>
+Package pdftex.def Info: Report1.pdf , page14 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 14>
+Package pdftex.def Info: Report1.pdf , page14 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [14 <./Report1.pdf>]
+<Report1.pdf, id=186, page=15, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 15>
+Package pdftex.def Info: Report1.pdf , page15 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 15>
+Package pdftex.def Info: Report1.pdf , page15 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 15>
+Package pdftex.def Info: Report1.pdf , page15 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [15 <./Report1.pdf>]
+<Report1.pdf, id=190, page=16, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 16>
+Package pdftex.def Info: Report1.pdf , page16 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 16>
+Package pdftex.def Info: Report1.pdf , page16 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 16>
+Package pdftex.def Info: Report1.pdf , page16 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [16 <./Report1.pdf>]
+<Report1.pdf, id=194, page=17, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 17>
+Package pdftex.def Info: Report1.pdf , page17 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 17>
+Package pdftex.def Info: Report1.pdf , page17 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 17>
+Package pdftex.def Info: Report1.pdf , page17 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [17 <./Report1.pdf>]
+<Report1.pdf, id=198, page=18, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 18>
+Package pdftex.def Info: Report1.pdf , page18 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 18>
+Package pdftex.def Info: Report1.pdf , page18 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 18>
+Package pdftex.def Info: Report1.pdf , page18 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [18 <./Report1.pdf>]
+<Report1.pdf, id=202, page=19, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 19>
+Package pdftex.def Info: Report1.pdf , page19 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 19>
+Package pdftex.def Info: Report1.pdf , page19 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 19>
+Package pdftex.def Info: Report1.pdf , page19 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [19 <./Report1.pdf>]
+<Report1.pdf, id=207, page=20, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 20>
+Package pdftex.def Info: Report1.pdf , page20 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 20>
+Package pdftex.def Info: Report1.pdf , page20 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 20>
+Package pdftex.def Info: Report1.pdf , page20 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [20 <./Report1.pdf>]
+<Report1.pdf, id=211, page=21, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 21>
+Package pdftex.def Info: Report1.pdf , page21 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 21>
+Package pdftex.def Info: Report1.pdf , page21 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 21>
+Package pdftex.def Info: Report1.pdf , page21 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [21 <./Report1.pdf>]
+<Report1.pdf, id=221, page=22, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 22>
+Package pdftex.def Info: Report1.pdf , page22 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 22>
+Package pdftex.def Info: Report1.pdf , page22 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 22>
+Package pdftex.def Info: Report1.pdf , page22 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [22 <./Report1.pdf>]
+<Report1.pdf, id=237, page=23, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 23>
+Package pdftex.def Info: Report1.pdf , page23 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 23>
+Package pdftex.def Info: Report1.pdf , page23 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 23>
+Package pdftex.def Info: Report1.pdf , page23 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+
+[23 <./Report1.pdf>]
+<Report1.pdf, id=247, page=24, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 24>
+Package pdftex.def Info: Report1.pdf , page24 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 24>
+Package pdftex.def Info: Report1.pdf , page24 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 24>
+Package pdftex.def Info: Report1.pdf , page24 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [24 <./Report1.pdf>]
+<Report1.pdf, id=257, page=25, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 25>
+Package pdftex.def Info: Report1.pdf , page25 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 25>
+Package pdftex.def Info: Report1.pdf , page25 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 25>
+Package pdftex.def Info: Report1.pdf , page25 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [25 <./Report1.pdf>]
+<Report1.pdf, id=269, page=26, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 26>
+Package pdftex.def Info: Report1.pdf , page26 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 26>
+Package pdftex.def Info: Report1.pdf , page26 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 26>
+Package pdftex.def Info: Report1.pdf , page26 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [26 <./Report1.pdf>]
+<Report1.pdf, id=280, page=27, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 27>
+Package pdftex.def Info: Report1.pdf , page27 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 27>
+Package pdftex.def Info: Report1.pdf , page27 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 27>
+Package pdftex.def Info: Report1.pdf , page27 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [27 <./Report1.pdf>]
+<Report1.pdf, id=291, page=28, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 28>
+Package pdftex.def Info: Report1.pdf , page28 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 28>
+Package pdftex.def Info: Report1.pdf , page28 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 28>
+Package pdftex.def Info: Report1.pdf , page28 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [28 <./Report1.pdf>]
+<Report1.pdf, id=302, page=29, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 29>
+Package pdftex.def Info: Report1.pdf , page29 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 29>
+Package pdftex.def Info: Report1.pdf , page29 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 29>
+Package pdftex.def Info: Report1.pdf , page29 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [29 <./Report1.pdf>]
+<Report1.pdf, id=313, page=30, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 30>
+Package pdftex.def Info: Report1.pdf , page30 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 30>
+Package pdftex.def Info: Report1.pdf , page30 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 30>
+Package pdftex.def Info: Report1.pdf , page30 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [30 <./Report1.pdf>]
+<Report1.pdf, id=324, page=31, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 31>
+Package pdftex.def Info: Report1.pdf , page31 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 31>
+Package pdftex.def Info: Report1.pdf , page31 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 31>
+Package pdftex.def Info: Report1.pdf , page31 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [31 <./Report1.pdf>]
+<Report1.pdf, id=336, page=32, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 32>
+Package pdftex.def Info: Report1.pdf , page32 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 32>
+Package pdftex.def Info: Report1.pdf , page32 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 32>
+Package pdftex.def Info: Report1.pdf , page32 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [32 <./Report1.pdf>]
+<Report1.pdf, id=347, page=33, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 33>
+Package pdftex.def Info: Report1.pdf , page33 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 33>
+Package pdftex.def Info: Report1.pdf , page33 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 33>
+Package pdftex.def Info: Report1.pdf , page33 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [33 <./Report1.pdf>]
+<Report1.pdf, id=359, page=34, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 34>
+Package pdftex.def Info: Report1.pdf , page34 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 34>
+Package pdftex.def Info: Report1.pdf , page34 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 34>
+Package pdftex.def Info: Report1.pdf , page34 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+
+[34 <./Report1.pdf>]
+<Report1.pdf, id=370, page=35, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 35>
+Package pdftex.def Info: Report1.pdf , page35 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 35>
+Package pdftex.def Info: Report1.pdf , page35 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 35>
+Package pdftex.def Info: Report1.pdf , page35 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [35 <./Report1.pdf>]
+<Report1.pdf, id=381, page=36, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 36>
+Package pdftex.def Info: Report1.pdf , page36 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 36>
+Package pdftex.def Info: Report1.pdf , page36 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 36>
+Package pdftex.def Info: Report1.pdf , page36 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [36 <./Report1.pdf>]
+<Report1.pdf, id=392, page=37, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 37>
+Package pdftex.def Info: Report1.pdf , page37 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 37>
+Package pdftex.def Info: Report1.pdf , page37 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 37>
+Package pdftex.def Info: Report1.pdf , page37 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [37 <./Report1.pdf>]
+<Report1.pdf, id=404, page=38, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 38>
+Package pdftex.def Info: Report1.pdf , page38 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 38>
+Package pdftex.def Info: Report1.pdf , page38 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 38>
+Package pdftex.def Info: Report1.pdf , page38 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [38 <./Report1.pdf>]
+<Report1.pdf, id=415, page=39, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 39>
+Package pdftex.def Info: Report1.pdf , page39 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 39>
+Package pdftex.def Info: Report1.pdf , page39 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 39>
+Package pdftex.def Info: Report1.pdf , page39 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [39 <./Report1.pdf>]
+<Report1.pdf, id=426, page=40, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 40>
+Package pdftex.def Info: Report1.pdf , page40 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 40>
+Package pdftex.def Info: Report1.pdf , page40 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 40>
+Package pdftex.def Info: Report1.pdf , page40 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [40 <./Report1.pdf>]
+<Report1.pdf, id=437, page=41, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 41>
+Package pdftex.def Info: Report1.pdf , page41 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 41>
+Package pdftex.def Info: Report1.pdf , page41 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 41>
+Package pdftex.def Info: Report1.pdf , page41 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [41 <./Report1.pdf>]
+<Report1.pdf, id=448, page=42, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 42>
+Package pdftex.def Info: Report1.pdf , page42 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 42>
+Package pdftex.def Info: Report1.pdf , page42 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 42>
+Package pdftex.def Info: Report1.pdf , page42 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [42 <./Report1.pdf>]
+<Report1.pdf, id=459, page=43, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 43>
+Package pdftex.def Info: Report1.pdf , page43 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 43>
+Package pdftex.def Info: Report1.pdf , page43 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 43>
+Package pdftex.def Info: Report1.pdf , page43 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [43 <./Report1.pdf>]
+<Report1.pdf, id=471, page=44, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 44>
+Package pdftex.def Info: Report1.pdf , page44 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 44>
+Package pdftex.def Info: Report1.pdf , page44 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 44>
+Package pdftex.def Info: Report1.pdf , page44 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [44 <./Report1.pdf>]
+<Report1.pdf, id=482, page=45, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 45>
+Package pdftex.def Info: Report1.pdf , page45 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 45>
+Package pdftex.def Info: Report1.pdf , page45 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 45>
+Package pdftex.def Info: Report1.pdf , page45 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+
+[45 <./Report1.pdf>]
+<Report1.pdf, id=493, page=46, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 46>
+Package pdftex.def Info: Report1.pdf , page46 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 46>
+Package pdftex.def Info: Report1.pdf , page46 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 46>
+Package pdftex.def Info: Report1.pdf , page46 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [46 <./Report1.pdf>]
+<Report1.pdf, id=504, page=47, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 47>
+Package pdftex.def Info: Report1.pdf , page47 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 47>
+Package pdftex.def Info: Report1.pdf , page47 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 47>
+Package pdftex.def Info: Report1.pdf , page47 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [47 <./Report1.pdf>]
+<Report1.pdf, id=516, page=48, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 48>
+Package pdftex.def Info: Report1.pdf , page48 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 48>
+Package pdftex.def Info: Report1.pdf , page48 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 48>
+Package pdftex.def Info: Report1.pdf , page48 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [48 <./Report1.pdf>]
+<Report1.pdf, id=527, page=49, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 49>
+Package pdftex.def Info: Report1.pdf , page49 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 49>
+Package pdftex.def Info: Report1.pdf , page49 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 49>
+Package pdftex.def Info: Report1.pdf , page49 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [49 <./Report1.pdf>]
+<Report1.pdf, id=539, page=50, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 50>
+Package pdftex.def Info: Report1.pdf , page50 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 50>
+Package pdftex.def Info: Report1.pdf , page50 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 50>
+Package pdftex.def Info: Report1.pdf , page50 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [50 <./Report1.pdf>]
+<Report1.pdf, id=550, page=51, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 51>
+Package pdftex.def Info: Report1.pdf , page51 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 51>
+Package pdftex.def Info: Report1.pdf , page51 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 51>
+Package pdftex.def Info: Report1.pdf , page51 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [51 <./Report1.pdf>]
+<Report1.pdf, id=561, page=52, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 52>
+Package pdftex.def Info: Report1.pdf , page52 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 52>
+Package pdftex.def Info: Report1.pdf , page52 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 52>
+Package pdftex.def Info: Report1.pdf , page52 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [52 <./Report1.pdf>]
+<Report1.pdf, id=572, page=53, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 53>
+Package pdftex.def Info: Report1.pdf , page53 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 53>
+Package pdftex.def Info: Report1.pdf , page53 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 53>
+Package pdftex.def Info: Report1.pdf , page53 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [53 <./Report1.pdf>]
+<Report1.pdf, id=583, page=54, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 54>
+Package pdftex.def Info: Report1.pdf , page54 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 54>
+Package pdftex.def Info: Report1.pdf , page54 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 54>
+Package pdftex.def Info: Report1.pdf , page54 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [54 <./Report1.pdf>]
+<Report1.pdf, id=594, page=55, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 55>
+Package pdftex.def Info: Report1.pdf , page55 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 55>
+Package pdftex.def Info: Report1.pdf , page55 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 55>
+Package pdftex.def Info: Report1.pdf , page55 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [55 <./Report1.pdf>]
+<Report1.pdf, id=606, page=56, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 56>
+Package pdftex.def Info: Report1.pdf , page56 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 56>
+Package pdftex.def Info: Report1.pdf , page56 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 56>
+Package pdftex.def Info: Report1.pdf , page56 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+
+[56 <./Report1.pdf>]
+<Report1.pdf, id=617, page=57, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 57>
+Package pdftex.def Info: Report1.pdf , page57 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 57>
+Package pdftex.def Info: Report1.pdf , page57 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 57>
+Package pdftex.def Info: Report1.pdf , page57 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [57 <./Report1.pdf>]
+<Report1.pdf, id=628, page=58, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 58>
+Package pdftex.def Info: Report1.pdf , page58 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 58>
+Package pdftex.def Info: Report1.pdf , page58 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 58>
+Package pdftex.def Info: Report1.pdf , page58 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [58 <./Report1.pdf>]
+<Report1.pdf, id=639, page=59, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 59>
+Package pdftex.def Info: Report1.pdf , page59 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 59>
+Package pdftex.def Info: Report1.pdf , page59 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 59>
+Package pdftex.def Info: Report1.pdf , page59 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [59 <./Report1.pdf>]
+<Report1.pdf, id=650, page=60, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 60>
+Package pdftex.def Info: Report1.pdf , page60 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 60>
+Package pdftex.def Info: Report1.pdf , page60 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 60>
+Package pdftex.def Info: Report1.pdf , page60 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [60 <./Report1.pdf>]
+<Report1.pdf, id=661, page=61, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 61>
+Package pdftex.def Info: Report1.pdf , page61 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 61>
+Package pdftex.def Info: Report1.pdf , page61 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 61>
+Package pdftex.def Info: Report1.pdf , page61 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [61 <./Report1.pdf>]
+<Report1.pdf, id=674, page=62, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 62>
+Package pdftex.def Info: Report1.pdf , page62 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 62>
+Package pdftex.def Info: Report1.pdf , page62 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 62>
+Package pdftex.def Info: Report1.pdf , page62 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [62 <./Report1.pdf>]
+<Report1.pdf, id=685, page=63, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 63>
+Package pdftex.def Info: Report1.pdf , page63 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 63>
+Package pdftex.def Info: Report1.pdf , page63 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 63>
+Package pdftex.def Info: Report1.pdf , page63 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [63 <./Report1.pdf>]
+<Report1.pdf, id=696, page=64, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 64>
+Package pdftex.def Info: Report1.pdf , page64 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 64>
+Package pdftex.def Info: Report1.pdf , page64 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 64>
+Package pdftex.def Info: Report1.pdf , page64 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [64 <./Report1.pdf>]
+<Report1.pdf, id=707, page=65, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 65>
+Package pdftex.def Info: Report1.pdf , page65 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 65>
+Package pdftex.def Info: Report1.pdf , page65 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 65>
+Package pdftex.def Info: Report1.pdf , page65 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [65 <./Report1.pdf>]
+<Report1.pdf, id=718, page=66, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 66>
+Package pdftex.def Info: Report1.pdf , page66 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 66>
+Package pdftex.def Info: Report1.pdf , page66 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 66>
+Package pdftex.def Info: Report1.pdf , page66 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [66 <./Report1.pdf>]
+<Report1.pdf, id=729, page=67, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 67>
+Package pdftex.def Info: Report1.pdf , page67 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 67>
+Package pdftex.def Info: Report1.pdf , page67 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 67>
+Package pdftex.def Info: Report1.pdf , page67 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+
+[67 <./Report1.pdf>]
+<Report1.pdf, id=741, page=68, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 68>
+Package pdftex.def Info: Report1.pdf , page68 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 68>
+Package pdftex.def Info: Report1.pdf , page68 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 68>
+Package pdftex.def Info: Report1.pdf , page68 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [68 <./Report1.pdf>]
+<Report1.pdf, id=752, page=69, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 69>
+Package pdftex.def Info: Report1.pdf , page69 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 69>
+Package pdftex.def Info: Report1.pdf , page69 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 69>
+Package pdftex.def Info: Report1.pdf , page69 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [69 <./Report1.pdf>]
+<Report1.pdf, id=763, page=70, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 70>
+Package pdftex.def Info: Report1.pdf , page70 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 70>
+Package pdftex.def Info: Report1.pdf , page70 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 70>
+Package pdftex.def Info: Report1.pdf , page70 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [70 <./Report1.pdf>]
+<Report1.pdf, id=774, page=71, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 71>
+Package pdftex.def Info: Report1.pdf , page71 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 71>
+Package pdftex.def Info: Report1.pdf , page71 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 71>
+Package pdftex.def Info: Report1.pdf , page71 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [71 <./Report1.pdf>]
+<Report1.pdf, id=785, page=72, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 72>
+Package pdftex.def Info: Report1.pdf , page72 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 72>
+Package pdftex.def Info: Report1.pdf , page72 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 72>
+Package pdftex.def Info: Report1.pdf , page72 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [72 <./Report1.pdf>]
+<Report1.pdf, id=796, page=73, 614.295pt x 794.97pt>
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 73>
+Package pdftex.def Info: Report1.pdf , page73 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 73>
+Package pdftex.def Info: Report1.pdf , page73 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: Report1.pdf Graphic file (type pdf)
+<use Report1.pdf, page 73>
+Package pdftex.def Info: Report1.pdf , page73 used on input line 8.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [73 <./Report1.pdf>]
+(./model.aux) ) 
+Here is how much of TeX's memory you used:
+ 3827 strings out of 481166
+ 59358 string characters out of 5912402
+ 330858 words of memory out of 5000000
+ 20588 multiletter control sequences out of 15000+600000
+ 537346 words of font info for 31 fonts, out of 8000000 for 9000
+ 109 hyphenation exceptions out of 8191
+ 80i,17n,85p,222b,436s stack positions out of 5000i,500n,10000p,200000b,80000s
+<c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmbx10.pfb><c:
+/texlive/2020/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/texlive/2020/texm
+f-dist/fonts/type1/public/lm/lmbx9.pfb><c:/texlive/2020/texmf-dist/fonts/type1/
+public/lm/lmex10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi10.p
+fb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi7.pfb><c:/texlive/2020
+/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/texlive/2020/texmf-dist/fonts/t
+ype1/public/lm/lmr12.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr1
+7.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr6.pfb><c:/texlive/20
+20/texmf-dist/fonts/type1/public/lm/lmr7.pfb><c:/texlive/2020/texmf-dist/fonts/
+type1/public/lm/lmr8.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr9
+.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmri10.pfb><c:/texlive/2
+020/texmf-dist/fonts/type1/public/lm/lmri8.pfb><c:/texlive/2020/texmf-dist/font
+s/type1/public/lm/lmss10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/
+lmsy10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmsy5.pfb><c:/texl
+ive/2020/texmf-dist/fonts/type1/public/lm/lmsy7.pfb><c:/texlive/2020/texmf-dist
+/fonts/type1/public/lm/lmtk10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/publi
+c/lm/lmtt10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
+Output written on model.pdf (73 pages, 967681 bytes).
+PDF statistics:
+ 837 PDF objects out of 1000 (max. 8388607)
+ 549 compressed objects within 6 object streams
+ 0 named destinations out of 1000 (max. 500000)
+ 385 words of extra memory for PDF output out of 10000 (max. 10000000)
+

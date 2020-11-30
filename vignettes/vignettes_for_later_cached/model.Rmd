@@ -200,16 +200,26 @@ It returns a list with two elements:
 
 ```{r eval=FALSE}
 # generated from li, lg and deductions for first and second pillar
-free_cf_before_tax <- c(81000.00,81810.00,82628.10,83454.38,84288.92,85131.81,85983.13,86842.96,87711.39,88588.51,89474.39,90369.14,91272.83,92185.56,93107.41,94038.49,94978.87,95928.66,96887.95,97856.82,98835.39,99823.75,100821.98)
-tpwork_ex <- tpCFwork(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-                      free_cf_before_tax=free_cf_before_tax,retr=retr[,,1:8],s3=300000,w0=300000,psi=0.015,c=0.6)
+free_cf_before_tax <- c(81000.00,81810.00,82628.10,83454.38,84288.92,85131.81,85983.13,
+                        86842.96,87711.39,88588.51,89474.39,90369.14,91272.83,92185.56,
+                        93107.41,94038.49,94978.87,95928.66,96887.95,97856.82,98835.39,
+                        99823.75,100821.98)
+tpwork_ex <- tpCFwork(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),
+                                                      c("msci","b10","recom","libor","infl")),
+                      free_cf_before_tax=free_cf_before_tax,retr=retr[,,1:8],s3=300000,
+                      w0=300000,psi=0.015,c=0.6)
 tpwork_ex$cons
 ```
 ```{r eval=TRUE, echo=FALSE}
 # generated from li, lg and deductions for first and second pillar
-free_cf_before_tax <- c(81000.00,81810.00,82628.10,83454.38,84288.92,85131.81,85983.13,86842.96,87711.39,88588.51,89474.39,90369.14,91272.83,92185.56,93107.41,94038.49,94978.87,95928.66,96887.95,97856.82,98835.39,99823.75,100821.98)
-tpwork_ex <- tpCFwork(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-                      free_cf_before_tax=free_cf_before_tax,retr=retr[,,1:8],s3=300000,w0=300000,psi=0.015,c=0.6)
+free_cf_before_tax <- c(81000.00,81810.00,82628.10,83454.38,84288.92,85131.81,85983.13,
+                        86842.96,87711.39,88588.51,89474.39,90369.14,91272.83,92185.56,
+                        93107.41,94038.49,94978.87,95928.66,96887.95,97856.82,98835.39,
+                        99823.75,100821.98)
+tpwork_ex <- tpCFwork(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),
+                                                      c("msci","b10","recom","libor","infl")),
+                      free_cf_before_tax=free_cf_before_tax,retr=retr[,,1:8],s3=300000,
+                      w0=300000,psi=0.015,c=0.6)
 head(tpwork_ex$cons)
 ```
 ```{r eval=FALSE}
@@ -237,12 +247,14 @@ It returns a list with two elements:
 * Development of wealth during pension years (matrix with dim=c(122-ret_age,# of Scenarios))
 
 ```{r eval=FALSE}
-tpret_ex <- tpCFret(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+tpret_ex <- tpCFret(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),
+                                                    c("msci","b10","recom","libor","infl")),
                       alpha=0.96,wealth_at_ret_age=100000,retr=retr[,,1:10],psi=0.015)
 tpret_ex$cons
 ```
 ```{r eval=TRUE, echo=FALSE}
-tpret_ex <- tpCFret(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+tpret_ex <- tpCFret(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),
+                                                    c("msci","b10","recom","libor","infl")),
                       alpha=0.96,wealth_at_ret_age=100000,retr=retr[,,1:10],psi=0.015)
 head(tpret_ex$cons)
 ```
@@ -310,10 +322,12 @@ The function `taxCFwork()` calculates income after deduction taxes during the ca
 It returns net (after tax) income payments, specifying which part should be paid from cash-flows (income) and from liquid wealth.
 
 ```{r eval=FALSE}
-taxCFwork(income=c(100000,100000,100000),liquid_wealth=c(100000,50000,-100000),illiquid_wealth=c(100000,150000,100000))
+taxCFwork(income=c(100000,100000,100000),liquid_wealth=c(100000,50000,-100000),
+          illiquid_wealth=c(100000,150000,100000))
 ```
 ```{r eval=TRUE, echo=FALSE}
-taxCFwork(income=c(100000,100000,100000),liquid_wealth=c(100000,50000,-100000),illiquid_wealth=c(100000,150000,100000))
+taxCFwork(income=c(100000,100000,100000),liquid_wealth=c(100000,50000,-100000),
+          illiquid_wealth=c(100000,150000,100000))
 ```
 
 #### Taxes during retirement phase
@@ -325,10 +339,12 @@ The function `taxCFret()` calculates taxes for individual pension payments detai
 * `wealth` wealth at 1.1. of tax year (can be negative)
 
 ```{r eval=FALSE}
-taxCFret(fpcf=c(15000,15000,15000),totalcf=c(30000,30000,100000),wealth=c(100000,-120000,100000))
+taxCFret(fpcf=c(15000,15000,15000),totalcf=c(30000,30000,100000),
+         wealth=c(100000,-120000,100000))
 ```
 ```{r eval=TRUE, echo=FALSE}
-taxCFret(fpcf=c(15000,15000,15000),totalcf=c(30000,30000,100000),wealth=c(100000,-120000,100000))
+taxCFret(fpcf=c(15000,15000,15000),totalcf=c(30000,30000,100000),
+         wealth=c(100000,-120000,100000))
 ```
 
 #### Taxes on Lumpsum payments
@@ -389,14 +405,14 @@ Variables that describe the system (and may, to a certain degree, also differ ac
 The legal retirement age and effects of early/late retirement in the first pillar are modeled as described above. For the second pillar, we use real-world conversion rates and deductions/surcharges for late/early retirement provided by one particular Liechtenstein pension fund.
 
 Planning starts `ret_age` at $t=T$ (if still alive at this time). In the first and second pillars, there are restrictions regarding the retirement age, which lead us to limit the admissible values of `ret_age`. At the unknown time $t=T^* (<122)$, the insured will die. The total utility from consumption and bequest is given by 
-$$\begin{align}
+\begin{align}
 U(\cdot)&=\sum_{t=1}^\infty \delta^{-t} E(U_t(c_t,B_t))\\
 &=\sum_{t=1}^\infty \delta^{-t} \left[p_{t}U(c_t)+(1-p_{t})\beta U(B_t)\right],
-\end{align}$$
+\end{align}
 where, for a generic argument $y_t$,
-$$\begin{equation}
+\begin{equation}
 U(y_t)=\frac{y_t^{(1-\gamma)}}{1-\gamma}\quad \gamma>0, \gamma\neq 1,
-\end{equation}$$
+\end{equation}
 and $c_t$ and $B_t$ denote consumption and bequest at time $t$ (in real terms, i.e., in $t=0$ purchasing power!), resp. $p_{t}$ is the insured's probability of being alive at time $t$ (conditional on being alive at $t$=0), and `beta` ($\beta$) represents the insured's subjective utility weighting of a Swiss franc bequeathed vs. a Swiss franc spent on consumption.
 
 Asset returns, short-term interest rates, and inflation are modeled jointly via a VAR(1) process. Based on @swisscanto_schweizer_2018, we focus on the main asset classes Swiss pension funds are invested in: Stocks, bonds, real estate, and cash. We use the following proxies for these asset classes (all data come from Datastream): The MSCI world index for stocks, 10-year Swiss government bonds, a Swiss commercial real estate index, and the 3-month CHF LIBOR. As a proxy for inflation, we use the Swiss consumer price index. After estimating the VAR process, we convert nominal asset returns to real returns using our inflation proxy. 
@@ -404,17 +420,17 @@ Asset returns, short-term interest rates, and inflation are modeled jointly via 
 At time $t=0$, initial (non-disposable) wealth is denoted by `W0`. This is assumed to remain constant (alternatively, the expected wealth at retirement can be used). The insured has already worked for a certain number of years, `s11`, with an average annual income of `s12`. Assuming that he keeps on working for another $T$ years, this gives $N_T=N_0+T$ years in total for his first-pillar pension. The pension amount, which depends on both the number of working years and the (revalued) average income, is approximated by a regression with an $R^2>99$\% (instead of directly using the table provided by the AHV).
 
 For the average income, we need the individual's gross yearly wage at time $t=0$, denoted by `li`. It is assumed to grow deterministically at a rate of $li_t=li_0\cdot (1+lg)^t$ per year (in real terms). During the investor's working life, we assume that he consumes a constant fraction `c` of his labor income $li_t$ after deductions:
-$$\begin{equation}
+\begin{equation}
 c_t=c\cdot li_t(1-c1-c2),\quad, t=1,\dots,T.
-\end{equation}$$
+\end{equation}
 Any labor income that is not either consumed or used for mandatory contributions (first and second pillar) is saved in the third pillar, which plays the role of default savings in our model. The asset universe in the third pillar is the same as for the second pillar, but the weights `w3` may be chosen by the decision maker. Negative cash holdings in the third pillar are allowed. The interest rate charged for these is the (path-dependent) risk-free rate from the VAR model plus a spread `psi`. 
 
 Mandatory contributions to the first pillar (including unemployment insurance etc.) are currently at about 7.4\%, but partly have upper bounds. In addition, the employer pays a fixed cash subsidy for health insurance. To simplify modeling, we approximate first pillar deductions by a rate of 7\% of gross income (and ignore any upper bounds).
 
 Second-pillar savings at time $t=0$ are known and denoted by `s2`. They grow according to
-$$\begin{equation}
+\begin{equation}
 s2_t=s2_{t-1}(1+R2_t)+2c2_t\cdot li_t, \quad, t=1,\dots,T,
-\end{equation}$$
+\end{equation}
 where $c2$ denotes second pillar employee pension contributions and we assume a 50:50 split between employer and employee (implementation of other splits is straightforward). For our numerical calculations, we assume $c2=0.24$ (age-independent). $R2_t$, the investment returns credited to the insured's savings account, depends on the investment success and the pension fund's return crediting policy. 
 As a stylized model of real-world policies used by funds, we assume that the fund credits the average nominal asset return whenever the realized asset return is between the first and third quartile of asset returns according to the VAR model. If it is lower (higher), the fund decreases (increases) the return credited to members' accounts by 2 percentage points. 
 At time $t=T$, a fraction `nu2` of the individual's second pillar savings is converted into a life-long pension at a given conversion rate `rho2`. 
@@ -428,11 +444,11 @@ where $R3_t$, the investment returns in the third pillar, depend on $w3$ and the
 The same holds for a fraction $\nu3$ of third-pillar savings, where the conversion rate is `rho3`. Surcharges (deductions) to the conversion rate for late (early) retirement are taken from one particular Liechtenstein pension fund. In our model, we assume that the decision on how much of these savings to convert into a life-long pension is already made today, i.e., it does not depend on the actual return path realized in the VAR process. The asset weights `w2` in the second pillar are chosen by the pension fund and are taken as parameters for the insured's personal pension planning, whereas the insured can choose the weights `w3` in the third pillar, which are therefore used as decision variables in our model. For the second pillar, we use an average asset allocation of Swiss pension funds in our numerical calculations.
 
 Any lump-sum payments from the second and third pillars at the time of retirement go towards the self-managed pension. There, any remaining wealth is invested using the weights `w3`, and each year during retirement, a constant fraction `alpha` ($\alpha$) is consumed:
-$$\begin{align}
+\begin{align}
 w_T&=(1-\nu2) s2_T+(1-\nu3) s3_T,\\
 w_t&=w_{t-1}(1+R3_t)(1-\alpha), t=T+1,\ldots,122-\textsf{age},\\
 c_t&=\alpha w_{t-1}(1+R3_t), t=T+1,\ldots,122-\textsf{age}.
-\end{align}$$
+\end{align}
 Hence, during retirement, income comes from four sources: Pensions from the first, second, and third pillars, as well as depletion of (third-pillar or disposable) wealth. 
 An age of 122 corresponds to the last row in the mortality tables we use. Any wealth remaining in the third pillar at the time of death ($T^*$) enters the utility function via bequest $B_{T^*}$. 
 
@@ -514,20 +530,20 @@ It returns a list with three elements determining:
 
 ```{r eval=FALSE}
 totalcf_ex <- totalCF(ret_age=65,c_age=42,
-                      w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-                      c=0.6,c2=.12,nu2=.5,nu3=0.01,gender=0,
-                      w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
-                      w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-                      rho2=0.05,rho3=0.04,ret=ret[,,1:8],retr=retr[,,1:8],psi=0.015,alpha=0.96)
+                  w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                  c=0.6,c2=.12,nu2=.5,nu3=0.01,gender=0,
+                  w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
+                  w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+                  rho2=0.05,rho3=0.04,ret=ret[,,1:8],retr=retr[,,1:8],psi=0.015,alpha=0.96)
 totalcf_ex$cons
 ```
 ```{r eval=TRUE, echo=FALSE}
 totalcf_ex <- totalCF(ret_age=65,c_age=42,
-                      w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-                      c=0.6,c2=.12,nu2=.5,nu3=0.01,gender=0,
-                      w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
-                      w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-                      rho2=0.05,rho3=0.04,ret=ret[,,1:8],retr=retr[,,1:8],psi=0.015,alpha=0.96)
+                  w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                  c=0.6,c2=.12,nu2=.5,nu3=0.01,gender=0,
+                  w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
+                  w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+                  rho2=0.05,rho3=0.04,ret=ret[,,1:8],retr=retr[,,1:8],psi=0.015,alpha=0.96)
 head(totalcf_ex$cons)
 ```
 ```{r eval=FALSE}
@@ -580,12 +596,12 @@ The function returns a single scalar: Expected utility, therefore, to useit as o
 ```{r}
 MortalityTables::mortalityTables.load("Austria_Annuities")
 util_ex <- util(ret_age=65,c_age=42,
-                tw3=c(.25,.25,.25),
-                c=0.6,c2=.12,nu2=.5,nu3=0.01,ra=4,delta=0.02,alpha=0.96,beta=0.75,gender=0,
-                gender_mortalityTable=MortalityTables::baseTable(AVOe2005R.male),
-                w0=300000,CF=NULL,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
-                w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-                rho2=0.05,rho3=0.04,ret=ret,retr=retr,psi=0.015)
+            tw3=c(.25,.25,.25),
+            c=0.6,c2=.12,nu2=.5,nu3=0.01,ra=4,delta=0.02,alpha=0.96,beta=0.75,gender=0,
+            gender_mortalityTable=MortalityTables::baseTable(AVOe2005R.male),
+            w0=300000,CF=NULL,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
+            w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+            rho2=0.05,rho3=0.04,ret=ret,retr=retr,psi=0.015)
 util_ex
 ```
 Internally, we additionally define the helper function `.util_optim()`, `.util_optim_wc()` and `.util_optim_w()` to optimize all variables, a reduced subset (consumption given by `c` and `alpha`, as well as asset allocation in the third pillar) or solely the asset allocation in the third pillar. In all three case, utility is multiplied by $-1$ to be minimized in the optimization procedure.
@@ -608,7 +624,8 @@ library(tictoc)
 .load_parameters()
 initial_values <- c(0.6, 0.12, 0.5, 0.2, 0.96, 0.25, 0.25, 0.25)
 tic()
-optLC_ex <- optimalLC(initial_values,upper_bounds=NULL,lower_bounds=NULL,ret_age=ret_age,ra=ra,delta=delta,beta=bbeta,c_age=c_age,
+optLC_ex <- optimalLC(initial_values,upper_bounds=NULL,lower_bounds=NULL,
+                      ret_age=ret_age,ra=ra,delta=delta,beta=bbeta,c_age=c_age,
           gender=gender,gender_mortalityTable=gender_mortalityTable,
           w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,rho3=rho3,
           ret=ret,retr=retr,psi=psi,trace=0,reltol=1e-5)
@@ -622,14 +639,18 @@ library(tictoc)
 .load_parameters()
 initial_values <- c(0.5, 0.95, 0.25, 0.25, 0.25)
 tic()
-optwc_ex <- optimalwc(initial_values,upper_bounds=NULL,lower_bounds=NULL,ret_age=ret_age,c2=c2,nu2=nu2,nu3=nu3,
-                   ra=18,delta=delta,beta=bbeta,c_age=c_age,gender=gender,gender_mortalityTable=gender_mortalityTable,
-                   w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,rho3=rho3,
+optwc_ex <- optimalwc(initial_values,upper_bounds=NULL,lower_bounds=NULL,
+                      ret_age=ret_age,c2=c2,nu2=nu2,nu3=nu3,
+                   ra=18,delta=delta,beta=bbeta,c_age=c_age,gender=gender,
+                   gender_mortalityTable=gender_mortalityTable,
+                   w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,
+                   rho2=rho2,rho3=rho3,
                    ret=ret[,,1:10],retr=retr[,,1:10],psi=psi,trace=0,reltol=1e-4)
 toc()
 ```
 ```{r, cache=TRUE}
-setNames(optwc_ex[-c(1,2)],c("c","alpha","w_stocks","w_bonds","w_realest","value","counts.function","counts.gradient","convergence"))
+setNames(optwc_ex[-c(1,2)],c("c","alpha","w_stocks","w_bonds","w_realest","value",
+                             "counts.function","counts.gradient","convergence"))
 ```
 
 
@@ -640,14 +661,17 @@ library(tictoc)
 .load_parameters()
 initial_values <- c(0.25, 0.25, 0.25)
 tic()
-optw_ex <- optimalw(initial_values,upper_bounds=NULL,lower_bounds=NULL,ret_age=ret_age,cc=cc,c2=c2,nu2=nu2,nu3=nu3,
-         ra=ra,delta=delta,alpha=aalpha,beta=bbeta,c_age=c_age,gender=gender,gender_mortalityTable=gender_mortalityTable,
-         w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,rho3=rho3,
-         ret=ret,retr=retr,psi=psi,trace=0,reltol=1e-4)
+optw_ex <- optimalw(initial_values,upper_bounds=NULL,lower_bounds=NULL,
+                    ret_age=ret_age,cc=cc,c2=c2,nu2=nu2,nu3=nu3,
+         ra=ra,delta=delta,alpha=aalpha,beta=bbeta,c_age=c_age,gender=gender,
+         gender_mortalityTable=gender_mortalityTable,
+         w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,
+         rho3=rho3,ret=ret,retr=retr,psi=psi,trace=0,reltol=1e-4)
 toc()
 ```
 ```{r, cache=TRUE}
-setNames(optw_ex[-c(1,2)],c("w_stocks","w_bonds","w_realest","value","counts.function","counts.gradient","convergence"))
+setNames(optw_ex[-c(1,2)],c("w_stocks","w_bonds","w_realest","value",
+                            "counts.function","counts.gradient","convergence"))
 ```
 
 ##### Speeding up optimization
@@ -660,8 +684,10 @@ MortalityTables::mortalityTables.load("Austria_Annuities")
 SPFretsel <- .SPFretch(SPFret,c_age=c_age,ret_age=ret_age)
 utilall_ex <- utilall(ret_age=ret_age,c_age=c_age,
                       tw3=c(.25,.25,.25),
-                      c=cc,c2=c2,nu2=nu2,nu3=nu3,ra=ra,delta=delta,alpha=aalpha,beta=bbeta,gender=gender,
-                      gender_mortalityTable2=cbind(MortalityTables::baseTable(AVOe2005R.male),MortalityTables::baseTable(AVOe2005R.female)),
+                      c=cc,c2=c2,nu2=nu2,nu3=nu3,ra=ra,delta=delta,alpha=aalpha,
+                      beta=bbeta,gender=gender,
+                      gender_mortalityTable2=cbind(MortalityTables::baseTable(AVOe2005R.male),
+                                                   MortalityTables::baseTable(AVOe2005R.female)),
                       w0=w0,CF=NULL,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,
                       rho2=rho2,rho3=rho3,ret=ret,retr=retr,SPFretsel=SPFretsel,psi=psi)
 utilall_ex
@@ -670,7 +696,8 @@ utilall_ex
 # CHECK AGAINST ORIGINAL UTILITY
 utilall_check <- util(ret_age=ret_age,c_age=c_age,
                       tw3=c(.25,.25,.25),
-                      c=cc,c2=c2,nu2=nu2,nu3=nu3,ra=ra,delta=delta,alpha=aalpha,beta=bbeta,gender=gender,
+                      c=cc,c2=c2,nu2=nu2,nu3=nu3,ra=ra,delta=delta,alpha=aalpha,
+                      beta=bbeta,gender=gender,
                       gender_mortalityTable=MortalityTables::baseTable(AVOe2005R.male),
                       w0=w0,CF=NULL,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,
                       w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
@@ -684,15 +711,19 @@ library(tictoc)
 .load_parameters()
 initial_values <- c(.3,0.93,0.8,0.01,0.6)
 tic()
-optwc2_ex <- optimalwc2(initial_values,upper_bounds=NULL,lower_bounds=NULL,ret_age=ret_age,c_age=c_age,c2=c2,nu2=nu2,nu3=nu3,
+optwc2_ex <- optimalwc2(initial_values,upper_bounds=NULL,lower_bounds=NULL,
+                        ret_age=ret_age,c_age=c_age,c2=c2,nu2=nu2,nu3=nu3,
                            ra=ra,delta=delta,beta=bbeta,gender=gender,
-                      gender_mortalityTable2=cbind(MortalityTables::baseTable(AVOe2005R.male),MortalityTables::baseTable(AVOe2005R.female)),
+                      gender_mortalityTable2=cbind(MortalityTables::baseTable(AVOe2005R.male),
+                                                   MortalityTables::baseTable(AVOe2005R.female)),
                       w0=w0,CF=NULL,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,
-                      rho2=rho2,rho3=rho3,ret=ret,retr=retr,SPFretsel=SPFretsel,psi=psi,trace=0,reltol=1e-4)
+                      rho2=rho2,rho3=rho3,ret=ret,retr=retr,SPFretsel=SPFretsel,
+                      psi=psi,trace=0,reltol=1e-4)
 toc()
 ```
 ```{r, cache=TRUE, eval=TRUE}
-setNames(optwc2_ex[-c(1,2)],c("c","alpha","w_stocks","w_bonds","w_realest","value","counts.function","counts.gradient","convergence"))
+setNames(optwc2_ex[-c(1,2)],c("c","alpha","w_stocks","w_bonds","w_realest",
+                              "value","counts.function","counts.gradient","convergence"))
 ```
 
 # Conclusion and Future Research 
@@ -718,7 +749,8 @@ Test cases
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out1 <- NULL
 for (c_age in 42:64){
-   out1[c_age-41] <- mean(fpCF(ret_age=65,c_age=c_age,li=20000,lg=0.01,s1=c(15,10000),ret=ret[,,1:10])[1,])
+   out1[c_age-41] <- mean(fpCF(ret_age=65,c_age=c_age,li=20000,lg=0.01,
+                               s1=c(15,10000),ret=ret[,,1:10])[1,])
 }
 plot(42:64,out1,xlab="c_age",ylab="First pillar pension")
 ```
@@ -728,7 +760,8 @@ plot(42:64,out1,xlab="c_age",ylab="First pillar pension")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out2 <- NULL; i<-1
 for (lg in seq(from = 0,to = 0.1,by = 0.01)){
-  out2[i] <- mean(fpCF(ret_age=65,c_age=42,li=20000,lg=lg,s1=c(15,10000),ret=ret[,,1:10])[1,])
+  out2[i] <- mean(fpCF(ret_age=65,c_age=42,li=20000,lg=lg,s1=c(15,10000),
+                       ret=ret[,,1:10])[1,])
   i <- i+1
 }
 plot(seq(0,0.1,0.01),out2,xlab="lg",ylab="First pillar pension")
@@ -739,7 +772,8 @@ plot(seq(0,0.1,0.01),out2,xlab="lg",ylab="First pillar pension")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out3 <- NULL
 for (ret_age in 60:70){
-  out3[ret_age-59] <- mean(fpCF(ret_age=ret_age,c_age=42,li=100000,lg=0.01,s1=c(15,80000),ret=ret[,,1:1000])[1,])
+  out3[ret_age-59] <- mean(fpCF(ret_age=ret_age,c_age=42,li=100000,lg=0.01,
+                                s1=c(15,80000),ret=ret[,,1:1000])[1,])
 }
 plot(60:70,out3,xlab="ret_age",ylab="First pillar pension")
 ```
@@ -749,7 +783,8 @@ plot(60:70,out3,xlab="ret_age",ylab="First pillar pension")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; i<-1
 for (s11 in seq(1:25)){
-  out4[i] <- mean(fpCF(ret_age=65,c_age=42,li=10000,lg=0.01,s1=c(s11,10000),ret=ret[,,1:10])[1,])
+  out4[i] <- mean(fpCF(ret_age=65,c_age=42,li=10000,lg=0.01,s1=c(s11,10000),
+                       ret=ret[,,1:10])[1,])
   i <- i+1
 }
 plot(1:25,out4,xlab="s11",ylab="First pillar pension")
@@ -760,7 +795,8 @@ plot(1:25,out4,xlab="s11",ylab="First pillar pension")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out5 <- NULL; i<-1
 for (s12 in seq(10000,100000,10000)){
-  out5[i] <- mean(fpCF(ret_age=65,c_age=42,li=10000,lg=0.01,s1=c(15,s12),ret=ret[,,1:10])[1,])
+  out5[i] <- mean(fpCF(ret_age=65,c_age=42,li=10000,lg=0.01,s1=c(15,s12),
+                       ret=ret[,,1:10])[1,])
   i <- i+1
 }
 plot(seq(10000,100000,10000),out5,xlab="s12",ylab="First pillar pension")
@@ -775,7 +811,8 @@ Here we evaluate three aspects of second pillar pensions: The lumpsum payment, t
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out1 <- NULL
 for (c_age in 42:64){
-  out <- spCF(ret_age=65,nu2=.5,c_age=c_age,c2=.12,li=100000,lg=0.01,ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
+  out <- spCF(ret_age=65,nu2=.5,c_age=c_age,c2=.12,li=100000,lg=0.01,
+              ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
   out1 <- rbind(out1,c(mean(out$lumpsum),mean(out$pension[1,]),mean(out$wealth)))
 }
 par(mfrow=c(1,3))
@@ -789,7 +826,8 @@ plot(42:64,out1[,3],main = "Wealth at retirement",xlab="c_age")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out2 <- NULL
 for (ret_age in 60:70){
-  out <- spCF(ret_age=ret_age,nu2=.5,c_age=42,c2=.12,li=100000,lg=0.01,ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
+  out <- spCF(ret_age=ret_age,nu2=.5,c_age=42,c2=.12,li=100000,lg=0.01,
+              ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
   out2 <- rbind(out2,c(mean(out$lumpsum),mean(out$pension[1,]),mean(out$wealth)))
 }
 par(mfrow=c(1,3))
@@ -803,7 +841,8 @@ plot(60:70,out2[,3],main = "Wealth at retirement",xlab="ret_age")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out3 <- NULL
 for (nu2 in seq(0,1,0.1)){
-  out <- spCF(ret_age=65,nu2=nu2,c_age=42,c2=.12,li=100000,lg=0.01,ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
+  out <- spCF(ret_age=65,nu2=nu2,c_age=42,c2=.12,li=100000,lg=0.01,
+              ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
   out3 <- rbind(out3,c(mean(out$lumpsum),mean(out$pension[1,]),mean(out$wealth)))
 }
 par(mfrow=c(1,3))
@@ -817,7 +856,8 @@ plot(seq(0,1,0.1),out3[,3],main = "Wealth at retirement",xlab="nu")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL
 for (c2 in seq(0,1,0.1)){
-  out <- spCF(ret_age=65,nu2=0.5,c_age=42,c2=c2,li=100000,lg=0.01,ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
+  out <- spCF(ret_age=65,nu2=0.5,c_age=42,c2=c2,li=100000,lg=0.01,
+              ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
   out4 <- rbind(out4,c(mean(out$lumpsum),mean(out$pension[1,]),mean(out$wealth)))
 }
 par(mfrow=c(1,3))
@@ -831,7 +871,8 @@ plot(seq(0,1,0.1),out4[,3],main = "Wealth at retirement",xlab="c2")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(10000,100000,10000)
 for (li in vec){
-  out <- spCF(ret_age=65,nu2=0.5,c_age=42,c2=.12,li=li,lg=0.01,ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
+  out <- spCF(ret_age=65,nu2=0.5,c_age=42,c2=.12,li=li,lg=0.01,
+              ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
   out4 <- rbind(out4,c(mean(out$lumpsum),mean(out$pension[1,]),mean(out$wealth)))
 }
 par(mfrow=c(1,3))
@@ -845,7 +886,8 @@ plot(vec,out4[,3],main = "Wealth at retirement",xlab="li")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(0,0.5,0.05)
 for (lg in vec){
-  out <- spCF(ret_age=65,nu2=0.5,c_age=42,c2=.12,li=100000,lg=lg,ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
+  out <- spCF(ret_age=65,nu2=0.5,c_age=42,c2=.12,li=100000,lg=lg,
+              ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
   out4 <- rbind(out4,c(mean(out$lumpsum),mean(out$pension[1,]),mean(out$wealth)))
 }
 par(mfrow=c(1,3))
@@ -859,7 +901,8 @@ plot(vec,out4[,3],main = "Wealth at retirement",xlab="lg")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(10000,1000000,10000)
 for (s2 in vec){
-  out <- spCF(ret_age=65,nu2=0.5,c_age=42,c2=.12,li=100000,lg=0.01,ret=ret[,,1:10],retr=retr[,,1:10],s2=s2,rho2=0.05)
+  out <- spCF(ret_age=65,nu2=0.5,c_age=42,c2=.12,li=100000,lg=0.01,
+              ret=ret[,,1:10],retr=retr[,,1:10],s2=s2,rho2=0.05)
   out4 <- rbind(out4,c(mean(out$lumpsum),mean(out$pension[1,]),mean(out$wealth)))
 }
 par(mfrow=c(1,3))
@@ -873,7 +916,8 @@ plot(vec,out4[,3],main = "Wealth at retirement",xlab="s2")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(0.01,0.2,0.01)
 for (rho2 in vec){
-  out <- spCF(ret_age=65,nu2=0.5,c_age=42,c2=.12,li=100000,lg=0.01,ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=rho2)
+  out <- spCF(ret_age=65,nu2=0.5,c_age=42,c2=.12,li=100000,lg=0.01,
+              ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=rho2)
   out4 <- rbind(out4,c(mean(out$lumpsum),mean(out$pension[1,]),mean(out$wealth)))
 }
 par(mfrow=c(1,3))
@@ -893,9 +937,12 @@ Here we evaluate the two aspects of third pillar savings: the consumption and we
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- 60:70
 for (ret_age in vec){
-  out <- tpCFwork(ret_age=ret_age,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-                  free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],s3=300000,w0=300000,psi=0.015,c=0.6)
-  out4 <- rbind(out4,c(mean(out$cons[as.character(ret_age-1),]),mean(out$wealth[as.character(ret_age-1),])))
+  out <- tpCFwork(ret_age=ret_age,c_age=42,
+                  w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                  free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],
+                  s3=300000,w0=300000,psi=0.015,c=0.6)
+  out4 <- rbind(out4,c(mean(out$cons[as.character(ret_age-1),]),
+                       mean(out$wealth[as.character(ret_age-1),])))
 }
 par(mfrow=c(1,2))
 plot(vec,out4[,1],main = "Consumption at retirement",xlab="ret_age")
@@ -907,8 +954,10 @@ plot(vec,out4[,2],main = "Wealth at retirement",xlab="ret_age")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- 42:64
 for (c_age in vec){
-  out <- tpCFwork(ret_age=65,c_age=c_age,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-                  free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],s3=300000,w0=300000,psi=0.015,c=0.6)
+  out <- tpCFwork(ret_age=65,c_age=c_age,
+                  w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                  free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],
+                  s3=300000,w0=300000,psi=0.015,c=0.6)
   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$wealth["64",])))
 }
 par(mfrow=c(1,2))
@@ -921,8 +970,10 @@ plot(vec,out4[,2],main = "Wealth before retirement",xlab="c_age")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(0.1,1,0.1)
 for (c in vec){
-  out <- tpCFwork(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-                  free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],s3=300000,w0=300000,psi=0.015,c=c)
+  out <- tpCFwork(ret_age=65,c_age=42,
+                  w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                  free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],
+                  s3=300000,w0=300000,psi=0.015,c=c)
   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$wealth["64",])))
 }
 par(mfrow=c(1,2))
@@ -935,8 +986,10 @@ plot(vec,out4[,2],main = "Wealth before retirement",xlab="c")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(0,1000000,10000)
 for (w0 in vec){
-  out <- tpCFwork(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-                  free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],s3=300000,w0=w0,psi=0.015,c=0.6)
+  out <- tpCFwork(ret_age=65,c_age=42,
+                  w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                  free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],
+                  s3=300000,w0=w0,psi=0.015,c=0.6)
   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$wealth["64",])))
 }
 par(mfrow=c(1,2))
@@ -949,8 +1002,10 @@ plot(vec,out4[,2],main = "Wealth before retirement",xlab="w0")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(0,1000000,10000)
 for (s3 in vec){
-  out <- tpCFwork(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-                  free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],s3=s3,w0=300000,psi=0.015,c=0.6)
+  out <- tpCFwork(ret_age=65,c_age=42,
+                  w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                  free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],
+                  s3=s3,w0=300000,psi=0.015,c=0.6)
   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$wealth["64",])))
 }
 par(mfrow=c(1,2))
@@ -967,7 +1022,8 @@ Here we evaluate the two aspects of third pillar consumption in retirement: the 
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center", cache=TRUE}
 out4 <- NULL; vec <- 60:70
 for (ret_age in vec){
-  out <- tpCFret(ret_age=ret_age,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+  out <- tpCFret(ret_age=ret_age,c_age=42,
+                 w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
                  alpha=0.96,wealth_at_ret_age=rep(10000,10000),retr=retr,psi=0.015)
   out4 <- rbind(out4,c(mean(out$cons["122",]),mean(out$wealth["122",])))
 }
@@ -982,7 +1038,8 @@ plot(vec,out4[,2],main = "Wealth at 122",xlab="ret_age")
 ## Attention: In case alpha>1 do we take pension away from fp and sp and use it to save more/repay debt
 out4 <- NULL; vec <- seq(1.2,0.8,-0.025)
 for (alpha in vec){
-  out <- tpCFret(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+  out <- tpCFret(ret_age=65,c_age=42,
+                 w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
                  alpha=alpha,wealth_at_ret_age=rep(10000,10000),retr=retr,psi=0.015)
   out4 <- rbind(out4,c(mean(out$cons["122",]),mean(out$wealth["122",])))
 }
@@ -996,7 +1053,8 @@ plot(vec,out4[,2],main = "Wealth at 122",xlab="alpha")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center", cache=TRUE}
 out4 <- NULL; vec <- seq(10000,-10000,-1000)
 for (wealth in vec){
-  out <- tpCFret(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+  out <- tpCFret(ret_age=65,c_age=42,
+                 w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
                  alpha=0.96,wealth_at_ret_age=rep(wealth,10000),retr=retr,psi=0.015)
   out4 <- rbind(out4,c(mean(out$cons["122",]),mean(out$wealth["122",])))
 }
@@ -1010,7 +1068,8 @@ plot(vec,out4[,2],main = "Wealth at 122",xlab="wealth at ret")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center", cache=TRUE}
 out4 <- NULL; vec <- seq(0.5,-0.5,-0.05)
 for (libor in vec){
-  out <- tpCFret(ret_age=65,c_age=42,w3=setNames(c(1-libor,0,0,libor,0),c("msci","b10","recom","libor","infl")),
+  out <- tpCFret(ret_age=65,c_age=42,
+                 w3=setNames(c(1-libor,0,0,libor,0),c("msci","b10","recom","libor","infl")),
                  alpha=0.96,wealth_at_ret_age=rep(10000,10000),retr=retr,psi=0.015)
   out4 <- rbind(out4,c(mean(out$cons["122",]),mean(out$wealth["122",])))
 }
@@ -1032,7 +1091,9 @@ for (ret_age in vec){
                  w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
                  w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
                  rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
-  out4 <- rbind(out4,c(mean(out$cons[as.character(ret_age-1),]),mean(out$wealth_before_ret[as.character(ret_age-1),]),mean(out$wealth_after_ret[as.character(ret_age),])))
+  out4 <- rbind(out4,c(mean(out$cons[as.character(ret_age-1),]),
+                       mean(out$wealth_before_ret[as.character(ret_age-1),]),
+                       mean(out$wealth_after_ret[as.character(ret_age),])))
 }
 par(mfrow=c(1,3))
 plot(vec,out4[,1],main = "Consumption at retirement",xlab="ret_age")
@@ -1051,7 +1112,8 @@ for (c_age in vec){
                  w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
                  w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
                  rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
-  out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
+  out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$wealth_before_ret["64",]),
+                       mean(out$wealth_after_ret["65",])))
 }
 par(mfrow=c(1,3))
 plot(vec,out4[,1],main = "Consumption at retirement",xlab="c_age")
@@ -1280,8 +1342,10 @@ gender_mortalityTable <- MortalityTables::baseTable(AVOe2005R.male)
 
 out4 <- NULL; vec <- 60:70
 for (ret_age in vec){
-  out <- util(ret_age=ret_age,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.01,ra=4,delta=0.02,alpha=0.96,
-              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=300000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
+  out <- util(ret_age=ret_age,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,
+              nu3=0.01,ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=300000,
+              CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
               rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
   out4 <- rbind(out4,out)
@@ -1295,8 +1359,10 @@ plot(vec,out4[,1],main = "Utility",type="l",xlab="ret_age")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- 42:64
 for (c_age in vec){
-  out <- util(ret_age=65,c_age=c_age,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.01,ra=4,delta=0.02,alpha=0.96,
-              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=300000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
+  out <- util(ret_age=65,c_age=c_age,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,
+              nu3=0.01,ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=300000,CF=0,
+              li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
               rho2=0.05,rho3=0.04,ret=ret[,,1:100],retr=retr[,,1:100],psi=0.015,verbose=FALSE)
   out4 <- rbind(out4,out)
@@ -1310,8 +1376,10 @@ plot(vec,out4[,1],main = "Utility",type="l",xlab="c_age")
 # Request for "consumption of everything: One needs low enough wealth to be achieving an optimum here. What about habit formation?
 out4 <- NULL; vec <- seq(0.6,1,0.01)
 for (c in vec){
-  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=c,c2=0.12,nu2=.5,nu3=0.01,ra=4,delta=0.02,alpha=0.96,
-              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=300000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=c,c2=0.12,nu2=.5,nu3=0.01,
+              ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=300000,
+              CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
               rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
   out4 <- rbind(out4,out)
@@ -1324,8 +1392,10 @@ plot(vec,out4[,1],main = "Utility",type="l",xlab="c")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(0,0.15,0.01)
 for (c2 in vec){
-  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=c2,nu2=.5,nu3=0.01,ra=4,delta=0.02,alpha=0.96,
-              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=300000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=c2,nu2=.5,nu3=0.01,ra=4,
+              delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=300000,
+              CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
               rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
   out4 <- rbind(out4,out)
@@ -1338,8 +1408,10 @@ plot(vec,out4[,1],main = "Utility",type="l",xlab="c2")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(0,1,0.05)
 for (nu2 in vec){
-  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=nu2,nu3=0.01,ra=4,delta=0.02,alpha=0.96,
-              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=200000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=-100000,
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=nu2,nu3=0.01,
+              ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=200000,
+              CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=-100000,
               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
               rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE,warnings = FALSE)
   out4 <- rbind(out4,out)
@@ -1352,8 +1424,10 @@ plot(vec,out4[,1],main = "Utility",type="l",xlab="nu2")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(0,1,0.05)
 for (nu3 in vec){
-  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=nu3,ra=4,delta=0.02,alpha=0.96,
-              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=nu3,
+              ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,
+              CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
               rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
   out4 <- rbind(out4,out)
@@ -1366,8 +1440,10 @@ plot(vec,out4[,1],main = "Utility",type="l",xlab="nu3")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(2,20,1)
 for (ra in vec){
-  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=ra,delta=0.02,alpha=0.96,
-              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=10000,
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,
+              ra=ra,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,
+              CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=10000,
               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
               rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
   out4 <- rbind(out4,out)
@@ -1380,8 +1456,10 @@ plot(vec,out4[,1],main = "Utility",type="l",xlab="ra")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(0,0.1,0.01)
 for (delta in vec){
-  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=delta,alpha=0.96,
-              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,
+              ra=4,delta=delta,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,
+              CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
               rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
   out4 <- rbind(out4,out)
@@ -1394,8 +1472,10 @@ plot(vec,out4[,1],main = "Utility",type="l",xlab="delta")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(0.80,0.99,0.01)
 for (alpha in vec){
-  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=alpha,
-              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=-10000,
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,
+              ra=4,delta=0.02,alpha=alpha,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,
+              CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=-10000,
               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
               rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE,warnings = FALSE)
   out4 <- rbind(out4,out)
@@ -1408,8 +1488,10 @@ plot(vec,out4[,1],main = "Utility",type="l",xlab="alpha")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(0,1,0.1)
 for (beta in vec){
-  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
-              beta=beta,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,
+              ra=4,delta=0.02,alpha=0.96,
+              beta=beta,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,
+              CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
               rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
   out4 <- rbind(out4,out)
@@ -1422,8 +1504,10 @@ plot(vec,out4[,1],main = "Utility",type="l",xlab="beta")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(0,100000,10000)
 for (w0 in vec){
-  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
-              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=w0,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=0,
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,
+              ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=w0,
+              CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=0,
               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
               rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
   out4 <- rbind(out4,out)
@@ -1436,8 +1520,10 @@ plot(vec,out4[,1],main = "Utility",type="l",xlab="w0")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(30000,100000,10000)
 for (li in vec){
-  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
-              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=li,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=-10000,
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,
+              ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,
+              CF=0,li=li,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=-10000,
               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
               rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE,warnings = FALSE)
   out4 <- rbind(out4,out)
@@ -1450,8 +1536,10 @@ plot(vec,out4[,1],main = "Utility",type="l",xlab="li")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(0,0.1,0.01)
 for (lg in vec){
-  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
-              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=lg,c1=0.07,s1=c(15,80000),s2=30000,s3=-10000,
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,
+              ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,
+              CF=0,li=100000,lg=lg,c1=0.07,s1=c(15,80000),s2=30000,s3=-10000,
               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
               rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE,warnings = FALSE)
   out4 <- rbind(out4,out)
@@ -1464,8 +1552,10 @@ plot(vec,out4[,1],main = "Utility",type="l",xlab="lg")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(0,0.1,0.01)
 for (c1 in vec){
-  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
-              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=c1,s1=c(15,80000),s2=30000,s3=-10000,
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,
+              ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,
+              CF=0,li=100000,lg=0.01,c1=c1,s1=c(15,80000),s2=30000,s3=-10000,
               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
               rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
   out4 <- rbind(out4,out)
@@ -1478,8 +1568,10 @@ plot(vec,out4[,1],main = "Utility",type="l",xlab="c1")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(100,10000,1000)
 for (s12 in vec){
-  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
-              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=10000,lg=0.01,c1=0.07,s1=c(10,s12),s2=30000,s3=-10000,
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,
+              ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,
+              CF=0,li=10000,lg=0.01,c1=0.07,s1=c(10,s12),s2=30000,s3=-10000,
               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
               rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE,warnings = FALSE)
   out4 <- rbind(out4,out)
@@ -1492,10 +1584,13 @@ plot(vec,out4[,1],main = "Utility",type="l",xlab="s12")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(0,100000,10000)
 for (s2 in vec){
-  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
-              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=s2,s3=-10000,
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,
+              ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,
+              CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=s2,s3=-10000,
               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-              rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE,warnings = FALSE)
+              rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE,
+              warnings = FALSE)
   out4 <- rbind(out4,out)
 }
 plot(vec,out4[,1],main = "Utility",type="l",xlab="s2")
@@ -1506,8 +1601,10 @@ plot(vec,out4[,1],main = "Utility",type="l",xlab="s2")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(-20000,100000,10000)
 for (s3 in vec){
-  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
-              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.01,s1=c(15,80000),s2=30000,s3=s3,
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,
+              ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,
+              CF=0,li=100000,lg=0.01,c1=0.01,s1=c(15,80000),s2=30000,s3=s3,
               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
               rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
   out4 <- rbind(out4,out)
@@ -1520,10 +1617,13 @@ plot(vec,out4[,1],main = "Utility",type="l",xlab="s3")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(0,0.1,0.01)
 for (rho2 in vec){
-  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
-              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=-10000,
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,
+              ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,
+              CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=-10000,
               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-              rho2=rho2,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE,warnings = FALSE)
+              rho2=rho2,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE,
+              warnings = FALSE)
   out4 <- rbind(out4,out)
 }
 plot(vec,out4[,1],main = "Utility",type="l",xlab="rho2")
@@ -1534,10 +1634,13 @@ plot(vec,out4[,1],main = "Utility",type="l",xlab="rho2")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(0,0.1,0.01)
 for (rho3 in vec){
-  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
-              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=-10000,
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,
+              ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,
+              CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=-10000,
               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-              rho2=0.05,rho3=rho3,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE,warnings = FALSE)
+              rho2=0.05,rho3=rho3,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE,
+              warnings = FALSE)
   out4 <- rbind(out4,out)
 }
 plot(vec,out4[,1],main = "Utility",type="l",xlab="rho3")
@@ -1548,10 +1651,13 @@ plot(vec,out4[,1],main = "Utility",type="l",xlab="rho3")
 ```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
 out4 <- NULL; vec <- seq(-1,1,0.1)
 for (xw3 in vec){
-  out <- util(ret_age=65,c_age=42,tw3=c(xw3,xw3,xw3),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
-              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=-10000,
+  out <- util(ret_age=65,c_age=42,tw3=c(xw3,xw3,xw3),c=0.6,c2=0.12,nu2=.5,nu3=0.1,
+              ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,
+              CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=-10000,
               w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-              rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE,warnings = FALSE)
+              rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE,
+              warnings = FALSE)
   out4 <- rbind(out4,out)
 }
 plot(vec,out4[,1],main = "Utility",type="l",xlab="equal weighted w3(1:3)",ylim=c(-1,0))
