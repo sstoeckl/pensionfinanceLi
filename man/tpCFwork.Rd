@@ -41,7 +41,7 @@ entries) for all remaining years}
 }
 \value{
 list with two elemnts:
--  consumption during savings years (matrix with dim=c(sav_years,# of Scenarios))
+-  Consumption during savings years (matrix with dim=c(sav_years,# of Scenarios))
 -  Development of wealth during savings years (matrix with dim=c(sav_years,# of Scenarios))
 }
 \description{

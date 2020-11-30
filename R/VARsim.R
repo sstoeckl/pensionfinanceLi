@@ -6,7 +6,7 @@
 #' @param age optional,starting age, defaults to one, as we usually want to generate all lifetime returns and select from them accordingly
 #' @param frequency optional,defaults to 4 (quarterly), could also be 12 (monthly)
 #' @param s optional, (from VAR.sim): Starting values (matrix of dimension lag x k) for the VAR to simulate, in our case this
-#' defaults to the steady state calculated as $s=(diag(k)-B)^{-1} * c, where k is the dimension of the VAR, B the coefficients
+#' defaults to the steady state calculated as $s=(diag(k)-B)^{-1} * c$, where k is the dimension of the VAR, B the coefficients
 #' of parameters and equations and c the intercepts of the equations, all taken from V
 #' @param covres optional, Variance-covariance matrix for the innovations, defaults to the covariance matrix of the VAR given by V as $var(V$residuals)/(V$T-2-V$k)*(V$T-2)$
 #'

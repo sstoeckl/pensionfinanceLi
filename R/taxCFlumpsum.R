@@ -1,13 +1,13 @@
 #' Calculate lumpsum after taxes
 #'
-#' This function is supposed to subtract taxes on lumpsum payments from the second pillar at pension start
+#' This function subtracts taxes on lumpsum payments from the second pillar at pension start
 #'
 #' @param lumpsum capital taken out at retirement from second pillar (vector?)
 #' @param ret_age optional, retirement age, can be set anywhere between 60 and 70 (default: 65)
 #' @param gender gender, 0=male and 1=female
 #' @param warnings optional: should warnings be given? (default=TRUE)
 #'
-#' @return
+#' @return The net (after tax) lumpsum payment
 #'
 #' @examples
 #' taxCFlumpsum(lumpsum=1000000,ret_age = c(60,64,65),gender=0)

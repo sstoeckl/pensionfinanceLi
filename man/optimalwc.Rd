@@ -51,7 +51,7 @@ optimalwc(
 Expected utility
 }
 \description{
-Here we minimize negative expected utility (given by function `util`). Parameters can be fixed by setting "tight" boundaries
+Here we minimize negative expected utility (given by function `util()`). Parameters can be fixed by setting "tight" boundaries
 }
 \examples{
 

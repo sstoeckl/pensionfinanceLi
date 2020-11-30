@@ -1,13 +1,14 @@
 #' Calculate Income after taxes during savings phase
 #'
-#' The current function calculates income after deduction taxes during the cash-flow phase and is an important
-#' input parameter for the third pillar function (tpCFwork), where CF after tax is neded to determine consumption/saving
+#' This function calculates income after deduction taxes during the cash-flow phase and is an important input parameter
+#' for the third pillar function `tpCFwork()`, where CF after tax is needed to determine consumption/saving. It further
+#' specifies which part of taxes should be paid from income and which part from liquid wealth
 #'
-#' @param income income bfore tax (vector or scalar)
+#' @param income income before tax (vector or scalar)
 #' @param liquid_wealth liquid wealth at 1.1. of tax year (S3)
 #' @param illiquid_wealth illiquid wealth at 1.1. of tax year (w0)
 #'
-#' @return income after tax (vector or scalar)
+#' @return net (after tax) income payments, specifying which part should be paid from cash-flows (income) and from liquid wealth
 #'
 #' @examples
 #' taxCFwork(income=c(100000,100000,100000),liquid_wealth=c(100000,50000,-100000),illiquid_wealth=c(100000,150000,100000))

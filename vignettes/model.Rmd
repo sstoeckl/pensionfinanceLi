@@ -1,0 +1,1559 @@
+---
+title: "Optimal Pension Decisions in Liechtenstein"
+subtitle: "The model"
+author: "Sebastian Stöckl and Michael Hanke"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output: 
+  rmarkdown::html_vignette:
+    toc: false
+  pdf_document:
+    toc: false
+    number_sections: true
+bibliography: report.bib
+vignette: >
+  %\VignetteIndexEntry{model}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+options(rmarkdown.html_vignette.check_title = FALSE)
+```
+
+```{r setup}
+library(pensionfinanceLi)
+```
+
+
+\begin{abstract}
+In this paper we document the model behind this R-package in which - for a variety of input variables - optimal pension decisions are derived for subjects insured in the Liechtenstein pension System. We optimize some of the most relevant choices in a classical time-additive expected utility framework. To this end, we take a comprehensive view, considering simultaneously mandatory contributions to and pensions from the first, second, and third pillars. In addition, we consider self-managed pensions, and we explicitly account for inflation as well as tax effects. 
+\end{abstract}
+
+
+# Introduction
+
+In this R-package we implement the model derived by \citet{angerer_key_2019} in the research project "Pension Finance in Liechtenstein".^[Original Title: 'Altersvorsorge in Liechtenstein', research funded by the Liechtenstein Research Support Fund, Project Number _fdl-15-1_.] The model allows to derive optimal decisions for the insured in Liechtenstein's pension system. Therein it takes into account the three pillar system that (similar to Switzerland) consist of three pillars: The first pillar (the state pension) provides for a relatively low pension to ensure basic subsistence. Contributions to this pillar are mandatory, and there are no choices to be made by the insured except for the _retirement age_. The purpose of the second pillar (the occupational pension) is to maintain a standard of living that is not too far below that enjoyed during the working years. For most Liechtenstein citizens, the pension they can expect from the second pillar is, in fact, higher than that from the first pillar. A larger number of choices can be made in the second pillar, many of which affect cash flows before and after retirement and complexly interact with other choices due to e.g. taxes. The numerical approach implemented in this package intends to tackle the resulting decision problem. Based on the results, we could qualitatively and quantitatively analyze the dependence of optimal decisions on relevant input parameters for typical cases (appropriate parameter ranges). Due to the enormous complexity of the underlying optimal decision and the involved calculations however, the optimization takes a relatively long time (approx 6-10 minutes on an average PC). Therefore, we have decided to place the respective analysis in another package/paper where we have run a minimal number of simulations for a standard parameter grid and tackle the problem with approach from the field of data science and machine learning.
+
+# The model
+
+## The first pillar
+
+Old-age pensions from the first pillar come from the old age and survivors' insurance (AHV)^[In German: Alters- und Hinterlassenenversicherung.] and is intended to provide (merely) a basic subsistence income level for all retirees. This "state pension" covers all people living and/or working in Liechtenstein. Its purpose is to ensure that the basic needs are covered. AHV is based on solidarity between the generations as well as on interpersonal solidarity. It is organized as a pay-as-you-go (PAYG) system: current pensions are financed by the current workforce. High-income earners support low-income earners by paying higher contributions than would be necessary to finance their own future pension, while those who are economically worse off receive more benefits than actuarially justified by their contributions. All persons who live in Liechtenstein and/or who are engaged in paid employment in Liechtenstein are subject to this compulsory insurance.^[Few exceptions to this compulsory insurance are permitted by law.] All persons who are insured with the AHV are liable to pay contributions, with the exception of children. Although they are insured and therefore entitled to benefits (children's and orphans' pensions), they are not themselves liable to pay contributions. For salaried employees, the employees must contribute 3.95\% and the employers are obliged to contribute 4.15\% of gross salary (with no upper limit). Self-employed insured must contribute 8.1\% of their income. In some cases, people without income of their own are also liable to pay contributions, with the amount varying between around  CHF 350 and CHF 11,790 per year. All contributions to the AHV are fully tax-deductible.
+
+Entitlement to an AHV pension requires reaching the statutory retirement age of 65 for both men and women, and having paid contributions for at least one full contribution year.^[The statutory retirement age, which used to be 64, has recently been increased to 65. This increase affects everyone born after 1957. In this paper, we only consider the new retirement age.} The pension level is computed on the basis of the number of contribution years (upper limit: 45 years) and the average annual income. Anyone who has paid AHV contributions in full every year from the 20th year of age until the regular retirement age will receive a full pension. However, in the case of contribution gaps (if contributions have not been paid without interruption, or entire contribution years are missing), only a partial pension will be paid. Each "missing" contribution year leads to a pension reduction of 2.22\% (1/45). 
+
+An important factor determining the pension level is the relevant average annual income. In order to determine the pension of married, widowed or divorced persons, the yearly income earned by the two spouses (together) during the marriage years is divided and credited equally to each spouse (splitting method). The amount of the pension is limited upwards and downwards, with maximum full pensions  (CHF 2,320 per month) at most twice as high as minimum pensions (CHF 1,160 per month, both limits pertain to full pensions, i.e., 45 contribution years), but there is no upper bound on contributions. Under the AHV scheme, pensioners can start their pension up to five years before the statutory retirement age, or postpone it by up to five years. Retiring early reduces the pension level, while voluntarily delaying the individual retirement age increases the pension. The consequences of this choice are described below.
+
+### Choices in the first pillar
+
+Within the first pillar, the only choice to be made is the retirement age (`ret_age`): As described above, the pension in the AHV scheme can be started up to five years before the statutory retirement age, or it can be postponed by up to five years. In case of early retirement, the old-age pension will be calculated on the same basis as in the case of retiring at the statutory retirement age. The pension will then be reduced permanently by 5\% if retiring one year before the statutory retirement age, 9.7\% for two years, 14\% for three years, 18\% for four years, and 21.8\% for retiring five years early (Art.~73 Abs.~2 AHVG). In case of delayed retirement, the pension will be increased permanently by 4.5\% if retiring one year after the statutory retirement age, 9.3\% for two years, 14.4\% for three years, 20.1\% for four years, and 26.1\% for retiring five years after the statutory age (Art.~74 Abs.~2 AHVG). 
+
+In case of early retirement, the obligation to contribute ends when the pension payments start (Art.~36 Abs.~2 Bst.~c AHVG). In case of postponed retirement, the insured is liable to pay contributions only until the statutory retirement age (Art.~36 Abs.~1 AHVG).
+
+### Implementation
+
+The first pillar pension payment is implemented in the function _fpCF_ and requires the following input parameters:
+
+* _ret_age_ optional, retirement age, can be set anywhere between 60 and 70 (default: 65)
+* _c_age_ the investor's current age (assuming birthday is calculation-day)
+* _li_ gross labor income at time 0 (so at the end of year t=0/age=_c_age_ it increases to _li_*(1+_lg_))
+* _lg_ labor growth rate (in real terms, constant)
+* _s1_ vector consisting of two components: _s11_ number of contribution years at age _c_age_, _s12_ historical average yearly income until _c_age_
+* _ret_ investment return scenarios (nominal, pre-specified in this package)
+
+It returns a named matrix of cashflows as of pension starting age (_ret_age_) until age=122 with dimensions {122-retage, # return scenarios}
+
+```{r eval=FALSE}
+fpCF(ret_age=65,c_age=42,li=100000,lg=0.01,s1=c(15,80000),ret=ret[,,1:8])
+```
+```{r eval=TRUE, echo=FALSE}
+head(fpCF(ret_age=65,c_age=42,li=100000,lg=0.01,s1=c(15,80000),ret=ret[,,1:8]))
+```
+
+## The second pillar
+
+The occupational pension provision (OP) is a funded pension plan insurance, which, among others, covers old-age risks. It plays an important role for many insured who want to maintain their standard of living in retirement. Most OP plans nowadays are of the defined contribution type, which means that the pension level depends on the individual's savings, which in turn depend on the level of contributions and the investment returns during the working life. The occupational pension is mandatory for every employee who has reached the age of 19 and earns an annual income of at least the minimum AHV pension (which is currently  CHF 13,920). In addition, any employee who is subject to the AHV is subject to the mandatory occupational pension as well.^[Few exceptions to this compulsory insurance are permitted by law.] In case of permanent employment, both employees and employers are obliged to contribute to the occupational pillar.
+
+According to the Occupational Pension Act (BPVG) employers can choose to insure their employees with any pension institution that is domiciled in the Principality of Liechtenstein. These pension institutions are supervised by the Financial Market Authority of Liechtenstein (FMA). Alternatively, employers also have the option to set up their own pension fund for their employees. The monthly contribution rate is set by the respective pension institution. The total contribution rate (sum of employer's and employee's contribution) has to be least 8\% of the insurable salary. By law, at least half of the contribution has to be paid by the employer, who withholds the employee's contributions from the salary and transfers the contributions to the pension fund. 
+
+Upon retirement, the insured can choose to receive a lump sum instead of (part of) the  life-long annuity, which is the default option. The starting times for pensions from the first pillar (AHV) and from the second pillar (OP) may be chosen differently by the insured. 
+
+### Choices in the second pillar
+
+#### Lump-Sum Payment vs.~Life-Long Annuity
+
+Differently to many other pension systems, members of second-pillar pension funds in Liechtenstein can choose a cash payment (a "lump sum") instead of a life-long annuity. This cash payment is commonly equal to the balance of the member's pension savings in the fund. In many cases, funds allow also certain combinations of lump-sum payments and annuities, e.g., taking 20\% of the savings in the form of a lump-sum payment and converting the remaining 80\% into a life-long pension. If only part of the accumulated retirement savings is taken as a lump-sum payment, the remaining pension must amount to at least 20 percent of the maximum AHV pension per year (currently just under CHF 6,000).
+
+This raises the general question of the attractiveness of a lump-sum payment relative to a life-long pension: Who should rationally choose a lump sum over a life-long annuity? To this end, comparing the (stochastic) present value of all pensions to the lump sum is a good starting point. The present value of all pension payments depends on the member's mortality rates, marital status and mortality rate of their spouse (if any), and the number and age of children who may be entitled to receive orphan pensions. The conversion rate is the same for all fund members, i.e., an average that does not take into account the member's sex, health status, marital status, number of children, etc. Assuming that the conversion rate is actuarially fair on average, any individual's deviations from the average lead to a deviation between the (stochastic) present value of all pensions and the lump sum. If a member bases their decision only on the difference between these values, a higher proportion of male members should take the lump sum, especially if they are not married and do not have any children who may be entitled to orphan pensions in case of the insured's death. Similarly, members whose health status is below average have an incentive to choose a lump-sum payment, while people with above-average health and the associated lower mortality should rather opt for a life-long pension.
+
+In practice, fund members do not base their decision of whether and how much of their savings to convert into a life-long pension solely on actuarial values. Additional factors are considered, e.g., wealth and other sources of income during retirement. Wealthy fund members may not depend at all on a life-long annuity to cover their spending during retirement if the returns on their assets are sufficient for this purpose. For this reason, the conversion decision cannot be modeled in isolation, but must take into account factors that are relevant for planning for retirement, but outside of the narrow institutional frame of the second pillar. For this reason, we include such factors in our model. Recognizing that utility ultimately derives from consumption and not from cash inflows, the model will be in the spirit of classical life-cycle models of consumption and investment.
+
+#### One-off Contributions
+
+__Not implemented yet__
+
+Members of second-pillar pension funds have the opportunity to make one-off contributions. This may be interesting, e.g., if members have cash inflows from other sources or savings that they want to use to increase their prospective future pension. In this case, the relevant alternative would be voluntary saving in the third pillar. The maximum one-off contribution amount is the difference between the actual retirement savings and the maximum possible retirement savings, calculated on the basis of the current insured salary. However, one-off contributions can always be made up to a maximum of 12\% of the insured annual salary. One-off contributions are no longer possible once the retirement age has been reached.
+
+#### Level of Contributions
+
+Within some second-pillar pension funds, fund members are also given the choice to decide between different levels of contributions they make. E.g., there may be a standard level of 15\%, a higher level of 18\%, and a basic level of 10\%. The member's choice does not influence the level of the contributions made by the employer, which are fixed.
+
+#### Individual Retirement Age
+
+Members of second-pillar pension funds in Liechtenstein can, within certain limits, decide when to retire. Many funds offer the choice between retiring at any age between 58 and 70. Pension reductions in case of early retirement and increases in case of voluntarily postponing retirement are usually calculated with the aim of making the choice actuarially neutral/fair. The starting date of the second-pillar pension is not tied to that of the first-pillar pension: While in the standard case, an insured is assumed to start both their first- and second-pillar pensions at the statutory retirement age of 65, a particular individual may start their second-pillar pension, e.g., at age 63, but may postpone the starting date for the first-pillar pension to 67. Resulting reductions and increases are calculated independently for pensions from both pillars.
+
+Retiring earlier or later affects labor income, pension contributions, and -- via pension savings and conversion rates -- the future pension level, all of which could be captured within our model. However, to fully capture the effects of differences in retirement age, we would have to measure the difference in utility between work and leisure, which is not only difficult, but beyond the scope of our model. 
+
+### Implementation
+
+The second pillar is implemented in the function _spCF_ and requires the following input parameters:
+
+* _ret_age_ optional, retirement age, can be set anywhere between 60 and 70 (default: 65)
+* _nu2_ fraction of second pillar savings that is converted to life-long pension
+* _c_age_ the investor's current age (assuming birthday is calculation-day)
+* _c2_ second pillar savings as fraction of gross income (still missing: health, a-fonds-perdu payments)
+* _li_ gross labor income at time 0 (in the last year before birthday)
+* _lg_ labor growth rate (in real terms, constant)
+* _w2_ portfolio allocation (assumed to be fixed and not influenced by the decision maker)
+* _ret_ investment return scenarios (nominal)
+* _retr_ investment return scenarios (real)
+* _s2_ savings in second pillar as of t=0
+* _rho2_ conversion factor in second pillar for regular retirement age
+
+It returns a list with three elements:
+
+* a vector of lumpsum spendings (length = # of scenarios)
+* a matrix with annuity payments starting at _ret_age_ until 122 (rows) with column-number = # of scenarios
+* vector of second pillar saving levels at retirement (length = # of scenarios)
+
+```{r eval=FALSE}
+sp_ex <- spCF(ret_age=65,nu2=.5,c_age=42,c2=.12,
+          li=100000,lg=0.01,
+          ret=ret[,,1:8],retr=retr[,,1:8],s2=300000,rho2=0.05)
+sp_ex$lumpsum
+```
+```{r eval=TRUE, echo=FALSE}
+sp_ex <- spCF(ret_age=65,nu2=.5,c_age=42,c2=.12,
+          li=100000,lg=0.01,
+          ret=ret[,,1:8],retr=retr[,,1:8],s2=300000,rho2=0.05)
+head(sp_ex$lumpsum)
+```
+```{r eval=FALSE}
+sp_ex$pension
+```
+```{r eval=TRUE, echo=FALSE}
+head(sp_ex$pension)
+```
+```{r eval=FALSE}
+sp_ex$wealth
+```
+```{r eval=TRUE, echo=FALSE}
+head(sp_ex$wealth)
+```
+
+## The third pillar
+
+The third pillar is voluntary and is intended to reduce or close any gaps between the desired pension level and the sum of pensions from the first and second pillars. In fact, the first and second pillars are designed to equal only about 60\% of the last income earned during the working life [@marxer_country_2016, p.9]. Such gaps exist both for the regular old-age pensions and for disability and survivor benefits in the event of illness.
+
+The third pillar comprises all private (pension) savings and private (voluntary) old-age insurance policies. With regard to life insurance, a distinction can be made between whole life insurance policies (endowment and annuity policies) and term life insurance policies, which last for a certain period of time and pay the death benefit only if the policyholder dies during that time. There are no state or employer contributions in the third pillar. In principle, contributions to the third pillar may be tax-deductible depending on the type of instrument. However, third pillar contributions are grouped together with other insurance premia (e.g., health insurance), and there is an upper bound of 3.500 CHF for tax deductions on the sum of these premia. Therefore, in practice, for many taxpayers these potential tax benefits are not only small, but are already eaten up by other insurance premia. Hence, in our calculations, we abstract from potential tax advantages for third pillar contributions.
+
+Given the possibility to receive second pillar retirement benefits in the form of lump-sum payments, one may wonder what exactly the differences are between second- and third-pillar contributions. These differences can be summarized as follows:
+
+* Whereas second-pillar contributions are mandatory, third-pillar saving is voluntary.
+* For salaried employees, the employer contributes at least as much as the employee to the second pillar (in practice, the split is mostly 50:50 or 55:45). 
+* The asset allocation in the second pillar is chosen by the pension fund. In rare cases, the insured can choose between strategies representing different levels of risk, but for the majority of the insured, the asset allocation is given exogenously.
+* While third-pillar savings may also be converted to a life-long pension through buying an annuity from a private insurer, the conversion rates offered in the free market are typically less favorable compared to those offered by second-pillar pension funds (for reasons of adverse selection and the profit orientation of private insurers vs.~NPO nature of many pension funds).
+* Depending on the product chosen, third-pillar savings may be easily accessible in case of unforeseen liquidity needs. In contrast, access to second-pillar savings prior to reaching the earliest possible retirement age is restricted to exceptional cases.
+
+### Choices in the third pillar
+
+The second and the third pillar are similar in some aspects. This also holds for some of the choices to be made within these pillars. In the third pillar, the most important choices are how much to save as well as the optimal asset allocation. Some of the second-pillar choices also apply for the third pillar, such as, e.g., when to retire. In addition, some choices involve both pillars: E.g., any voluntary (additional) contributions might be made either to the second or to the third pillar.
+
+Any lump-sum payments taken in the second and/or third pillars becomes disposable wealth at retirement, which may be used for a ``self-managed pension'': Here, the individual may decide how much of their wealth to consume. This provides additional flexibility, but comes at the cost of losing (for the amount received as a lump sum) the protection against longevity risk, which is provided by a life-long pension.
+
+### Implementation
+
+The third pillar is implemented in two steps: The first step represents the entire income cash flows minus deductions for first, second and third pillar contributions. Therein the insured basically decides how much of his free cash-Flow to save for retirement (in the third pillar) and how much to consume now. The second step represents the benefits from everything saved in the third pillar and provides overall cash flow from self-managed pension plus pension payments from annuitization and the potential lumpsum payment received at retirement. It also tracks remaining wealth of the insured.
+
+#### Cash flows during Working phase
+
+Cash Flows are generated for the savings phase of the third pillar, starting at `c_age` and ending at `ret_age`. It is implemented in the function `tpCFwork()`
+
+* `ret_age` optional, retirement age, can be set anywhere between 60 and 70 (default: 65)
+* `c_age` the investor's current age (assuming birthday is calculation-day)
+* `w3` third pillar portfolio allocation (given either as vector (constant investment or as matrix with entries) for all remaining years
+* `free_cf_before_tax` remaining cash flow after contributing to first and second pillar
+* `retr` investment return scenarios (real)
+* `s3` liquid wealth - invested in the third pillar (current assumption: no tax advantage for third pillar)
+* `psi` optional, spread to take a loan/leverage for third pillar savings
+* `c` fraction of income that is consumed while still working (current assumption: constant)
+* `w0` time `c_age` wealth that is not disposable, assumption: still available at retirement (no growth or decline), alternatively: expected wealth (that is not disposable) at retirement
+
+It returns a list with two elements:
+
+* Consumption during savings years (matrix with dim=c(sav_years,# of Scenarios))
+* Development of wealth during savings years (matrix with dim=c(sav_years,# of Scenarios))
+
+```{r eval=FALSE}
+# generated from li, lg and deductions for first and second pillar
+free_cf_before_tax <- c(81000.00,81810.00,82628.10,83454.38,84288.92,85131.81,85983.13,86842.96,87711.39,88588.51,89474.39,90369.14,91272.83,92185.56,93107.41,94038.49,94978.87,95928.66,96887.95,97856.82,98835.39,99823.75,100821.98)
+tpwork_ex <- tpCFwork(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                      free_cf_before_tax=free_cf_before_tax,retr=retr[,,1:8],s3=300000,w0=300000,psi=0.015,c=0.6)
+tpwork_ex$cons
+```
+```{r eval=TRUE, echo=FALSE}
+# generated from li, lg and deductions for first and second pillar
+free_cf_before_tax <- c(81000.00,81810.00,82628.10,83454.38,84288.92,85131.81,85983.13,86842.96,87711.39,88588.51,89474.39,90369.14,91272.83,92185.56,93107.41,94038.49,94978.87,95928.66,96887.95,97856.82,98835.39,99823.75,100821.98)
+tpwork_ex <- tpCFwork(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                      free_cf_before_tax=free_cf_before_tax,retr=retr[,,1:8],s3=300000,w0=300000,psi=0.015,c=0.6)
+head(tpwork_ex$cons)
+```
+```{r eval=FALSE}
+tpwork_ex$wealth
+```
+```{r eval=TRUE, echo=FALSE}
+head(tpwork_ex$wealth)
+```
+
+#### Cash flows during retirement phase
+
+Cash Flows are generated from the savings phase of the third pillar with payments starting at `ret_age` and ending with 122 (that is the end of the mortality table). It is implemented in the function `tpCFret()`
+
+* `ret_age` optional, retirement age, can be set anywhere between 60 and 70 (default: 65)
+* `c_age` the investor's current age (assuming birthday is calculation-day)
+* `w3` third pillar portfolio allocation (given either as vector or as matrix with entries) for all years
+* `alpha` parameter to choose fraction of wealth NOT consumed during retirement but kept for investment (and subsequent consumption)
+* `wealth_at_ret_age` lumpsum from second pillar (after tax using `taxCFlumpsum()`) plus third pillar (wealth at retirement from `tpCFwork()` after taking away fraction of third pillar savings that is converted to a life-long pension `nu2`)
+* `retr` GivenVar: investment return scenarios (real)
+* `psi` optional, spread to take a loan/leverage for third pillar savings
+
+It returns a list with two elements:
+
+* Consumption during pension years (matrix with dim=c(122-ret_age,# of Scenarios))
+* Development of wealth during pension years (matrix with dim=c(122-ret_age,# of Scenarios))
+
+```{r eval=FALSE}
+tpret_ex <- tpCFret(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                      alpha=0.96,wealth_at_ret_age=100000,retr=retr[,,1:10],psi=0.015)
+tpret_ex$cons
+```
+```{r eval=TRUE, echo=FALSE}
+tpret_ex <- tpCFret(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                      alpha=0.96,wealth_at_ret_age=100000,retr=retr[,,1:10],psi=0.015)
+head(tpret_ex$cons)
+```
+```{r eval=FALSE}
+tpret_ex$wealth
+```
+```{r eval=TRUE, echo=FALSE}
+head(tpret_ex$wealth)
+```
+
+## Taxes
+
+Persons subject to tax in Liechtenstein pay a combination of wealth tax and income tax. The wealth and income tax is a personal tax that is linked to the economic capacity of a person. The economic capacity is determined by the income plus a fictitious (notional) income, which is calculated based on wealth. The wealth and income tax is levied in the form of a household tax, both at the level of the state and the level of municipalities. The tax liability towards the state is determined by applying a progressive tax rate depending on the marital status, whereby the subsistence minimum remains tax-free. The tax liability towards the municipality is determined by a certain multiple of the liability towards the government. The multiple is set by the municipality of residence within an interval of 150\%-250\% (for the tax year 2018, the maximum was 180\%, with most municipalities charging 150\%).  
+
+#### Tax Liability
+
+All movable and immovable assets (net of debts) are subject to wealth tax. The fictitious income based on wealth is calculated by multiplying net assets by a notional rate of return (currently 4\%). Besides this notional income based on wealth, the tax liability for personal income tax includes all income in the form of money or cash equivalent. Capital gains such as dividends, interest, and rental income are generally subject to income tax. However, the assets underlying such income are subject to wealth tax. A taxation of these capital gains would thus be a double taxation, which is why investment income on which the taxable person pays wealth tax (in the form of notional income) is exempt from income tax.
+
+The wealth tax also comprises claims from redeemable life insurance policies which, until their due date, are to be valued at their surrender value including profit participation. To avoid double taxation, asset accumulations from repurchasable private endowment insurance policies are not subject to income tax. According to this principle, pensions paid on the basis of an employment relationship are not taken into account in the valuation of wealth, but are subject to income tax.
+
+#### Pension Income
+
+Income (pensions and capital benefits) from old-age, survivors' and disability insurance, compulsory accident insurance, occupational pension schemes, pension funds and one-off and recurring payments in the event of death or permanent physical or health disadvantages constitute income subject to income tax. In addition, all other income that replaces income from gainful employment, such as benefits from unemployment, accident, life and health insurance, after deduction of extraordinary expenses not covered by other insurance benefits, are also included. 
+
+#### Tax Deductions
+
+Tax deductions apply both during the active working years and in retirement. In the savings phase,
+the taxpayer's own contributions to old-age, survivors' and invalidity insurance, the family compensation fund, unemployment insurance and compulsory accident insurance may be deducted in full. Contributions and premiums to private life insurance, health insurance and non-compulsory accident insurance may be deducted from the total taxable income up to a maximum of CHF 3,500 for all taxpayers (up to a maximum of CHF 7,000 for spouses to be assessed jointly). Single and regular contributions and premiums to pension funds and similar occupational pension schemes are deductible up to a maximum of 18\% of the income of the taxpayer or the spouses to be assessed jointly.
+
+In the retirement phase, a deduction of 70\% of the income is granted by the tax authorities on income from AHV, IV, and disability pensions stemming from accident insurance.
+
+#### Tax Rate
+
+The tariff is designed as a graduated marginal tax rate, where the marginal tax rate at which the income exceeds the limit (including notional income) increases with each step. As a result, the same marginal tax rate applies to all taxpayers for income within a tax bracket, and the marginal tax burden can be read directly off the table contained in the law. The tariff function is divided into nine tax brackets (Art.~19 SteG.). The regular tariff for all taxpayers (liability towards the state) is given as follows:
+
+* Tax base $x$ in CHF: Tax amount in CHF
+* up to 15,000 & 0\\
+* from 15,001 to 20,000: 0.01$x$--150\\
+* from 20,001 to 40,000: 0.03$x$--550\\
+* from 40,001 to 70,000: 0.04$x$--950\\
+* from 70,001 to 100,000: 0.05$x$--1,650\\
+* from 100,001 to 130,000: 0.06$x$--2,650\\
+* from 130,001 to 160,000: 0.065$x$--3,300\\
+* from 160,001 to 200,000: 0.07$x$--4,100\\
+* over 200,000: 0.08$x$--6,100\\
+
+For married couples and registered partners to be assessed jointly, the tax brackets and cash deductions are doubled in order to achieve non-discrimination between singles and spouses. 
+
+#### Special Treatment of Lump-Sum Payments
+
+If lump-sum payments (chosen instead of life-long annuities) were taxed at full progression in the year those payments occur, this would represent considerable hardship for the taxpayer. To mitigate this, there exists a special taxation for such payments, which are treated separately from the remaining income. 
+
+To calculate the tax on lump-sum payments, these payments are first converted to a fictitious pension annuity by applying a conversion factor determined by the tax office, which is based on recent mortality tables and interest rates. Based on the level of this fictitious annuity, a tax rate is determined from a table, which is then applied to the lump sum. For a lump sum of CHF 100,000, e.g., the tax burden for a 65-year-old single male would be 1,000 CHF state tax. Assuming 150\% municipality surcharge, the total tax paid would be 2,500.
+
+### Implementation
+
+#### Taxes during saving phase
+
+The function `taxCFwork()` calculates income after deduction taxes during the cash-flow phase and is an important input parameter for the third pillar function `tpCFwork()`, where CF after tax is needed to determine consumption/saving. It further specifies which part of taxes should be paid from income and which part from liquid wealth. It has the following input parameters:
+
+* `income` income before tax (vector or scalar)
+* `liquid_wealth` liquid wealth at 1.1. of tax year (S3)
+* `illiquid_wealth` illliquid wealth at 1.1. of tax year (w0)
+
+It returns net (after tax) income payments, specifying which part should be paid from cash-flows (income) and from liquid wealth.
+
+```{r eval=FALSE}
+taxCFwork(income=c(100000,100000,100000),liquid_wealth=c(100000,50000,-100000),illiquid_wealth=c(100000,150000,100000))
+```
+```{r eval=TRUE, echo=FALSE}
+taxCFwork(income=c(100000,100000,100000),liquid_wealth=c(100000,50000,-100000),illiquid_wealth=c(100000,150000,100000))
+```
+
+#### Taxes during retirement phase
+
+The function `taxCFret()` calculates taxes for individual pension payments detailing which part of the taxes should be paid from income or wealth. Its input parameters are:
+
+* `fpcf` first pillar pension cash-flow
+* `totalcf` total pension cash-flow (including fpcf)
+* `wealth` wealth at 1.1. of tax year (can be negative)
+
+```{r eval=FALSE}
+taxCFret(fpcf=c(15000,15000,15000),totalcf=c(30000,30000,100000),wealth=c(100000,-120000,100000))
+```
+```{r eval=TRUE, echo=FALSE}
+taxCFret(fpcf=c(15000,15000,15000),totalcf=c(30000,30000,100000),wealth=c(100000,-120000,100000))
+```
+
+#### Taxes on Lumpsum payments
+
+The function `taxCFlumpsum()` subtracts taxes on lumpsum payments from the second pillar at pension start. Its input parameters are:
+
+* `lumpsum` capital taken out at retirement from second pillar
+* `ret_age` optional, retirement age, can be set anywhere between 60 and 70 (default: 65)
+* `gender` gender, 0=male and 1=female
+
+It returns the net (after tax) lumpsum payment.
+
+```{r eval=FALSE}
+taxCFlumpsum(lumpsum=1000000,ret_age = c(60,64,65),gender=c(0,1))
+```
+```{r eval=TRUE, echo=FALSE}
+taxCFlumpsum(lumpsum=1000000,ret_age = c(60,64,65),gender=c(0,1))
+```
+
+## The overall model
+
+Decisions in pension finance are usually of a long-term nature, and they are subject to two main sources of uncertainty: mortality risk and (asset) market risk. The latter includes interest rate risk and inflation risk. In the case of this model we focus on a decision maker who is single and without children. The extension of the model to other cases is straightforward. We start by a description of the model without inflation and taxes and discuss as well as taxes in the following subsections.
+
+#### The Basic Model
+
+The decision model in this package is based on utility, which can be derived from consumption and bequest. In a full-blown dynamic stochastic optimization model, the investor could decide in each period how much to consume, taking into account all the information available at this time. In practice, there are many reasons why this does not happen: bounded rationality, inertia (i.e., reluctance to reverse a decision once taken), or lack of expertise are only some of the reasons. To reduce computational complexity, we will assume deterministic consumption as a constant fraction of income during the working life, and a constant fraction of wealth during retirement in our model (for details, see below).
+
+Regarding investor preferences, we follow the classical literature on life-cycle models [for an overview, see @campbell_investing_2001] and use a time-separable power utility structure. To be more flexible regarding the inclusion of additional features into our model, we opt for a discrete-time setting, where different future developments are modeled using Monte-Carlo simulation. Given the importance of bequest in the context of longevity risk and pension planning, we explicitly include utility of bequest in our setting. 
+
+To keep the model computationally tractable, complexity has to be reduced at some points. In particular, all decisions are assumed to be made at time $t=0$, i.e., they are not allowed to be path-dependent. The decision variables in our base model are defined below and specified again where these are input variables for our functions.
+
+* `c`, the fraction of income consumed while still working (constant over time),
+* `w_3`, the asset weight vector for the third pillar (constant over time; note that `w_2` is chosen by the second-pillar pension fund),
+* `nu_2` and `nu_3`, the fractions of second- and third-pillar savings that are converted into lifelong pensions,
+* `alpha`, the fraction of (remaining) wealth consumed during retirement (part of retirement income may come from a "self-managed pension", details are provided below).
+
+Variables that encode investor-specific information include
+
+* `li`, gross labor income at time 0, 
+* `lg`, the labor growth rate (in real terms, constant)
+* `beta`, the relative weight of bequest vs.\ consumption in the utility function,
+* `c_age`, the investor's current age,
+* `gender`, 0 for male, 1 for female,
+* `ra`, the investor's relative risk aversion (constant),
+* `delta`, the investor's time preference rate (constant),
+* `s1`, a vector of two components: the first component, `s11`, is the number of contribution years in the second pillar; the second component, `s12`, is the historical average yearly income, both as of time $t=0$,
+* `s2` and `s3`, savings in the second (third) pillar as of $t=0$.
+* `W_0`, non-disposable wealth at $t=0$, assumed to remain constant. Alternatively, it can be interpreted as expected wealth at retirement.
+
+Variables that describe the system (and may, to a certain degree, also differ across investors/pension funds), include
+
+* `c1`, the fraction of gross salary that goes to first pillar contributions and other mandatory deductions, e.g., unemployment insurance,
+* `c2`, second pillar contributions as a fraction of gross salary (assumed to be constant here, but may be age-dependent for some funds in practice),
+* `rho2` and `rho3`, the conversion factors applied to second- and third-pillar savings when converted to a life-long pension (assumed to be known at $t=0$)
+* `psi`, the spread over the risk-free rate that applies for borrowing (investing on margin in the third pillar),
+* `w2`, the asset allocation in the second pillar (assumed to be constant).
+
+The legal retirement age and effects of early/late retirement in the first pillar are modeled as described above. For the second pillar, we use real-world conversion rates and deductions/surcharges for late/early retirement provided by one particular Liechtenstein pension fund.
+
+Planning starts `ret_age` at $t=T$ (if still alive at this time). In the first and second pillars, there are restrictions regarding the retirement age, which lead us to limit the admissible values of `ret_age`. At the unknown time $t=T^* (<122)$, the insured will die. The total utility from consumption and bequest is given by 
+$$\begin{align}
+U(\cdot)&=\sum_{t=1}^\infty \delta^{-t} E(U_t(c_t,B_t))\\
+&=\sum_{t=1}^\infty \delta^{-t} \left[p_{t}U(c_t)+(1-p_{t})\beta U(B_t)\right],
+\end{align}$$
+where, for a generic argument $y_t$,
+$$\begin{equation}
+U(y_t)=\frac{y_t^{(1-\gamma)}}{1-\gamma}\quad \gamma>0, \gamma\neq 1,
+\end{equation}$$
+and $c_t$ and $B_t$ denote consumption and bequest at time $t$ (in real terms, i.e., in $t=0$ purchasing power!), resp. $p_{t}$ is the insured's probability of being alive at time $t$ (conditional on being alive at $t$=0), and `beta` ($\beta$) represents the insured's subjective utility weighting of a Swiss franc bequeathed vs. a Swiss franc spent on consumption.
+
+Asset returns, short-term interest rates, and inflation are modeled jointly via a VAR(1) process. Based on @swisscanto_schweizer_2018, we focus on the main asset classes Swiss pension funds are invested in: Stocks, bonds, real estate, and cash. We use the following proxies for these asset classes (all data come from Datastream): The MSCI world index for stocks, 10-year Swiss government bonds, a Swiss commercial real estate index, and the 3-month CHF LIBOR. As a proxy for inflation, we use the Swiss consumer price index. After estimating the VAR process, we convert nominal asset returns to real returns using our inflation proxy. 
+
+At time $t=0$, initial (non-disposable) wealth is denoted by `W0`. This is assumed to remain constant (alternatively, the expected wealth at retirement can be used). The insured has already worked for a certain number of years, `s11`, with an average annual income of `s12`. Assuming that he keeps on working for another $T$ years, this gives $N_T=N_0+T$ years in total for his first-pillar pension. The pension amount, which depends on both the number of working years and the (revalued) average income, is approximated by a regression with an $R^2>99$\% (instead of directly using the table provided by the AHV).
+
+For the average income, we need the individual's gross yearly wage at time $t=0$, denoted by `li`. It is assumed to grow deterministically at a rate of $li_t=li_0\cdot (1+lg)^t$ per year (in real terms). During the investor's working life, we assume that he consumes a constant fraction `c` of his labor income $li_t$ after deductions:
+$$\begin{equation}
+c_t=c\cdot li_t(1-c1-c2),\quad, t=1,\dots,T.
+\end{equation}$$
+Any labor income that is not either consumed or used for mandatory contributions (first and second pillar) is saved in the third pillar, which plays the role of default savings in our model. The asset universe in the third pillar is the same as for the second pillar, but the weights `w3` may be chosen by the decision maker. Negative cash holdings in the third pillar are allowed. The interest rate charged for these is the (path-dependent) risk-free rate from the VAR model plus a spread `psi`. 
+
+Mandatory contributions to the first pillar (including unemployment insurance etc.) are currently at about 7.4\%, but partly have upper bounds. In addition, the employer pays a fixed cash subsidy for health insurance. To simplify modeling, we approximate first pillar deductions by a rate of 7\% of gross income (and ignore any upper bounds).
+
+Second-pillar savings at time $t=0$ are known and denoted by `s2`. They grow according to
+$$\begin{equation}
+s2_t=s2_{t-1}(1+R2_t)+2c2_t\cdot li_t, \quad, t=1,\dots,T,
+\end{equation}$$
+where $c2$ denotes second pillar employee pension contributions and we assume a 50:50 split between employer and employee (implementation of other splits is straightforward). For our numerical calculations, we assume $c2=0.24$ (age-independent). $R2_t$, the investment returns credited to the insured's savings account, depends on the investment success and the pension fund's return crediting policy. 
+As a stylized model of real-world policies used by funds, we assume that the fund credits the average nominal asset return whenever the realized asset return is between the first and third quartile of asset returns according to the VAR model. If it is lower (higher), the fund decreases (increases) the return credited to members' accounts by 2 percentage points. 
+At time $t=T$, a fraction `nu2` of the individual's second pillar savings is converted into a life-long pension at a given conversion rate `rho2`. 
+
+Income not used for consumption is saved in the third pillar. Third-pillar wealth grows according to
+\begin{equation}
+s3_t=s3_{t-1}(1+R3_t)+(1-c)\cdot li_t(1-c1-c2), \quad, t=1,\dots,T,
+\end{equation}
+where $R3_t$, the investment returns in the third pillar, depend on $w3$ and the realized asset returns from the VAR process. 
+
+The same holds for a fraction $\nu3$ of third-pillar savings, where the conversion rate is `rho3`. Surcharges (deductions) to the conversion rate for late (early) retirement are taken from one particular Liechtenstein pension fund. In our model, we assume that the decision on how much of these savings to convert into a life-long pension is already made today, i.e., it does not depend on the actual return path realized in the VAR process. The asset weights `w2` in the second pillar are chosen by the pension fund and are taken as parameters for the insured's personal pension planning, whereas the insured can choose the weights `w3` in the third pillar, which are therefore used as decision variables in our model. For the second pillar, we use an average asset allocation of Swiss pension funds in our numerical calculations.
+
+Any lump-sum payments from the second and third pillars at the time of retirement go towards the self-managed pension. There, any remaining wealth is invested using the weights `w3`, and each year during retirement, a constant fraction `alpha` ($\alpha$) is consumed:
+$$\begin{align}
+w_T&=(1-\nu2) s2_T+(1-\nu3) s3_T,\\
+w_t&=w_{t-1}(1+R3_t)(1-\alpha), t=T+1,\ldots,122-\textsf{age},\\
+c_t&=\alpha w_{t-1}(1+R3_t), t=T+1,\ldots,122-\textsf{age}.
+\end{align}$$
+Hence, during retirement, income comes from four sources: Pensions from the first, second, and third pillars, as well as depletion of (third-pillar or disposable) wealth. 
+An age of 122 corresponds to the last row in the mortality tables we use. Any wealth remaining in the third pillar at the time of death ($T^*$) enters the utility function via bequest $B_{T^*}$. 
+
+#### Inflation
+
+The impact of inflation is accounted for in our model in various ways. In general, calculations are carried out in real terms. To this end, nominal interest rates are adjusted for inflation (pathwise). Labor income is assumed to grow at a constant rate on top of yearly inflation adjustment. 
+
+Inflation adjustment of first-pillar pensions is included via a stylized model of reality, where first-pillar pensions are adjusted for inflation after a threshold of 3\% price increase since the last adjustment is reached. It is easy to show that such a type of adjustment implies that, essentially, pensions are adjusted for half the actual inflation. For the adjustment of the pension table in the first pillar, however, full inflation adjustment is assumed. In real terms, this means that the pension table remains constant, but first pillar pensions decrease at half the inflation rate.
+
+For the second pillar, we assume no adjustment for inflation for the foreseeable future. The reason for this is that second-pillar pension funds will face difficult years, with a combination of low interest rates, improving mortality, and a growing number of pensioners. Similarly, for any third pillar savings converted to a life-long pension, we assume that the resulting pensions are not adjusted for inflation. Both for the second and the third pillars, this implies that real pensions decrease at the (path-specific) inflation rates.
+
+#### Taxes
+
+Income taxes are taken into account throughout the planning horizon, including the savings phase and the retirement phase. Disposable and non-disposable wealth enter the tax base via a fictious annual return of 4\%, which is taxed as regular income. Special tax treatment of lump-sum payments from the second and third pillars is taken into account, as is the fact that 70\% of the first-pillar pension are not taxed. Standard deductibles for single taxpayers are taken into account and amount currently to CHF 5,300 (here, we assume that the allowance for insurance is already exhausted by second-pillar contributions, which is the case for most taxpayers). Note that while pension income needed for consumption is taxed, any consumption during retirement that is financed by depleting the insured's wealth ("self-managed pension") is not taxed (but 4\% of the remaining wealth are taxed).
+
+Applying constant tax brackets and inflation rates to real pensions implies the assumption that the tax system will be adjusted for inflation. While this does not occur on a yearly basis (and, hence, our assumption is only an approximation), there seems to be a political consensus to maintain the current fiscal quota. If this turns out to be the case, our assumption represents a reasonable approximation in the medium to long term.
+
+### Implementation
+
+#### VAR and the pre-generated returns
+
+First, for estimated historical parameters as mentioned above we presimulated 10'000 nominal and real return paths and provide the with the package as `ret` and `retr`. The functions used are `VARsim()` that has the following input parameters:
+
+*  `V` Output of a VAR Estimation (in package `tsDyn`)
+*  `simN` optional, number of simulated return series to generate, defaults to 1000
+*  `age.max` optional, maximum age, defaults to 122
+*  `age` optional, starting age, defaults to one, as we usually want to generate all lifetime returns and select from them accordingly
+*  `frequency` optional, defaults to 4 (quarterly), could also be 12 (monthly)
+*  `s` optional, Starting values (matrix of dimension lag x k) for the VAR to simulate, in our case this defaults to the steady state calculated as $s=(diag(k)-B)^{-1} \cdot c$, where k is the dimension of the VAR, B the coefficients of parameters and equations and c the intercepts of the equations, all taken from `V`
+*  `covres` optional, Variance-covariance matrix for the innovations, defaults to the covariance matrix of the VAR given by `V` as $var(V_{residuals})/(V_{T}-2-V_{k})\cdot(V_{T}-2)$
+
+It produces an array of dimension (T, k, simN) containing simN simulated return series for T years and k variables.
+
+```{r, echo=TRUE, eval=FALSE}
+data(V)
+retPA <- VARsim(V,simN=10)
+dim(retPA)
+```
+```{r, echo=FALSE, eval=TRUE}
+c(122,5,10)
+```
+```{r}
+ret[1,,1:2]
+```
+
+#### Total Cash-Flows
+
+For a given set of input parameters (identified as _GivenVar_), the function `totalCF()` calls all the other routines and prepares a final set of consumption paths, lumpsum payments and wealth developments starting at age `c_age` until 122 when the Mortality Tables end. It combines all the input parameters from before to a final set (specifying which variables could be optimized at a later stage with _OptVar_)
+
+*  `ret_age` Decision Variable: retirement age, can be set anywhere between 60 and 70 (default: 65)
+*  `w3` Decision Variable: third pillar portfolio allocation (given either as vector or as matrix with entries) for all years
+*  `c` Decision Variable: fraction of income that is consumed while still working (current assumption: constant)
+*  `c2` Decision Variable: second pillar savings as fraction of gross income (still missing: health, a-fonds-perdu payments)
+*  `nu2` Decision Variable: fraction of second pillar savings that is converted to life-long pension
+*  `nu3` Decision Variable: fraction of third pillar savings that is converted to life-long pension
+*  `alpha` Decision Variable: parameter to choose fraction of wealth NOT consumed during retirement but kept for investment (and subsequent consumption)
+*  `c_age` Given variable: the investor's current age (assuming birthday is calculation-day)
+*  `gender` Given variable: gender, 0=male and 1=female
+*  `w0` Given variable: time c_age wealth that is not disposable, assumption: still available at retirement (no growth or decline), alternatively: expected wealth (that is not disposable) at retirement, stays the same over time
+*  `CF` Given Variables: income shocks, such as inheritance (not currently implemented)
+*  `li` Given variable: gross labor income at time 0 (in the last year before birthday)
+*  `lg` Given variable: labor growth rate (in real terms, constant)
+*  `c1` Given variable: first pillar savings as fraction of gross income
+*  `s1` Given variable: vector consisting of two components: c(number of contribution years at age=c_age,historical average yearly income until c_age)
+*  `s2` Given variable: savings in second pillar as of t=0
+*  `s3` Given variable: liquid wealth - invested in the third pillar (current assumption: no tax advantage for third pillar)
+*  `w2` Given variable: portfolio allocation in second pillar (assumed to be fixed and not influenced by the decision maker)
+*  `rho2` Given variable: conversion factor in second pillar for regular retirement age
+*  `rho3` Given variable: conversion factor in third pillar for regular retirement age
+*  `ret` Given variable: investment return scenarios (nominal)
+*  `retr` Given variable: investment return scenarios (real)
+*  `psi` Given variable: optional, spread to take a loan/leverage for third pillar savings
+
+It returns a list with three elements determining:
+
+* a matrix of consumptions before and after retirement (dim c_age:122, # of scenarios)
+* a matrix of wealth after retirement (dim ret_age:122, # of scenarios)
+* a matrix of wealth before retirement (dim c_age:(ret_age-1), # of scenarios)
+
+```{r eval=FALSE}
+totalcf_ex <- totalCF(ret_age=65,c_age=42,
+                      w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                      c=0.6,c2=.12,nu2=.5,nu3=0.01,gender=0,
+                      w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
+                      w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+                      rho2=0.05,rho3=0.04,ret=ret[,,1:8],retr=retr[,,1:8],psi=0.015,alpha=0.96)
+totalcf_ex$cons
+```
+```{r eval=TRUE, echo=FALSE}
+totalcf_ex <- totalCF(ret_age=65,c_age=42,
+                      w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                      c=0.6,c2=.12,nu2=.5,nu3=0.01,gender=0,
+                      w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
+                      w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+                      rho2=0.05,rho3=0.04,ret=ret[,,1:8],retr=retr[,,1:8],psi=0.015,alpha=0.96)
+head(totalcf_ex$cons)
+```
+```{r eval=FALSE}
+totalcf_ex$wealth_before_ret
+```
+```{r eval=TRUE, echo=FALSE}
+head(totalcf_ex$wealth_before_ret)
+```
+```{r eval=FALSE}
+totalcf_ex$wealth_after_ret
+```
+```{r eval=TRUE, echo=FALSE}
+head(totalcf_ex$wealth_after_ret)
+```
+
+#### Utility
+
+This is the last and most important function of this page, as `util()` calculates Expected Utility for total cash-flows as an input for optimization. It finally takes all available parameters and separates _Decision Variables_ from _Given Variables_
+
+*  `ret_age` Decision Variable: retirement age, can be set anywhere between 60 and 70 (default: 65)
+*  `tw3` Decision Variable: third pillar portfolio allocation (given either as vector or as matrix with entries) for all years. HERE: Choose only allocation to stocks, bonds and real estate, cash will be determined as fraction missing to sum up to one
+*  `c` Decision Variable: fraction of income that is consumed while still working (current assumption: constant)
+*  `c2` Decision Variable: second pillar savings as fraction of gross income (still missing: health, a-fonds-perdu payments)
+*  `nu2` Decision Variable: fraction of second pillar savings that is converted to life-long pension
+*  `nu3` Decision Variable: fraction of third pillar savings that is converted to life-long pension
+*  `alpha` Decision Variable: parameter to choose fraction of wealth NOT consumed during retirement but kept for investment (and subsequent consumption)
+*  `beta` Given variable: Relative Weight of bequest utility
+*  `ra` Given variable: Risk Aversion of Agent
+*  `delta` Given Variable: Time Preference
+*  `c_age` Given variable: the investor's current age (assuming birthday is calculation-day)
+*  `gender` Given variable: gender, 0=male and 1=female
+*  `gender_mortalityTable` Given variable: MortalityTable to use for gender 0=male and 1=female, e.g. `baseTable(AVOe2005R.male)`
+*  `w0` Given variable: time c_age wealth that is not disposable, assumption: still available at retirement (no growth or decline), alternatively: expected wealth (that is not disposable) at retirement, stays the same over time
+*  `CF` Given Variables: income shocks, such as inheritance (not currrently imlemented)
+*  `li` Given variable: gross labor income at time 0 (in the last year before birthday)
+*  `lg` Given variable: labor growth rate (in real terms, constant)
+*  `c1` Given variable: first pillar savings as fraction of gross income
+*  `s1` Given variable: vector consisting of two components: c(number of contribution years at age=c_age,historical average yearly income until c_age)
+*  `s2` Given variable: savings in second pillar as of t=0
+*  `s3` Given variable: liquid wealth - invested in the third pillar (current assumption: no tax advantage for third pillar)
+*  `w2` Given variable: portfolio allocation in second pillar (assumed to be fixed and not influenced by the decision maker)
+*  `rho2` Given variable: conversion factor in second pillar for regular retirement age
+*  `rho3` Given variable: conversion factor in third pillar for regular retirement age
+*  `ret` Given variable: investment return scenarios (nominal)
+*  `retr` Given variable: investment return scenarios (real)
+*  `psi` Given variable: spread to take a loan/leverage for third pillar savings
+
+The function returns a single scalar: Expected utility, therefore, to useit as objective function in any optimization, utility needs to be mulriplied by $-1$.
+
+```{r}
+MortalityTables::mortalityTables.load("Austria_Annuities")
+util_ex <- util(ret_age=65,c_age=42,
+                tw3=c(.25,.25,.25),
+                c=0.6,c2=.12,nu2=.5,nu3=0.01,ra=4,delta=0.02,alpha=0.96,beta=0.75,gender=0,
+                gender_mortalityTable=MortalityTables::baseTable(AVOe2005R.male),
+                w0=300000,CF=NULL,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
+                w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+                rho2=0.05,rho3=0.04,ret=ret,retr=retr,psi=0.015)
+util_ex
+```
+Internally, we additionally define the helper function `.util_optim()`, `.util_optim_wc()` and `.util_optim_w()` to optimize all variables, a reduced subset (consumption given by `c` and `alpha`, as well as asset allocation in the third pillar) or solely the asset allocation in the third pillar. In all three case, utility is multiplied by $-1$ to be minimized in the optimization procedure.
+
+#### The optimization
+
+In general, expected utility can be optimized fairly easy using the `optim()`-routine provided by R. To take into account some unwanted cases (e.g. moral hazard: consume all your wealth and then start borrowing and consuming that, too) we set such cases to a large negative value (-5000), preventing such outcomes from being optimal (in fact, moral hazard as described above would then be a feasible outcome).
+
+We provide three optimization functions, namely `optimalLC()`, `optimalwc()` and `optimalw()` that are intended to optimize fewer variables. In all cases we have set up three example characters (times two genders) for the optimization: 1) A Standard type, 2) a good earner with large debt and 3) a low income, young person with almost no savings, who prepared to work longer. Those settings can be loaded by calling the `.load_parameters()` function with the following input variables:
+
+*  `type` Select one of the three personalities for testing: 1) Standard Type, 2) Good earner, large debt, 3) low income, young, almost no savings, prepared to work longer
+*  `gend` gender (0=male, 1=female)
+
+##### Optimizing all possible variables simultaneously
+
+In all the following cases, we load scenario `1` (male). Then we proceed with the full optimization procedure, additionally specifying a vector of starting parameters `initial_values`.
+
+```{r, cache=TRUE}
+library(tictoc)
+.load_parameters()
+initial_values <- c(0.6, 0.12, 0.5, 0.2, 0.96, 0.25, 0.25, 0.25)
+tic()
+optLC_ex <- optimalLC(initial_values,upper_bounds=NULL,lower_bounds=NULL,ret_age=ret_age,ra=ra,delta=delta,beta=bbeta,c_age=c_age,
+          gender=gender,gender_mortalityTable=gender_mortalityTable,
+          w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,rho3=rho3,
+          ret=ret,retr=retr,psi=psi,trace=0,reltol=1e-5)
+toc()
+setNames(optLC_ex[-c(1,2)],c("c","c2","nu2","nu3","alpha","w_stocks","w_bonds","w_realest"))
+```
+In the second case, we omit the three parameters `c2`, `nu2` and `nu3` and only optimize `c`, `alpha` and `tw3` (the first three asset weights) using the function `optimwc()`.
+ 
+```{r, cache=TRUE}
+library(tictoc)
+.load_parameters()
+initial_values <- c(0.5, 0.95, 0.25, 0.25, 0.25)
+tic()
+optwc_ex <- optimalwc(initial_values,upper_bounds=NULL,lower_bounds=NULL,ret_age=ret_age,c2=c2,nu2=nu2,nu3=nu3,
+                   ra=18,delta=delta,beta=bbeta,c_age=c_age,gender=gender,gender_mortalityTable=gender_mortalityTable,
+                   w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,rho3=rho3,
+                   ret=ret[,,1:10],retr=retr[,,1:10],psi=psi,trace=0,reltol=1e-4)
+toc()
+```
+```{r, cache=TRUE}
+setNames(optwc_ex[-c(1,2)],c("c","alpha","w_stocks","w_bonds","w_realest","value","counts.function","counts.gradient","convergence"))
+```
+
+
+In the last case, we only want to estimate the optimal asset allocation for a case of all other parameters fixed using the function `optimalw()`.
+
+```{r, cache=TRUE}
+library(tictoc)
+.load_parameters()
+initial_values <- c(0.25, 0.25, 0.25)
+tic()
+optw_ex <- optimalw(initial_values,upper_bounds=NULL,lower_bounds=NULL,ret_age=ret_age,cc=cc,c2=c2,nu2=nu2,nu3=nu3,
+         ra=ra,delta=delta,alpha=aalpha,beta=bbeta,c_age=c_age,gender=gender,gender_mortalityTable=gender_mortalityTable,
+         w0=w0,CF=CF,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,w2=w2,rho2=rho2,rho3=rho3,
+         ret=ret,retr=retr,psi=psi,trace=0,reltol=1e-4)
+toc()
+```
+```{r, cache=TRUE}
+setNames(optw_ex[-c(1,2)],c("w_stocks","w_bonds","w_realest","value","counts.function","counts.gradient","convergence"))
+```
+
+##### Speeding up optimization
+
+For our large scale simulation, intended to generate outcomes for a large cross-section of initial parameter combinations, we had to create three additional functions: First, we have put the asset allocation in the second pillar into its own function `.SPFretch()` (hidden), where it is calculated once and then kept in memory. Thereby, we speed optimization up, at the cost of needing larger internal memory (RAM). Second, we have combined all initial functions into one large (and not very easy too read) function `utilall()` to speed up optimization even further. 
+
+```{r}
+MortalityTables::mortalityTables.load("Austria_Annuities")
+.load_parameters(gend=0,type=1)
+SPFretsel <- .SPFretch(SPFret,c_age=c_age,ret_age=ret_age)
+utilall_ex <- utilall(ret_age=ret_age,c_age=c_age,
+                      tw3=c(.25,.25,.25),
+                      c=cc,c2=c2,nu2=nu2,nu3=nu3,ra=ra,delta=delta,alpha=aalpha,beta=bbeta,gender=gender,
+                      gender_mortalityTable2=cbind(MortalityTables::baseTable(AVOe2005R.male),MortalityTables::baseTable(AVOe2005R.female)),
+                      w0=w0,CF=NULL,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,
+                      rho2=rho2,rho3=rho3,ret=ret,retr=retr,SPFretsel=SPFretsel,psi=psi)
+utilall_ex
+```
+```{r}
+# CHECK AGAINST ORIGINAL UTILITY
+utilall_check <- util(ret_age=ret_age,c_age=c_age,
+                      tw3=c(.25,.25,.25),
+                      c=cc,c2=c2,nu2=nu2,nu3=nu3,ra=ra,delta=delta,alpha=aalpha,beta=bbeta,gender=gender,
+                      gender_mortalityTable=MortalityTables::baseTable(AVOe2005R.male),
+                      w0=w0,CF=NULL,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,
+                      w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+                      rho2=rho2,rho3=rho3,ret=ret,retr=retr,psi=psi)
+utilall_check
+```
+We use this function for the objective functions `.util_optim2()`, `.util_optim_wc2()` and `.util_optim_w2()`. However, as we currently only intend to implement the second optimization framework on a large scale, there is also only one optimizer `optimalwc2()`.
+
+```{r, cache=TRUE, eval=TRUE}
+library(tictoc)
+.load_parameters()
+initial_values <- c(.3,0.93,0.8,0.01,0.6)
+tic()
+optwc2_ex <- optimalwc2(initial_values,upper_bounds=NULL,lower_bounds=NULL,ret_age=ret_age,c_age=c_age,c2=c2,nu2=nu2,nu3=nu3,
+                           ra=ra,delta=delta,beta=bbeta,gender=gender,
+                      gender_mortalityTable2=cbind(MortalityTables::baseTable(AVOe2005R.male),MortalityTables::baseTable(AVOe2005R.female)),
+                      w0=w0,CF=NULL,li=li,lg=lg,c1=c1,s1=s1,s2=s2,s3=s3,
+                      rho2=rho2,rho3=rho3,ret=ret,retr=retr,SPFretsel=SPFretsel,psi=psi,trace=0,reltol=1e-4)
+toc()
+```
+```{r, cache=TRUE, eval=TRUE}
+setNames(optwc2_ex[-c(1,2)],c("c","alpha","w_stocks","w_bonds","w_realest","value","counts.function","counts.gradient","convergence"))
+```
+
+# Conclusion and Future Research 
+
+We have implemented a detailed model of the Liechtenstein pension system in this R-package `pensionfinanceLi`, which allows us to derive optimal solutions to typical decision problems faced by the insured in this system. The numerical results we show will be further refined and analyzed in the future. Based on such an analysis we intend to implement a Machine Learning Framework that shall implement the entire process and deliver 'heuristical' solutions with sufficient accuracy and much smaller calculation times.
+
+# References
+
+<div id="refs"></div>
+
+# Appendix
+
+## Plausibility checks
+
+All plausibility checks are based on a very similar scenario and documented only for a limited number of (10) Monte-Carlo Simulations.
+
+### First pillar
+
+Test cases
+
+1) First pillar pension should be decreasing in age, given that savings before and initial level of earnings stays constant (ceteris paribus)
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out1 <- NULL
+for (c_age in 42:64){
+   out1[c_age-41] <- mean(fpCF(ret_age=65,c_age=c_age,li=20000,lg=0.01,s1=c(15,10000),ret=ret[,,1:10])[1,])
+}
+plot(42:64,out1,xlab="c_age",ylab="First pillar pension")
+```
+
+2) First pillar pension should be increasing in lg (if below pension bracket)
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out2 <- NULL; i<-1
+for (lg in seq(from = 0,to = 0.1,by = 0.01)){
+  out2[i] <- mean(fpCF(ret_age=65,c_age=42,li=20000,lg=lg,s1=c(15,10000),ret=ret[,,1:10])[1,])
+  i <- i+1
+}
+plot(seq(0,0.1,0.01),out2,xlab="lg",ylab="First pillar pension")
+```
+
+3) First pillar pension should be increasing in retirement age
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out3 <- NULL
+for (ret_age in 60:70){
+  out3[ret_age-59] <- mean(fpCF(ret_age=ret_age,c_age=42,li=100000,lg=0.01,s1=c(15,80000),ret=ret[,,1:1000])[1,])
+}
+plot(60:70,out3,xlab="ret_age",ylab="First pillar pension")
+```
+
+4) First pillar pension should be increasing in s11 until yearsum>44 then we have a downward adjustment
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; i<-1
+for (s11 in seq(1:25)){
+  out4[i] <- mean(fpCF(ret_age=65,c_age=42,li=10000,lg=0.01,s1=c(s11,10000),ret=ret[,,1:10])[1,])
+  i <- i+1
+}
+plot(1:25,out4,xlab="s11",ylab="First pillar pension")
+```
+
+5) First pillar pension should be increasing in s12 until the bracket comes into play
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out5 <- NULL; i<-1
+for (s12 in seq(10000,100000,10000)){
+  out5[i] <- mean(fpCF(ret_age=65,c_age=42,li=10000,lg=0.01,s1=c(15,s12),ret=ret[,,1:10])[1,])
+  i <- i+1
+}
+plot(seq(10000,100000,10000),out5,xlab="s12",ylab="First pillar pension")
+```
+
+### Second Pillar
+
+Here we evaluate three aspects of second pillar pensions: The lumpsum payment, the first pension paid and the overall wealth at retirement
+
+1) Second pillar pensions: All elements should be decreasing in age
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out1 <- NULL
+for (c_age in 42:64){
+  out <- spCF(ret_age=65,nu2=.5,c_age=c_age,c2=.12,li=100000,lg=0.01,ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
+  out1 <- rbind(out1,c(mean(out$lumpsum),mean(out$pension[1,]),mean(out$wealth)))
+}
+par(mfrow=c(1,3))
+plot(42:64,out1[,1],main = "Lumpsum",xlab="c_age")
+plot(42:64,out1[,2],main = "First pension",xlab="c_age")
+plot(42:64,out1[,3],main = "Wealth at retirement",xlab="c_age")
+```
+
+2) Second pillar pensions: All elements should be increasing in retirement age
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out2 <- NULL
+for (ret_age in 60:70){
+  out <- spCF(ret_age=ret_age,nu2=.5,c_age=42,c2=.12,li=100000,lg=0.01,ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
+  out2 <- rbind(out2,c(mean(out$lumpsum),mean(out$pension[1,]),mean(out$wealth)))
+}
+par(mfrow=c(1,3))
+plot(60:70,out2[,1],main = "Lumpsum",xlab="ret_age")
+plot(60:70,out2[,2],main = "First pension",xlab="ret_age")
+plot(60:70,out2[,3],main = "Wealth at retirement",xlab="ret_age")
+```
+
+3) Second pillar pensions: Decreasing lumpsum/increasing pension/same wealth in nu
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out3 <- NULL
+for (nu2 in seq(0,1,0.1)){
+  out <- spCF(ret_age=65,nu2=nu2,c_age=42,c2=.12,li=100000,lg=0.01,ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
+  out3 <- rbind(out3,c(mean(out$lumpsum),mean(out$pension[1,]),mean(out$wealth)))
+}
+par(mfrow=c(1,3))
+plot(seq(0,1,0.1),out3[,1],main = "Lumpsum",xlab="nu")
+plot(seq(0,1,0.1),out3[,2],main = "First pension",xlab="nu")
+plot(seq(0,1,0.1),out3[,3],main = "Wealth at retirement",xlab="nu")
+```
+
+4) Second pillar pensions: All elements should be increasing in c2
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL
+for (c2 in seq(0,1,0.1)){
+  out <- spCF(ret_age=65,nu2=0.5,c_age=42,c2=c2,li=100000,lg=0.01,ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
+  out4 <- rbind(out4,c(mean(out$lumpsum),mean(out$pension[1,]),mean(out$wealth)))
+}
+par(mfrow=c(1,3))
+plot(seq(0,1,0.1),out4[,1],main = "Lumpsum",xlab="c2")
+plot(seq(0,1,0.1),out4[,2],main = "First pension",xlab="c2")
+plot(seq(0,1,0.1),out4[,3],main = "Wealth at retirement",xlab="c2")
+```
+
+5) Second pillar pensions: All elements should be increasing in li
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(10000,100000,10000)
+for (li in vec){
+  out <- spCF(ret_age=65,nu2=0.5,c_age=42,c2=.12,li=li,lg=0.01,ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
+  out4 <- rbind(out4,c(mean(out$lumpsum),mean(out$pension[1,]),mean(out$wealth)))
+}
+par(mfrow=c(1,3))
+plot(vec,out4[,1],main = "Lumpsum",xlab="li")
+plot(vec,out4[,2],main = "First pension",xlab="li")
+plot(vec,out4[,3],main = "Wealth at retirement",xlab="li")
+```
+
+6) Second pillar pensions: All elements should be increasing in lg
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0,0.5,0.05)
+for (lg in vec){
+  out <- spCF(ret_age=65,nu2=0.5,c_age=42,c2=.12,li=100000,lg=lg,ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=0.05)
+  out4 <- rbind(out4,c(mean(out$lumpsum),mean(out$pension[1,]),mean(out$wealth)))
+}
+par(mfrow=c(1,3))
+plot(vec,out4[,1],main = "Lumpsum",xlab="lg")
+plot(vec,out4[,2],main = "First pension",xlab="lg")
+plot(vec,out4[,3],main = "Wealth at retirement",xlab="lg")
+```
+
+7) Second pillar pensions: All elements should be increasing in s2
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(10000,1000000,10000)
+for (s2 in vec){
+  out <- spCF(ret_age=65,nu2=0.5,c_age=42,c2=.12,li=100000,lg=0.01,ret=ret[,,1:10],retr=retr[,,1:10],s2=s2,rho2=0.05)
+  out4 <- rbind(out4,c(mean(out$lumpsum),mean(out$pension[1,]),mean(out$wealth)))
+}
+par(mfrow=c(1,3))
+plot(vec,out4[,1],main = "Lumpsum",xlab="s2")
+plot(vec,out4[,2],main = "First pension",xlab="s2")
+plot(vec,out4[,3],main = "Wealth at retirement",xlab="s2")
+```
+
+8) Second Pillar pensions: Increasing pension in conversion factor rho2
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0.01,0.2,0.01)
+for (rho2 in vec){
+  out <- spCF(ret_age=65,nu2=0.5,c_age=42,c2=.12,li=100000,lg=0.01,ret=ret[,,1:10],retr=retr[,,1:10],s2=300000,rho2=rho2)
+  out4 <- rbind(out4,c(mean(out$lumpsum),mean(out$pension[1,]),mean(out$wealth)))
+}
+par(mfrow=c(1,3))
+plot(vec,out4[,1],main = "Lumpsum",xlab="rho2")
+plot(vec,out4[,2],main = "First pension",xlab="rho2")
+plot(vec,out4[,3],main = "Wealth at retirement",xlab="rho2")
+```
+
+### Third Pillar
+
+#### Third Pillar Cash Flows during saving phase
+
+Here we evaluate the two aspects of third pillar savings: the consumption and wealth level at retirement.
+
+1) Saving longer (higher retirement age) should increase wealth at retirement and keep consumption constant (due to higher wealth taxes, which we pay from liquid wealth)
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- 60:70
+for (ret_age in vec){
+  out <- tpCFwork(ret_age=ret_age,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                  free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],s3=300000,w0=300000,psi=0.015,c=0.6)
+  out4 <- rbind(out4,c(mean(out$cons[as.character(ret_age-1),]),mean(out$wealth[as.character(ret_age-1),])))
+}
+par(mfrow=c(1,2))
+plot(vec,out4[,1],main = "Consumption at retirement",xlab="ret_age")
+plot(vec,out4[,2],main = "Wealth at retirement",xlab="ret_age")
+```
+
+2) Saving less years (higher current age) should decrease wealth and keep consumption at retirement constant
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- 42:64
+for (c_age in vec){
+  out <- tpCFwork(ret_age=65,c_age=c_age,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                  free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],s3=300000,w0=300000,psi=0.015,c=0.6)
+  out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$wealth["64",])))
+}
+par(mfrow=c(1,2))
+plot(vec,out4[,1],main = "Consumption before retirement",xlab="c_age")
+plot(vec,out4[,2],main = "Wealth before retirement",xlab="c_age")
+```
+
+3) Higher consumption should decrease wealth and increase consumption before retirement
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0.1,1,0.1)
+for (c in vec){
+  out <- tpCFwork(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                  free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],s3=300000,w0=300000,psi=0.015,c=c)
+  out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$wealth["64",])))
+}
+par(mfrow=c(1,2))
+plot(vec,out4[,1],main = "Consumption before retirement",xlab="c")
+plot(vec,out4[,2],main = "Wealth before retirement",xlab="c")
+```
+
+4) Higher illiquid wealth (w0) should increase taxes and therefore reduce wealth within certain brackets (consumption constant)
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0,1000000,10000)
+for (w0 in vec){
+  out <- tpCFwork(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                  free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],s3=300000,w0=w0,psi=0.015,c=0.6)
+  out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$wealth["64",])))
+}
+par(mfrow=c(1,2))
+plot(vec,out4[,1],main = "Consumption before retirement",xlab="w0")
+plot(vec,out4[,2],main = "Wealth before retirement",xlab="w0")
+```
+
+5) Higher liquid wealth (s3) should increase returns and also taxes but not reduce consumption
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0,1000000,10000)
+for (s3 in vec){
+  out <- tpCFwork(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                  free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],s3=s3,w0=300000,psi=0.015,c=0.6)
+  out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$wealth["64",])))
+}
+par(mfrow=c(1,2))
+plot(vec,out4[,1],main = "Consumption before retirement",xlab="s3")
+plot(vec,out4[,2],main = "Wealth before retirement",xlab="s3")
+```
+
+#### Third Pillar Cash Flows during retirement phase
+
+Here we evaluate the two aspects of third pillar consumption in retirement: the consumption and wealth level at the end of retirement (hypothetical age 122)
+
+1) Decreasing leftover at 122 when pension age is growing (due to consuming less than is earned with investment)
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center", cache=TRUE}
+out4 <- NULL; vec <- 60:70
+for (ret_age in vec){
+  out <- tpCFret(ret_age=ret_age,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                 alpha=0.96,wealth_at_ret_age=rep(10000,10000),retr=retr,psi=0.015)
+  out4 <- rbind(out4,c(mean(out$cons["122",]),mean(out$wealth["122",])))
+}
+par(mfrow=c(1,2))
+plot(vec,out4[,1],main = "Consumption at 122",xlab="ret_age")
+plot(vec,out4[,2],main = "Wealth at 122",xlab="ret_age")
+```
+
+2) Decreasing leftover at 122 when more and more is consumed in terms of a self-managed pension
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center", cache=TRUE}
+## Attention: In case alpha>1 do we take pension away from fp and sp and use it to save more/repay debt
+out4 <- NULL; vec <- seq(1.2,0.8,-0.025)
+for (alpha in vec){
+  out <- tpCFret(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                 alpha=alpha,wealth_at_ret_age=rep(10000,10000),retr=retr,psi=0.015)
+  out4 <- rbind(out4,c(mean(out$cons["122",]),mean(out$wealth["122",])))
+}
+par(mfrow=c(1,2))
+plot((1-vec),out4[,1],main = "Consumption at 122",xlab="alpha")
+plot(vec,out4[,2],main = "Wealth at 122",xlab="alpha")
+```
+
+3) Decreasing wealth at retirement (from positive to negative) leads
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center", cache=TRUE}
+out4 <- NULL; vec <- seq(10000,-10000,-1000)
+for (wealth in vec){
+  out <- tpCFret(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                 alpha=0.96,wealth_at_ret_age=rep(wealth,10000),retr=retr,psi=0.015)
+  out4 <- rbind(out4,c(mean(out$cons["122",]),mean(out$wealth["122",])))
+}
+par(mfrow=c(1,2))
+plot(vec,out4[,1],main = "Consumption at 122",xlab="wealth at ret")
+plot(vec,out4[,2],main = "Wealth at 122",xlab="wealth at ret")
+```
+
+4) Decreasing asset allocation at libor (investing more in stocks)
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center", cache=TRUE}
+out4 <- NULL; vec <- seq(0.5,-0.5,-0.05)
+for (libor in vec){
+  out <- tpCFret(ret_age=65,c_age=42,w3=setNames(c(1-libor,0,0,libor,0),c("msci","b10","recom","libor","infl")),
+                 alpha=0.96,wealth_at_ret_age=rep(10000,10000),retr=retr,psi=0.015)
+  out4 <- rbind(out4,c(mean(out$cons["122",]),mean(out$wealth["122",])))
+}
+par(mfrow=c(1,2))
+plot(vec,out4[,1],main = "Consumption at 122",xlab="libor")
+plot(vec,out4[,2],main = "Wealth at 122",xlab="libor")
+```
+
+### Total Cash Flows
+
+1) Saving longer (higher retirement age) should increase wealth before and after retirement (here it depends strongly on investment results) and decrease consumption at retirement (due to higher wealth taxes)
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- 60:70
+for (ret_age in vec){
+  out <- totalCF(ret_age=ret_age,c_age=42,
+                 w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                 c=0.6,c2=.12,nu2=.5,nu3=0.01,gender=0,
+                 w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
+                 w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+                 rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
+  out4 <- rbind(out4,c(mean(out$cons[as.character(ret_age-1),]),mean(out$wealth_before_ret[as.character(ret_age-1),]),mean(out$wealth_after_ret[as.character(ret_age),])))
+}
+par(mfrow=c(1,3))
+plot(vec,out4[,1],main = "Consumption at retirement",xlab="ret_age")
+plot(vec,out4[,2],main = "Wealth before retirement",xlab="ret_age")
+plot(vec,out4[,3],main = "Wealth at retirement",xlab="ret_age")
+```
+2) Saving for less time (higher current age) should decrease wealth before and after retirement (here it depends strongly on investment results) and
+   also decrease consumption at retirement (less wealth, fewer taxes)
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- 42:64
+for (c_age in vec){
+  out <- totalCF(ret_age=65,c_age=c_age,
+                 w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                 c=0.6,c2=.12,nu2=.5,nu3=0.01,gender=0,
+                 w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
+                 w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+                 rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
+  out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
+}
+par(mfrow=c(1,3))
+plot(vec,out4[,1],main = "Consumption at retirement",xlab="c_age")
+plot(vec,out4[,2],main = "Wealth before retirement",xlab="c_age")
+plot(vec,out4[,3],main = "Wealth at retirement",xlab="c_age")
+```
+
+3) Consuming more before retirement should decrease wealth before and after retirement (here it depends strongly on investment results) and also decrease consumption after retirement (less wealth, less taxes, fewer pension payments)
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0.1,1,0.1)
+for (c in vec){
+  out <- totalCF(ret_age=65,c_age=42,
+                 w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                 c=c,c2=.12,nu2=.5,nu3=0.01,gender=0,
+                 w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
+                 w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+                 rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
+  out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$cons["65",]),
+                       mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
+}
+par(mfrow=c(1,4),oma=c(0,0,0,0),mar=c(1,2,2,1))
+plot(vec,out4[,1],main = "Consumption before retirement",xlab="c")
+plot(vec,out4[,2],main = "Consumption after retirement",xlab="c")
+plot(vec,out4[,3],main = "Wealth before retirement",xlab="c")
+plot(vec,out4[,4],main = "Wealth at retirement",xlab="c")
+```
+
+4) Saving more in the second pillar should decrease consumption and wealth before retirement, increase wealth after retirement (lumpsum) and also increase consumption after retirement (higher annuity)
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0.1,1,0.1)
+for (c2 in vec){
+  out <- totalCF(ret_age=65,c_age=42,
+                 w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                 c=0.6,c2=c2,nu2=.5,nu3=0.01,gender=0,
+                 w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
+                 w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+                 rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
+  out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$cons["65",]),
+                       mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
+}
+par(mfrow=c(1,4),oma=c(0,0,0,0),mar=c(1,2,2,1))
+plot(vec,out4[,1],main = "Consumption before retirement",xlab="c2")
+plot(vec,out4[,2],main = "Consumption after retirement",xlab="c2")
+plot(vec,out4[,3],main = "Wealth before retirement",xlab="c2")
+plot(vec,out4[,4],main = "Wealth at retirement",xlab="c2")
+```
+
+5) Higher pension (lower lumpsum) in the second pillar should not do anything to consumption and wealth before retirement, decrease wealth after retirement (lumpsum) and increase consumption after retirement (higher annuity)
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0.1,1,0.1)
+for (nu2 in vec){
+  out <- totalCF(ret_age=65,c_age=42,
+                 w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                 c=0.6,c2=0.12,nu2=nu2,nu3=0.01,gender=0,
+                 w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
+                 w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+                 rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
+  out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$cons["65",]),
+                       mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
+}
+par(mfrow=c(1,4),oma=c(0,0,0,0),mar=c(1,2,2,1))
+plot(vec,out4[,1],main = "Consumption before retirement",xlab="nu2")
+plot(vec,out4[,2],main = "Consumption after retirement",xlab="nu2")
+plot(vec,out4[,3],main = "Wealth before retirement",xlab="nu2")
+plot(vec,out4[,4],main = "Wealth at retirement",xlab="nu2")
+```
+
+6) Higher pension (lower lumpsum) in the third pillar should not do anything to consumption and wealth before retirement, decrease wealth after retirement (lumpsum) and increase consumption after retirement (higher annuity) that then will be decreasing (self-managed pension payments will also decrease)
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0.1,1,0.1)
+for (nu3 in vec){
+  out <- totalCF(ret_age=65,c_age=42,
+                 w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                 c=0.6,c2=0.12,nu2=.5,nu3=nu3,gender=0,
+                 w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
+                 w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+                 rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
+  out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$cons["65",]),
+                       mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
+}
+par(mfrow=c(1,4),oma=c(0,0,0,0),mar=c(1,2,2,1))
+plot(vec,out4[,1],main = "Consumption before retirement",xlab="nu3")
+plot(vec,out4[,2],main = "Consumption after retirement",xlab="nu3")
+plot(vec,out4[,3],main = "Wealth before retirement",xlab="nu3")
+plot(vec,out4[,4],main = "Wealth at retirement",xlab="nu3")
+```
+
+7) Higher illiquid wealth will increase taxes and therefore reduce consumption and wealth before and after retirement
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0,1000000,10000)
+for (w0 in vec){
+  out <- totalCF(ret_age=65,c_age=42,
+                 w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                 c=0.6,c2=0.12,nu2=.5,nu3=0.01,gender=0,
+                 w0=w0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
+                 w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+                 rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
+  out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$cons["65",]),
+                       mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
+}
+par(mfrow=c(1,4),oma=c(0,0,0,0),mar=c(1,2,2,1))
+plot(vec,out4[,1],main = "Consumption before retirement",xlab="w0")
+plot(vec,out4[,2],main = "Consumption after retirement",xlab="w0")
+plot(vec,out4[,3],main = "Wealth before retirement",xlab="w0")
+plot(vec,out4[,4],main = "Wealth at retirement",xlab="w0")
+```
+
+8) Higher liquid wealth (third pillar) will increase taxes and therefore reduce consumption before retirement but will increase wealth before and after retirement and therefore consumption after retirement
+   
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0,1000000,10000)
+for (s3 in vec){
+  out <- totalCF(ret_age=65,c_age=42,
+                 w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                 c=0.6,c2=0.12,nu2=.5,nu3=0.01,gender=0,
+                 w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=s3,
+                 w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+                 rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
+  out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$cons["65",]),
+                       mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
+}
+par(mfrow=c(1,4),oma=c(0,0,0,0),mar=c(1,2,2,1))
+plot(vec,out4[,1],main = "Consumption before retirement",xlab="s3")
+plot(vec,out4[,2],main = "Consumption after retirement",xlab="s3")
+plot(vec,out4[,3],main = "Wealth before retirement",xlab="s3")
+plot(vec,out4[,4],main = "Wealth at retirement",xlab="s3")
+```
+
+9) Higher wealth in the second pillar will do nothing to wealth and consumption before retirement but will increase wealth and therefore consumption after retirement
+   
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0,1000000,10000)
+for (s2 in vec){
+  out <- totalCF(ret_age=65,c_age=42,
+                 w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                 c=0.6,c2=0.12,nu2=.5,nu3=0.01,gender=0,
+                 w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=s2,s3=300000,
+                 w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+                 rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
+  out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$cons["65",]),
+                       mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
+}
+par(mfrow=c(1,4),oma=c(0,0,0,0),mar=c(1,2,2,1))
+plot(vec,out4[,1],main = "Consumption before retirement",xlab="s2")
+plot(vec,out4[,2],main = "Consumption after retirement",xlab="s2")
+plot(vec,out4[,3],main = "Wealth before retirement",xlab="s2")
+plot(vec,out4[,4],main = "Wealth at retirement",xlab="s2")
+```
+
+10) Higher wealth in the first pillar will do nothing to wealth and consumption before retirement but will increase consumption after retirement
+   
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+## here one has to decrease li to 10000 or the "brackets" take over
+out4 <- NULL; vec <- seq(10000,100000,1000)
+for (s12 in vec){
+  out <- totalCF(ret_age=65,c_age=42,
+                 w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                 c=0.6,c2=0.12,nu2=.5,nu3=0.01,gender=0,
+                 w0=300000,li=10000,lg=0.01,c1=0.07,s1=c(15,s12),s2=300000,s3=300000,
+                 w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+                 rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
+  out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$cons["65",]),
+                       mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
+}
+par(mfrow=c(1,4),oma=c(0,0,0,0),mar=c(1,2,2,1))
+plot(vec,out4[,1],main = "Consumption before retirement",xlab="s12")
+plot(vec,out4[,2],main = "Consumption after retirement",xlab="s12")
+plot(vec,out4[,3],main = "Wealth before retirement",xlab="s12")
+plot(vec,out4[,4],main = "Wealth at retirement",xlab="s12")
+```
+
+11) Increasing pension (consumption) in higher conversion factors rho2/rho3
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0.01,0.2,0.01)
+for (rho3 in vec){
+  out <- totalCF(ret_age=65,c_age=42,
+                 w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                 c=0.6,c2=0.12,nu2=.5,nu3=0.01,gender=0,
+                 w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
+                 w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+                 rho2=0.05,rho3=rho3,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
+  out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$cons["65",]),
+                       mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
+}
+par(mfrow=c(1,4),oma=c(0,0,0,0),mar=c(1,2,2,1))
+plot(vec,out4[,1],main = "Consumption before retirement",xlab="rho3")
+plot(vec,out4[,2],main = "Consumption after retirement",xlab="rho3")
+plot(vec,out4[,3],main = "Wealth before retirement",xlab="rho3")
+plot(vec,out4[,4],main = "Wealth at retirement",xlab="rho3")
+```
+
+12) Decreasing pension (consumption) for lower level of alpha (converting to a self-managed pension)
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(1,0.8,-0.01)
+for (alpha in vec){
+  out <- totalCF(ret_age=65,c_age=42,
+                 w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
+                 c=0.6,c2=0.12,nu2=.5,nu3=0.01,gender=0,
+                 w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
+                 w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+                 rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=alpha)
+  out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$cons["65",]),
+                       mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
+}
+par(mfrow=c(1,4),oma=c(0,0,0,0),mar=c(1,2,2,1))
+plot(vec,out4[,1],main = "Consumption before retirement",xlab="alpha")
+plot(vec,out4[,2],main = "Consumption after retirement",xlab="alpha")
+plot(vec,out4[,3],main = "Wealth before retirement",xlab="alpha")
+plot(vec,out4[,4],main = "Wealth at retirement",xlab="alpha")
+```
+### Utility
+
+1) Higher retirement age - does lead to decreasing utility - due to not consuming the larger amounts of wealth
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+################### CHECKING the utility function
+MortalityTables::mortalityTables.load("Austria_Annuities")
+gender_mortalityTable <- MortalityTables::baseTable(AVOe2005R.male)
+
+out4 <- NULL; vec <- 60:70
+for (ret_age in vec){
+  out <- util(ret_age=ret_age,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.01,ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=300000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
+              w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+              rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
+  out4 <- rbind(out4,out)
+}
+par(mfrow=c(1,1),oma=c(0,0,0,0),mar=c(2,2,2,1))
+plot(vec,out4[,1],main = "Utility",type="l",xlab="ret_age")
+```
+
+2) Higher current age leads to an inverse u-shape (given the other parameters, the best age seems to be ~55)
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- 42:64
+for (c_age in vec){
+  out <- util(ret_age=65,c_age=c_age,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.01,ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=300000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
+              w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+              rho2=0.05,rho3=0.04,ret=ret[,,1:100],retr=retr[,,1:100],psi=0.015,verbose=FALSE)
+  out4 <- rbind(out4,out)
+}
+plot(vec,out4[,1],main = "Utility",type="l",xlab="c_age")
+```
+
+3) Higher consumption during work life leads to too little savings for retirement which therefore peaks
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+# Request for "consumption of everything: One needs low enough wealth to be achieving an optimum here. What about habit formation?
+out4 <- NULL; vec <- seq(0.6,1,0.01)
+for (c in vec){
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=c,c2=0.12,nu2=.5,nu3=0.01,ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=300000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
+              w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+              rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
+  out4 <- rbind(out4,out)
+}
+plot(vec,out4[,1],main = "Utility",type="l",xlab="c")
+```
+
+4) How much should be contributed to the second pillar? When wealth is low enough it peaks between 0 and 5 percent
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0,0.15,0.01)
+for (c2 in vec){
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=c2,nu2=.5,nu3=0.01,ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=300000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
+              w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+              rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
+  out4 <- rbind(out4,out)
+}
+plot(vec,out4[,1],main = "Utility",type="l",xlab="c2")
+```
+
+5) How much of second pillar savings shall be payed out as a lumpsum?
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0,1,0.05)
+for (nu2 in vec){
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=nu2,nu3=0.01,ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=200000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=-100000,
+              w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+              rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE,warnings = FALSE)
+  out4 <- rbind(out4,out)
+}
+plot(vec,out4[,1],main = "Utility",type="l",xlab="nu2")
+```
+
+6) How much of third pillar savings shall be payed out as a lumpsum?
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0,1,0.05)
+for (nu3 in vec){
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=nu3,ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
+              w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+              rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
+  out4 <- rbind(out4,out)
+}
+plot(vec,out4[,1],main = "Utility",type="l",xlab="nu3")
+```
+
+7) Risk aversion. Larger risk aversion leads to (ceteris paribus) higher utility, because the initial situation improves with poorer investment returns
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(2,20,1)
+for (ra in vec){
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=ra,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=10000,
+              w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+              rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
+  out4 <- rbind(out4,out)
+}
+plot(vec,out4[,1],main = "Utility",type="l",xlab="ra")
+```
+
+8) Time preference. Larger time preference decreases utility due to the fact that discounting future payments more makes the insured less well off (ceteris parisbus)
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0,0.1,0.01)
+for (delta in vec){
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=delta,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
+              w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+              rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
+  out4 <- rbind(out4,out)
+}
+plot(vec,out4[,1],main = "Utility",type="l",xlab="delta")
+```
+
+9) Alpha. Larger alpha (means you consume less "self-managed pension") utility peaks between 0.9 and 0.99
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0.80,0.99,0.01)
+for (alpha in vec){
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=alpha,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=-10000,
+              w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+              rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE,warnings = FALSE)
+  out4 <- rbind(out4,out)
+}
+plot(vec,out4[,1],main = "Utility",type="l",xlab="alpha")
+```
+
+10) Beta. Larger beta (means you consume less "self-managed pension") decreases utility (you leave more to your heirs and consume less yourself)
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0,1,0.1)
+for (beta in vec){
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
+              beta=beta,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=30000,
+              w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+              rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
+  out4 <- rbind(out4,out)
+}
+plot(vec,out4[,1],main = "Utility",type="l",xlab="beta")
+```
+
+11) Wealth. Larger non-liquid wealth (means you consume less "self-managed pension") decreases utility (due to increasing taxes) but does not provide "illiquid pension" (as a mortgage is usually treated)
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0,100000,10000)
+for (w0 in vec){
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=w0,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=0,
+              w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+              rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
+  out4 <- rbind(out4,out)
+}
+plot(vec,out4[,1],main = "Utility",type="l",xlab="w0")
+```
+
+12) Income. Higher income higher utility (starting above the benefits from the first pillar)
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(30000,100000,10000)
+for (li in vec){
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=li,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=-10000,
+              w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+              rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE,warnings = FALSE)
+  out4 <- rbind(out4,out)
+}
+plot(vec,out4[,1],main = "Utility",type="l",xlab="li")
+```
+
+13) Income growth. Higher income growth higher utility
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0,0.1,0.01)
+for (lg in vec){
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=lg,c1=0.07,s1=c(15,80000),s2=30000,s3=-10000,
+              w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+              rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE,warnings = FALSE)
+  out4 <- rbind(out4,out)
+}
+plot(vec,out4[,1],main = "Utility",type="l",xlab="lg")
+```
+
+14) More first pillar saving, lower utility, as the first pillar does not provide you with more outcome, and invests your wealth suboptimal.
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0,0.1,0.01)
+for (c1 in vec){
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=c1,s1=c(15,80000),s2=30000,s3=-10000,
+              w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+              rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
+  out4 <- rbind(out4,out)
+}
+plot(vec,out4[,1],main = "Utility",type="l",xlab="c1")
+```
+
+15) More first pillar savings, rising utility (in very tight boundaries on `li`)
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(100,10000,1000)
+for (s12 in vec){
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=10000,lg=0.01,c1=0.07,s1=c(10,s12),s2=30000,s3=-10000,
+              w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+              rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE,warnings = FALSE)
+  out4 <- rbind(out4,out)
+}
+plot(vec,out4[,1],main = "Utility",type="l",xlab="s12")
+```
+
+16) More second pillar savings, higher utility (decreasing due to marginal tax effect)
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0,100000,10000)
+for (s2 in vec){
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=s2,s3=-10000,
+              w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+              rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE,warnings = FALSE)
+  out4 <- rbind(out4,out)
+}
+plot(vec,out4[,1],main = "Utility",type="l",xlab="s2")
+```
+
+17) More third pillar savings/liquid wealth, higher utility
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(-20000,100000,10000)
+for (s3 in vec){
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.01,s1=c(15,80000),s2=30000,s3=s3,
+              w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+              rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE)
+  out4 <- rbind(out4,out)
+}
+plot(vec,out4[,1],main = "Utility",type="l",xlab="s3")
+```
+
+18) Higher conversion rate, higher utility (takes the longevity risk away)
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0,0.1,0.01)
+for (rho2 in vec){
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=-10000,
+              w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+              rho2=rho2,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE,warnings = FALSE)
+  out4 <- rbind(out4,out)
+}
+plot(vec,out4[,1],main = "Utility",type="l",xlab="rho2")
+```
+
+19) Higher conversion rate, higher utility (takes the longevity risk away)
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(0,0.1,0.01)
+for (rho3 in vec){
+  out <- util(ret_age=65,c_age=42,tw3=c(0.25,0.25,0.25),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=-10000,
+              w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+              rho2=0.05,rho3=rho3,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE,warnings = FALSE)
+  out4 <- rbind(out4,out)
+}
+plot(vec,out4[,1],main = "Utility",type="l",xlab="rho3")
+```
+
+20) Larger investment, larger utility (depending on risk aversion). More investment generally makes the insured better off, even when punishing for leverage.
+
+```{r, fig.height = 4, fig.width = 7, fig.align = "center"}
+out4 <- NULL; vec <- seq(-1,1,0.1)
+for (xw3 in vec){
+  out <- util(ret_age=65,c_age=42,tw3=c(xw3,xw3,xw3),c=0.6,c2=0.12,nu2=.5,nu3=0.1,ra=4,delta=0.02,alpha=0.96,
+              beta=0.75,gender=1,gender_mortalityTable=gender_mortalityTable,w0=30000,CF=0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=30000,s3=-10000,
+              w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
+              rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,verbose=FALSE,warnings = FALSE)
+  out4 <- rbind(out4,out)
+}
+plot(vec,out4[,1],main = "Utility",type="l",xlab="equal weighted w3(1:3)",ylim=c(-1,0))
+```
+

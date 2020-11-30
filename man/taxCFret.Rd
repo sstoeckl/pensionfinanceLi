@@ -19,7 +19,8 @@ taxCFret(fpcf, totalcf, wealth, warnings = TRUE)
 pension income after tax (vector or scalar)
 }
 \description{
-Calculate total taxes for pension cash-flows
+This function calculates taxes for individual pension payments detailing which part of the taxes
+should be paid from income or wealth
 }
 \examples{
 taxCFret(fpcf=15000,totalcf=25000,wealth=100000)

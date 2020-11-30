@@ -1,5 +1,8 @@
 #' Calculate total taxes for pension cash-flows
 #'
+#' This function calculates taxes for individual pension payments detailing which part of the taxes
+#' should be paid from income or wealth
+#'
 #' @param fpcf first pillar pension cash-flow
 #' @param totalcf total pension cash-flow (including fpcf)
 #' @param wealth wealth at 1.1. of tax year (can be negative)

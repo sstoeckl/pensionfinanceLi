@@ -2,7 +2,7 @@
 % Please edit documentation in R/optimalLC.R
 \name{optimalLC}
 \alias{optimalLC}
-\title{Optimiser to maximize Expected Utility}
+\title{Optimizer to maximize Expected Utility}
 \usage{
 optimalLC(
   initial_values,
@@ -48,7 +48,7 @@ optimalLC(
 Expected utility
 }
 \description{
-Here we minimize negative expected utility (given by function `util`). Parameters can be fixed by setting "tight" boundaries
+Here we minimize negative expected utility (given by function `util()`). Parameters can be fixed by setting "tight" boundaries
 }
 \examples{
 \dontrun{

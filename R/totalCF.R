@@ -3,30 +3,30 @@
 #' This function calculates the total cash flows (for each scenario and working age/retirment) given all
 #' input parameters nedding all previously defined functions
 #'
-#' @param ret_age OptVar: retirement age, can be set anywhere between 60 and 70 (default: 65)
-#' @param w3 OptVar: third pillar portfolio allocation (given either as vector or as matrix with entries) for all years
-#' @param c OptVar: fraction of income that is consumed while still working (current assumption: constant)
-#' @param c2 OptVar: second pillar savings as fraction of gross income (still missing: health, a-fonds-perdu payments)
-#' @param nu2 OptVar: fraction of second pillar savings that is converted to life-long pension
-#' @param nu3 OptVar: fraction of third pillar savings that is converted to life-long pension
-#' @param c_age GivenVar: the investor's current age (assuming birthday is calculation-day)
-#' @param gender GivenVar: gender, 0=male and 1=female
-#' @param w0 GivenVar: time c_age wealth that is not disposable, assumption: still available at retirement (no growth or decline),
+#' @param ret_age Decision Variable: retirement age, can be set anywhere between 60 and 70 (default: 65)
+#' @param w3 OptDecision VariableVar: third pillar portfolio allocation (given either as vector or as matrix with entries) for all years
+#' @param c Decision Variable: fraction of income that is consumed while still working (current assumption: constant)
+#' @param c2 Decision Variable: second pillar savings as fraction of gross income (still missing: health, a-fonds-perdu payments)
+#' @param nu2 Decision Variable: fraction of second pillar savings that is converted to life-long pension
+#' @param nu3 Decision Variable: fraction of third pillar savings that is converted to life-long pension
+#' @param alpha Decision Variable: parameter to choose fraction of wealth NOT consumed during retirement but kept for investment (and subsequent consumption)
+#' @param c_age Given variable: the investor's current age (assuming birthday is calculation-day)
+#' @param gender Given variable: gender, 0=male and 1=female
+#' @param w0 Given variable: time c_age wealth that is not disposable, assumption: still available at retirement (no growth or decline),
 #' alternatively: expected wealth (that is not disposable) at retirement, stays the same over time
-#' @param CF Given Variables: income shocks, such as inheritance (not currrently imlemented)
-#' @param li GivenVar: gross labor income at time 0 (in the last year before birthday)
-#' @param lg GivenVar: labor growth rate (in real terms, constant)
-#' @param c1 GivenVar: first pillar savings as fraction of gross income
-#' @param s1 GivenVar: vector consisting of two components: c(number of contribution years at age=c_age,historical average yearly income until c_age)
-#' @param s2 GivenVar: savings in second pillar as of t=0
-#' @param s3 GivenVar: liquid wealth - invested in the third pillar (current assumption: no tax advantage for third pillar)
-#' @param w2 GivenVar: portfolio allocation in second pillar (assumed to be fixed and not influenced by the decision maker)
-#' @param rho2 GivenVar: conversion factor in second pillar for regular retirement age
-#' @param rho3 GivenVar: conversion factor in third pillar for regular retirement age
-#' @param ret GivenVar: investment return scenarios (nominal)
-#' @param retr GivenVar: investment return scenarios (real)
-#' @param psi optional, spread to take a loan/leverage for third pillar savings
-#' @param alpha parameter to choose fraction of wealth NOT consumed during retirement but kept for investment (and subsequent consumption) - see file 'Consumption_3p.ods'
+#' @param CF Given Variables: income shocks, such as inheritance (not currently implemented)
+#' @param li Given variable: gross labor income at time 0 (in the last year before birthday)
+#' @param lg Given variable: labor growth rate (in real terms, constant)
+#' @param c1 Given variable: first pillar savings as fraction of gross income
+#' @param s1 Given variable: vector consisting of two components: c(number of contribution years at age=c_age,historical average yearly income until c_age)
+#' @param s2 Given variable: savings in second pillar as of t=0
+#' @param s3 Given variable: liquid wealth - invested in the third pillar (current assumption: no tax advantage for third pillar)
+#' @param w2 Given variable: portfolio allocation in second pillar (assumed to be fixed and not influenced by the decision maker)
+#' @param rho2 Given variable: conversion factor in second pillar for regular retirement age
+#' @param rho3 Given variable: conversion factor in third pillar for regular retirement age
+#' @param ret Given variable: investment return scenarios (nominal)
+#' @param retr Given variable: investment return scenarios (real)
+#' @param psi Given variable: optional, spread to take a loan/leverage for third pillar savings
 #' @param warnings optional: should warnings be given? (default=TRUE)
 #'
 #' @return returns a list with three elements:
@@ -36,13 +36,13 @@
 #'
 #' @examples
 #' data(ret);data(retr)
-#' totalcf_test <- totalCF(ret_age=65,c_age=42,
+#' totalcf_ex <- totalCF(ret_age=65,c_age=42,
 #'                 w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
 #'                 c=0.6,c2=.12,nu2=.5,nu3=0.01,gender=0,
 #'                 w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
 #'                 w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
 #'                 rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
-#' totalcf_test2 <- totalCF(ret_age=65,c_age=64,
+#' totalcf_ex2 <- totalCF(ret_age=65,c_age=64,
 #'                 w3=setNames(c(1,0,0,0,0),c("msci","b10","recom","libor","infl")),
 #'                 c=1,c2=0,nu2=0,nu3=0,gender=0,
 #'                 w0=0,li=100,lg=0,c1=0,s1=c(0,0),s2=0,s3=0,
@@ -111,213 +111,3 @@ totalCF <- function(ret_age,w3,c,c2,nu2,nu3,c_age,gender,w0,CF=NULL,li,lg,c1,s1,
   cf$wealth_before_ret <- tpcfw$wealth
   return(cf)
 }
-# # 1) Saving longer (higher retirement age) should increase wealth bfore and after retirement (here it depends strongly on investment results) and
-# #    decrease consumption at retirement (due to higher wealth taxes)
-# out4 <- NULL; vec <- 60:70
-# for (ret_age in vec){
-#   out <- totalCF(ret_age=ret_age,c_age=42,
-#                  w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-#                  c=0.6,c2=.12,nu2=.5,nu3=0.01,gender=0,
-#                  w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
-#                  w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-#                  rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
-#   out4 <- rbind(out4,c(mean(out$cons[as.character(ret_age-1),]),mean(out$wealth_before_ret[as.character(ret_age-1),]),mean(out$wealth_after_ret[as.character(ret_age),])))
-# }
-# par(mfrow=c(3,1))
-# plot(vec,out4[,1],main = "Consumption at retirement")
-# plot(vec,out4[,2],main = "Wealth before retirement")
-# plot(vec,out4[,3],main = "Wealth at retirement")
-# # 2) Saving for less time (higher current age) should decrease wealth before and after retirement (here it depends strongly on investment results) and
-# #    also decrease consumption at retirement (less wealth, fewer taxes)
-# out4 <- NULL; vec <- 42:64
-# for (c_age in vec){
-#   out <- totalCF(ret_age=65,c_age=c_age,
-#                  w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-#                  c=0.6,c2=.12,nu2=.5,nu3=0.01,gender=0,
-#                  w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
-#                  w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-#                  rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
-#   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
-# }
-# par(mfrow=c(3,1))
-# plot(vec,out4[,1],main = "Consumption at retirement")
-# plot(vec,out4[,2],main = "Wealth before retirement")
-# plot(vec,out4[,3],main = "Wealth at retirement")
-# # 3) Consuming more before retirement should decrease wealth before and after retirement (here it depends strongly on investment results) and
-# #    also decrease consumption after retirement (less wealth, less taxes, fewer pension payments)
-# out4 <- NULL; vec <- seq(0.1,1,0.1)
-# for (c in vec){
-#   out <- totalCF(ret_age=65,c_age=42,
-#                  w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-#                  c=c,c2=.12,nu2=.5,nu3=0.01,gender=0,
-#                  w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
-#                  w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-#                  rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
-#   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$cons["65",]),
-#                        mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
-# }
-# par(mfrow=c(4,1),oma=c(0,0,0,0),mar=c(1,2,2,1))
-# plot(vec,out4[,1],main = "Consumption before retirement")
-# plot(vec,out4[,2],main = "Consumption after retirement")
-# plot(vec,out4[,3],main = "Wealth before retirement")
-# plot(vec,out4[,4],main = "Wealth at retirement")
-# # 3) Saving more in the second pillar should decrease consumption and wealth before retirement, increase wealth after retirement (lumpsum)  and
-# #    also increase consumption after retirement (higher annuity)
-# out4 <- NULL; vec <- seq(0.1,1,0.1)
-# for (c2 in vec){
-#   out <- totalCF(ret_age=65,c_age=42,
-#                  w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-#                  c=0.6,c2=c2,nu2=.5,nu3=0.01,gender=0,
-#                  w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
-#                  w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-#                  rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
-#   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$cons["65",]),
-#                        mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
-# }
-# par(mfrow=c(4,1),oma=c(0,0,0,0),mar=c(1,2,2,1))
-# plot(vec,out4[,1],main = "Consumption before retirement")
-# plot(vec,out4[,2],main = "Consumption after retirement")
-# plot(vec,out4[,3],main = "Wealth before retirement")
-# plot(vec,out4[,4],main = "Wealth at retirement")
-# # 4) Higher pension (lower lumpsum) in the second pillar should not do anything to consumption and wealth before retirement, decrease wealth after retirement (lumpsum)  and
-# #    increase consumption after retirement (higher annuity)
-# out4 <- NULL; vec <- seq(0.1,1,0.1)
-# for (nu2 in vec){
-#   out <- totalCF(ret_age=65,c_age=42,
-#                  w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-#                  c=0.6,c2=0.12,nu2=nu2,nu3=0.01,gender=0,
-#                  w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
-#                  w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-#                  rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
-#   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$cons["65",]),
-#                        mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
-# }
-# par(mfrow=c(4,1),oma=c(0,0,0,0),mar=c(1,2,2,1))
-# plot(vec,out4[,1],main = "Consumption before retirement")
-# plot(vec,out4[,2],main = "Consumption after retirement")
-# plot(vec,out4[,3],main = "Wealth before retirement")
-# plot(vec,out4[,4],main = "Wealth at retirement")
-# # 5) Higher pension (lower lumpsum) in the third pillar should not do anything to consumption and wealth before retirement, decrease wealth after retirement (lumpsum)  and
-# #    increase consumption after retirement (higher annuity) that then will be decreasing (self-managed pension payments will also decrease)
-# out4 <- NULL; vec <- seq(0.1,1,0.1)
-# for (nu3 in vec){
-#   out <- totalCF(ret_age=65,c_age=42,
-#                  w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-#                  c=0.6,c2=0.12,nu2=.5,nu3=nu3,gender=0,
-#                  w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
-#                  w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-#                  rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
-#   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$cons["65",]),
-#                        mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
-# }
-# par(mfrow=c(4,1),oma=c(0,0,0,0),mar=c(1,2,2,1))
-# plot(vec,out4[,1],main = "Consumption before retirement")
-# plot(vec,out4[,2],main = "Consumption after retirement")
-# plot(vec,out4[,3],main = "Wealth before retirement")
-# plot(vec,out4[,4],main = "Wealth at retirement")
-# # 6) Higher illiquid wealth will increase taxes and therefore reduce consumption and wealth before and after retirement
-# out4 <- NULL; vec <- seq(0,1000000,10000)
-# for (w0 in vec){
-#   out <- totalCF(ret_age=65,c_age=42,
-#                  w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-#                  c=0.6,c2=0.12,nu2=.5,nu3=0.01,gender=0,
-#                  w0=w0,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
-#                  w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-#                  rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
-#   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$cons["65",]),
-#                        mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
-# }
-# par(mfrow=c(4,1),oma=c(0,0,0,0),mar=c(1,2,2,1))
-# plot(vec,out4[,1],main = "Consumption before retirement")
-# plot(vec,out4[,2],main = "Consumption after retirement")
-# plot(vec,out4[,3],main = "Wealth before retirement")
-# plot(vec,out4[,4],main = "Wealth at retirement")
-# # 6) Higher liquid wealth (third pillar) will increase taxes and therefore reduce consumption before retirement but
-# #    will increase wealth before and after retirement and therefore consumption after retirement
-# out4 <- NULL; vec <- seq(0,1000000,10000)
-# for (s3 in vec){
-#   out <- totalCF(ret_age=65,c_age=42,
-#                  w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-#                  c=0.6,c2=0.12,nu2=.5,nu3=0.01,gender=0,
-#                  w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=s3,
-#                  w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-#                  rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
-#   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$cons["65",]),
-#                        mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
-# }
-# par(mfrow=c(4,1),oma=c(0,0,0,0),mar=c(1,2,2,1))
-# plot(vec,out4[,1],main = "Consumption before retirement")
-# plot(vec,out4[,2],main = "Consumption after retirement")
-# plot(vec,out4[,3],main = "Wealth before retirement")
-# plot(vec,out4[,4],main = "Wealth at retirement")
-# # 7) Higher wealth in the second pillar will do nothing to wealth and consumption before retirement but
-# #    will increase wealth and therefore consumption after retirement
-# out4 <- NULL; vec <- seq(0,1000000,10000)
-# for (s2 in vec){
-#   out <- totalCF(ret_age=65,c_age=42,
-#                  w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-#                  c=0.6,c2=0.12,nu2=.5,nu3=0.01,gender=0,
-#                  w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=s2,s3=300000,
-#                  w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-#                  rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
-#   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$cons["65",]),
-#                        mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
-# }
-# par(mfrow=c(4,1),oma=c(0,0,0,0),mar=c(1,2,2,1))
-# plot(vec,out4[,1],main = "Consumption before retirement")
-# plot(vec,out4[,2],main = "Consumption after retirement")
-# plot(vec,out4[,3],main = "Wealth before retirement")
-# plot(vec,out4[,4],main = "Wealth at retirement")
-# # 8) Higher wealth in the first pillar will do nothing to wealth and consumption before retirement but
-# #    will increase consumption after retirement
-# ## here one has to decrease li to 10000 or the "brackets" take over
-# out4 <- NULL; vec <- seq(10000,100000,1000)
-# for (s12 in vec){
-#   out <- totalCF(ret_age=65,c_age=42,
-#                  w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-#                  c=0.6,c2=0.12,nu2=.5,nu3=0.01,gender=0,
-#                  w0=300000,li=10000,lg=0.01,c1=0.07,s1=c(15,s12),s2=300000,s3=300000,
-#                  w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-#                  rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
-#   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$cons["65",]),
-#                        mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
-# }
-# par(mfrow=c(4,1),oma=c(0,0,0,0),mar=c(1,2,2,1))
-# plot(vec,out4[,1],main = "Consumption before retirement")
-# plot(vec,out4[,2],main = "Consumption after retirement")
-# plot(vec,out4[,3],main = "Wealth before retirement")
-# plot(vec,out4[,4],main = "Wealth at retirement")
-#  # 9) Increasing pension (consumption) in higher conversion factors rho2/rho3
-# out4 <- NULL; vec <- seq(0.01,0.2,0.01)
-# for (rho3 in vec){
-#   out <- totalCF(ret_age=65,c_age=42,
-#                  w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-#                  c=0.6,c2=0.12,nu2=.5,nu3=0.01,gender=0,
-#                  w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
-#                  w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-#                  rho2=0.05,rho3=rho3,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
-#   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$cons["65",]),
-#                        mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
-# }
-# par(mfrow=c(4,1),oma=c(0,0,0,0),mar=c(1,2,2,1))
-# plot(vec,out4[,1],main = "Consumption before retirement")
-# plot(vec,out4[,2],main = "Consumption after retirement")
-# plot(vec,out4[,3],main = "Wealth before retirement")
-# plot(vec,out4[,4],main = "Wealth at retirement")
-# # 10) Decreasing pension (consumption) for lower level of alpha (converting to a self-managed pension)
-# out4 <- NULL; vec <- seq(1,0.8,-0.01)
-# for (alpha in vec){
-#   out <- totalCF(ret_age=65,c_age=42,
-#                  w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-#                  c=0.6,c2=0.12,nu2=.5,nu3=0.01,gender=0,
-#                  w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
-#                  w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
-#                  rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=alpha)
-#   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$cons["65",]),
-#                        mean(out$wealth_before_ret["64",]),mean(out$wealth_after_ret["65",])))
-# }
-# par(mfrow=c(4,1),oma=c(0,0,0,0),mar=c(1,2,2,1))
-# plot(vec,out4[,1],main = "Consumption before retirement")
-# plot(vec,out4[,2],main = "Consumption after retirement")
-# plot(vec,out4[,3],main = "Wealth before retirement")
-# plot(vec,out4[,4],main = "Wealth at retirement")

@@ -16,10 +16,10 @@ taxCFlumpsum(lumpsum, ret_age = 65, gender, warnings = TRUE)
 \item{warnings}{optional: should warnings be given? (default=TRUE)}
 }
 \value{
-
+The net (after tax) lumpsum payment
 }
 \description{
-This function is supposed to subtract taxes on lumpsum payments from the second pillar at pension start
+This function subtracts taxes on lumpsum payments from the second pillar at pension start
 }
 \examples{
 taxCFlumpsum(lumpsum=1000000,ret_age = c(60,64,65),gender=0)

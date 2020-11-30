@@ -10,7 +10,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
-In the following we will describe all parameters that are necessary as input to the program. We will give details on the parameter, specify where it is used, give a possible/feasible range and determine the steps for their simulation for the final output grid.
+In the following we will describe all parameters that are necessary as input to the program. We will give details on the parameter, specify where it is used, give a possible/feasible range and determine the steps for their simulation for the final output grid of our Machine Learning approach.
 
 # Given Variables
 

@@ -15,7 +15,7 @@
 #' @param warnings optional: should warnings be given? (default=TRUE)
 #'
 #' @return list with two elemnts:
-#' -  consumption during savings years (matrix with dim=c(sav_years,# of Scenarios))
+#' -  Consumption during savings years (matrix with dim=c(sav_years,# of Scenarios))
 #' -  Development of wealth during savings years (matrix with dim=c(sav_years,# of Scenarios))
 #'
 #' @examples
@@ -91,54 +91,3 @@ tpCFwork<-function(ret_age=65, c_age, w3, free_cf_before_tax, retr, s3, w0, psi=
     tpw$wealth <- wealth_development
   return(tpw)
 }
-# ##
-# # 1) Saving longer (higher retirement age) should increase wealth at retirement and keep consumption constant (due to higher wealth taxes, which we pay from liquid wealth)
-# out4 <- NULL; vec <- 60:70
-# for (ret_age in vec){
-#   out <- tpCFwork(ret_age=ret_age,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-#                   free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],s3=300000,w0=300000,psi=0.015,c=0.6)
-#   out4 <- rbind(out4,c(mean(out$cons[as.character(ret_age-1),]),mean(out$wealth[as.character(ret_age-1),])))
-# }
-# par(mfrow=c(2,1))
-# plot(vec,out4[,1],main = "Consumption at retirement")
-# plot(vec,out4[,2],main = "Wealth at retirement")
-# # 2) Saving less years (higher current) should decrease wealth and keep consumption at retirement constant
-# out4 <- NULL; vec <- 42:64
-# for (c_age in vec){
-#   out <- tpCFwork(ret_age=65,c_age=c_age,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-#                   free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],s3=300000,w0=300000,psi=0.015,c=0.6)
-#   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$wealth["64",])))
-# }
-# par(mfrow=c(2,1))
-# plot(vec,out4[,1],main = "Consumption before retirement")
-# plot(vec,out4[,2],main = "Wealth before retirement")
-# # 3) Higher consumption should decrease wealth and increase consumption before retirement
-# out4 <- NULL; vec <- seq(0.1,1,0.1)
-# for (c in vec){
-#   out <- tpCFwork(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-#                   free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],s3=300000,w0=300000,psi=0.015,c=c)
-#   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$wealth["64",])))
-# }
-# par(mfrow=c(2,1))
-# plot(vec,out4[,1],main = "Consumption before retirement")
-# plot(vec,out4[,2],main = "Wealth before retirement")
-# # 4) Higher illiquid wealth (w0) should increase taxes and therefore reduce wealth within certain brackets (consumption constant)
-# out4 <- NULL; vec <- seq(0,1000000,10000)
-# for (w0 in vec){
-#   out <- tpCFwork(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-#                   free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],s3=300000,w0=w0,psi=0.015,c=0.6)
-#   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$wealth["64",])))
-# }
-# par(mfrow=c(2,1))
-# plot(vec,out4[,1],main = "Consumption before retirement")
-# plot(vec,out4[,2],main = "Wealth before retirement")
-# # 5) Higher liquid wealth (s3) should increase returns and also taxes but not reduce consumption
-# out4 <- NULL; vec <- seq(0,1000000,10000)
-# for (s3 in vec){
-#   out <- tpCFwork(ret_age=65,c_age=42,w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
-#                   free_cf_before_tax=rep(100000,ret_age-42),retr=retr[,,1:10],s3=s3,w0=300000,psi=0.015,c=0.6)
-#   out4 <- rbind(out4,c(mean(out$cons["64",]),mean(out$wealth["64",])))
-# }
-# par(mfrow=c(2,1))
-# plot(vec,out4[,1],main = "Consumption before retirement")
-# plot(vec,out4[,2],main = "Wealth before retirement")

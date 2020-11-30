@@ -32,52 +32,52 @@ totalCF(
 )
 }
 \arguments{
-\item{ret_age}{OptVar: retirement age, can be set anywhere between 60 and 70 (default: 65)}
+\item{ret_age}{Decision Variable: retirement age, can be set anywhere between 60 and 70 (default: 65)}
 
-\item{w3}{OptVar: third pillar portfolio allocation (given either as vector or as matrix with entries) for all years}
+\item{w3}{OptDecision VariableVar: third pillar portfolio allocation (given either as vector or as matrix with entries) for all years}
 
-\item{c}{OptVar: fraction of income that is consumed while still working (current assumption: constant)}
+\item{c}{Decision Variable: fraction of income that is consumed while still working (current assumption: constant)}
 
-\item{c2}{OptVar: second pillar savings as fraction of gross income (still missing: health, a-fonds-perdu payments)}
+\item{c2}{Decision Variable: second pillar savings as fraction of gross income (still missing: health, a-fonds-perdu payments)}
 
-\item{nu2}{OptVar: fraction of second pillar savings that is converted to life-long pension}
+\item{nu2}{Decision Variable: fraction of second pillar savings that is converted to life-long pension}
 
-\item{nu3}{OptVar: fraction of third pillar savings that is converted to life-long pension}
+\item{nu3}{Decision Variable: fraction of third pillar savings that is converted to life-long pension}
 
-\item{c_age}{GivenVar: the investor's current age (assuming birthday is calculation-day)}
+\item{c_age}{Given variable: the investor's current age (assuming birthday is calculation-day)}
 
-\item{gender}{GivenVar: gender, 0=male and 1=female}
+\item{gender}{Given variable: gender, 0=male and 1=female}
 
-\item{w0}{GivenVar: time c_age wealth that is not disposable, assumption: still available at retirement (no growth or decline),
+\item{w0}{Given variable: time c_age wealth that is not disposable, assumption: still available at retirement (no growth or decline),
 alternatively: expected wealth (that is not disposable) at retirement, stays the same over time}
 
-\item{CF}{Given Variables: income shocks, such as inheritance (not currrently imlemented)}
+\item{CF}{Given Variables: income shocks, such as inheritance (not currently implemented)}
 
-\item{li}{GivenVar: gross labor income at time 0 (in the last year before birthday)}
+\item{li}{Given variable: gross labor income at time 0 (in the last year before birthday)}
 
-\item{lg}{GivenVar: labor growth rate (in real terms, constant)}
+\item{lg}{Given variable: labor growth rate (in real terms, constant)}
 
-\item{c1}{GivenVar: first pillar savings as fraction of gross income}
+\item{c1}{Given variable: first pillar savings as fraction of gross income}
 
-\item{s1}{GivenVar: vector consisting of two components: c(number of contribution years at age=c_age,historical average yearly income until c_age)}
+\item{s1}{Given variable: vector consisting of two components: c(number of contribution years at age=c_age,historical average yearly income until c_age)}
 
-\item{s2}{GivenVar: savings in second pillar as of t=0}
+\item{s2}{Given variable: savings in second pillar as of t=0}
 
-\item{s3}{GivenVar: liquid wealth - invested in the third pillar (current assumption: no tax advantage for third pillar)}
+\item{s3}{Given variable: liquid wealth - invested in the third pillar (current assumption: no tax advantage for third pillar)}
 
-\item{w2}{GivenVar: portfolio allocation in second pillar (assumed to be fixed and not influenced by the decision maker)}
+\item{w2}{Given variable: portfolio allocation in second pillar (assumed to be fixed and not influenced by the decision maker)}
 
-\item{rho2}{GivenVar: conversion factor in second pillar for regular retirement age}
+\item{rho2}{Given variable: conversion factor in second pillar for regular retirement age}
 
-\item{rho3}{GivenVar: conversion factor in third pillar for regular retirement age}
+\item{rho3}{Given variable: conversion factor in third pillar for regular retirement age}
 
-\item{ret}{GivenVar: investment return scenarios (nominal)}
+\item{ret}{Given variable: investment return scenarios (nominal)}
 
-\item{retr}{GivenVar: investment return scenarios (real)}
+\item{retr}{Given variable: investment return scenarios (real)}
 
-\item{psi}{optional, spread to take a loan/leverage for third pillar savings}
+\item{psi}{Given variable: optional, spread to take a loan/leverage for third pillar savings}
 
-\item{alpha}{parameter to choose fraction of wealth NOT consumed during retirement but kept for investment (and subsequent consumption) - see file 'Consumption_3p.ods'}
+\item{alpha}{Decision Variable: parameter to choose fraction of wealth NOT consumed during retirement but kept for investment (and subsequent consumption)}
 
 \item{warnings}{optional: should warnings be given? (default=TRUE)}
 }
@@ -93,13 +93,13 @@ input parameters nedding all previously defined functions
 }
 \examples{
 data(ret);data(retr)
-totalcf_test <- totalCF(ret_age=65,c_age=42,
+totalcf_ex <- totalCF(ret_age=65,c_age=42,
                 w3=setNames(c(.25,.25,.25,.25,0),c("msci","b10","recom","libor","infl")),
                 c=0.6,c2=.12,nu2=.5,nu3=0.01,gender=0,
                 w0=300000,li=100000,lg=0.01,c1=0.07,s1=c(15,80000),s2=300000,s3=300000,
                 w2=setNames(c(.30,.30,.30,.10,0),c("msci","b10","recom","libor","infl")),
                 rho2=0.05,rho3=0.04,ret=ret[,,1:10],retr=retr[,,1:10],psi=0.015,alpha=0.96)
-totalcf_test2 <- totalCF(ret_age=65,c_age=64,
+totalcf_ex2 <- totalCF(ret_age=65,c_age=64,
                 w3=setNames(c(1,0,0,0,0),c("msci","b10","recom","libor","infl")),
                 c=1,c2=0,nu2=0,nu3=0,gender=0,
                 w0=0,li=100,lg=0,c1=0,s1=c(0,0),s2=0,s3=0,

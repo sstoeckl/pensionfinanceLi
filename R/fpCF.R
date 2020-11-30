@@ -1,7 +1,7 @@
 #' First Pillar Cash Flows
 #'
 #' Cash Flows are generated for the payment phase of the first pillar, starting in retirement (ret_age) until 122 because that is when all our
-#' ficticious persons have died. We use "Russian" inflation adjustment for starting pension: average income is computed mixing nominal past and
+#' fictitious persons have died. We use "Russian" inflation adjustment for starting pension: average income is computed mixing nominal past and
 #' real future income, brackets in pension table are not adjusted ==> running pension in real terms decreases by half the inflation rate
 #'
 #' @param ret_age optional, retirement age, can be set anywhere between 60 and 70 (default: 65)
@@ -12,7 +12,7 @@
 #' @param ret investment return scenarios (nominal)
 #' @param warnings optional: should warnings be given? (default=TRUE)
 #'
-#' @return Vector of Cashflows as of pension starting age (ret_age) until age=122 (dim=c(122-retage,# inflation scenarios))
+#' @return Named matrix of cashflows as of pension starting age (ret_age) until age=122 (dim=c(122-retage,# return scenarios))
 #'
 #' @examples
 #' data(ret)
@@ -69,38 +69,3 @@ fpCF <- function(ret_age = 65, c_age, li, lg, s1, ret, warnings=TRUE){
   # Now create final vector of 1st pillar pension cashflows
   return(drop(fp_pensionstart)*h2)
 }
-# # Test cases
-# # 1) fp should be decreasing in rising age
-# out1 <- NULL
-# for (c_age in 42:65){
-#    out1[c_age-41] <- mean(fpCF(ret_age=65,c_age=c_age,li=100000,lg=0.01,s1=c(15,80000),ret=ret[,,1:10])[1,])
-# }
-# plot(42:65,out1)
-# # 2) fp should be increasing in lg (if below bracket)
-# out2 <- NULL; i<-1
-# for (lg in seq(from = 0,to = 0.1,by = 0.01)){
-#   out2[i] <- mean(fpCF(ret_age=65,c_age=42,li=20000,lg=lg,s1=c(15,10000),ret=ret[,,1:10])[1,])
-#   i <- i+1
-# }
-# plot(seq(0,0.1,0.01),out2)
-# # 3) fp should be increasing in retirement age
-# out3 <- NULL
-# for (ret_age in 60:70){
-#   out3[ret_age-59] <- mean(fpCF(ret_age=ret_age,c_age=42,li=100000,lg=0.01,s1=c(15,80000),ret=ret[,,1:1000])[1,])
-# }
-# plot(60:70,out3)
-# # 4) fp should be increasing in s11 until yearsum>44 then we have a downward adjustment
-# out4 <- NULL; i<-1
-# for (s11 in seq(1:25)){
-#   out4[i] <- mean(fpCF(ret_age=65,c_age=42,li=10000,lg=0.01,s1=c(s11,10000),ret=ret[,,1:10])[1,])
-#   i <- i+1
-# }
-# plot(1:25,out4)
-# # 5) fp should be increasing in s12 until the bracket coems into play
-# out5 <- NULL; i<-1
-# for (s12 in seq(10000,100000,10000)){
-#   out5[i] <- mean(fpCF(ret_age=65,c_age=42,li=10000,lg=0.01,s1=c(15,s12),ret=ret[,,1:10])[1,])
-#   i <- i+1
-# }
-# plot(seq(10000,100000,10000),out5)
-

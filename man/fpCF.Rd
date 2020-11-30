@@ -22,11 +22,11 @@ fpCF(ret_age = 65, c_age, li, lg, s1, ret, warnings = TRUE)
 \item{warnings}{optional: should warnings be given? (default=TRUE)}
 }
 \value{
-Vector of Cashflows as of pension starting age (ret_age) until age=122 (dim=c(122-retage,# inflation scenarios))
+Named matrix of cashflows as of pension starting age (ret_age) until age=122 (dim=c(122-retage,# return scenarios))
 }
 \description{
 Cash Flows are generated for the payment phase of the first pillar, starting in retirement (ret_age) until 122 because that is when all our
-ficticious persons have died. We use "Russian" inflation adjustment for starting pension: average income is computed mixing nominal past and
+fictitious persons have died. We use "Russian" inflation adjustment for starting pension: average income is computed mixing nominal past and
 real future income, brackets in pension table are not adjusted ==> running pension in real terms decreases by half the inflation rate
 }
 \examples{

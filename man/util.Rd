@@ -54,7 +54,7 @@ HERE: Choose only allocation to stocks, bonds and real estate, cash will be dete
 
 \item{delta}{Given Variable: Time Preference}
 
-\item{alpha}{parameter to choose fraction of wealth NOT consumed during retirement but kept for investment (and subsequent consumption) - see file 'Consumption_3p.ods'}
+\item{alpha}{Decision Variable: parameter to choose fraction of wealth NOT consumed during retirement but kept for investment (and subsequent consumption) - see file 'Consumption_3p.ods'}
 
 \item{beta}{Given variable: Relative Weight of bequest utility}
 
