@@ -20,43 +20,19 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/sstoeckl/pensionfinanceLi/branch/master/graph/badge.svg)](https://codecov.io/gh/sstoeckl/pensionfinanceLi?branch=master)
 <!-- badges: end -->
 
-The goal of pensionfinanceLi is to ...
+The goal of pensionfinanceLi is to optimize the situation of a typical person insured in Liechtenstein's Pension System. Currently, however, we do not implement any special cases. For a detailed documentation check `vignette("model")`.
 
 ## Installation
 
-You can install the released version of pensionfinanceLi from [CRAN](https://CRAN.R-project.org) with:
+<!-- You can install the released version of pensionfinanceLi from [CRAN](https://CRAN.R-project.org) with: -->
 
-```{r instpkg, eval=FALSE}
-install.packages("pensionfinanceLi")
-```
+<!-- ```{r instpkg, eval=FALSE} -->
+<!-- install.packages("pensionfinanceLi") -->
+<!-- ``` -->
 
-And the development version from [GitHub](https://github.com/) with:
+Currently this package is under heavy development. Due to the large file sizes, the development version can only be installed from [BitBucket](https://bitbucket.org/) with:
 
 ```{r instgit, eval=FALSE}
 # install.packages("devtools")
-devtools::install_github("sstoeckl/pensionfinanceLi")
+devtools::install_bitbucket("sstoeckl/pensionfinanceLi")
 ```
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-```{r example, eval=FALSE}
-library(pensionfinanceLi)
-## basic example code
-```
-
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
-
-```{r cars}
-summary(cars)
-```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub!
